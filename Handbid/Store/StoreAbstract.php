@@ -64,7 +64,11 @@ class StoreAbstract implements StoreInterface{
         $this->_restServerRout = $rout;
     }
 
-    public function query( $queryString ){
+    public function query( $queryString, $postData = null ){
+
+        //@todo:  if $postData, then we should be sending a post request instead of a get request
+        //We'll be expecting an associative array of key value pairs.
+
         curl_setopt($this->_curlHandle, CURLOPT_URL, $this->_restServerAddress . $this->_restServerRout );
 
         $result = json_decode( curl_exec( $this->_curlHandle ) );
