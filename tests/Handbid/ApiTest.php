@@ -8,19 +8,21 @@ include( "../../Handbid/Auth/Auth.php" );
 include( "../../Handbid/Store/StoreInterface.php");
 include( "../../Handbid/Store/StoreAbstract.php");
 include( "../../Handbid/Store/Auction.php");
-include( "../../Handbid/Store/Bidders.php");
+include( "../../Handbid/Store/Bidder.php");
 include( "../../Handbid/Store/Donor.php");
-include( "../../Handbid/Store/ItemCategories.php");
-include( "../../Handbid/Store/Items.php");
-include( "../../Handbid/Store/Organizations.php");
+include( "../../Handbid/Store/ItemCategory.php");
+include( "../../Handbid/Store/Item.php");
+include( "../../Handbid/Store/Organization.php");
 
 
 use Handbid\Handbid;
 use Handbid\Auth;
-//use Handbid\Store\Store;
+
+class DummyStore extends \Handbid\Store\StoreAbstract{ }
 
 class ApiTest extends PHPUnit_Framework_TestCase{
-
+    public $appId  = '1234567890';
+    public $apiKey = '1234567890';
 
     public function testServer(){
         $domain = 'http://rest.newbeta.handbid.com';
@@ -37,7 +39,71 @@ class ApiTest extends PHPUnit_Framework_TestCase{
         $results = json_decode( curl_exec($curlHandle) );
 
         //if its not an object, then the response wasn't json, and it probably means a connectivity problem, or a data problem...
-        assert( is_object( $results ) );
+        $this->assertTrue( is_object( $results ) );
+
+    }
+
+    public function testAuth(){
+        $appId  = $this->appId;
+        $apiKey = $this->apiKey;
+
+        $auth = new Auth($appId, $apiKey);
+
+        $this->assertTrue( $auth instanceof Auth );
+    }
+
+    public function testHandbid(){
+        $appId  = $this->appId;
+        $apiKey = $this->apiKey;
+
+        $auth = new Auth($appId, $apiKey);
+
+        //make sure we can authorize our session
+        $handbid = new Handbid( $auth );
+
+        //make sure we get back a handbid instance.
+        $this->assertTrue( $handbid instanceof Handbid );
+
+        //a few different ways to use this method...
+        $store1 = $handbid->store( 'Auction' );
+        $store2 = $handbid->store( 'Handbid\Store\Auction' );
+        $store3 = $handbid->store( new DummyStore() );
+
+        $this->assertTrue( $store1 instanceof \Handbid\Store\StoreInterface );
+        $this->assertTrue( $store2 instanceof \Handbid\Store\StoreInterface );
+        $this->assertTrue( $store3 instanceof \Handbid\Store\StoreInterface );
+
+
+
+    }
+
+    public function testStoreInterface(){
+        $appId  = $this->appId;
+        $apiKey = $this->apiKey;
+
+        $auth = new Auth($appId, $apiKey);
+
+        $handbid = new Handbid( $auth );
+
+        $dummyStore = $handbid->store( new DummyStore() );
+
+        //@todo: Fills this out when we know more about how our system is supposed to work.
+        $dummyStore->find();
+        $dummyStore->create();
+        $dummyStore->read();
+        $dummyStore->update();
+        $dummyStore->delete();
+
+    }
+
+    public function testStoreAbstract(){
+        $appId  = $this->appId;
+        $apiKey = $this->apiKey;
+
+        $auth = new Auth($appId, $apiKey);
+
+        $handbid = new Handbid( $auth );
+
 
     }
 
@@ -50,9 +116,22 @@ class ApiTest extends PHPUnit_Framework_TestCase{
         $auth = new Auth($appId, $apiKey);
 
         $handbid = new Handbid( $auth );
-        $auctions = $handbid->store('Auction')->recent();
+        $store = $handbid->store('Auction');
 
-        assert( count($auctions) > 0 );
+
+        //recent
+        $recentAuctions = $store->recent();
+
+            $this->assertTrue( count($recentAuctions) > 0 );
+
+        //current
+
+        //create
+
+        //open
+
+        //close
+
     }
 
 

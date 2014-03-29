@@ -15,7 +15,7 @@ class StoreAbstract implements StoreInterface{
     public $_curlHandle;
 
     public $_restServerAddress = 'http://rest.newbeta.handbid.com';
-    public $_restServerRout;
+    public $_restBasePath = '/v1/rest';
 
 
     public function __construct(){
@@ -59,37 +59,53 @@ class StoreAbstract implements StoreInterface{
 
     }
 
-    public function setRout( $rout ){
-        //@todo validate and clean the rout provided
-        $this->_restServerRout = $rout;
-    }
+    /**
+     * @param        $route
+     * @param array  $data
+     * @param string $method
+     *
+     * @return object
+     * @throws \Exception
+     */
+    public function query( $route, $data = [], $method = 'Get' ){
 
-    public function query( $queryString, $postData = null ){
+        //can never be sure what to expect...
+        $route = ($route[0] === '/') ? $route : '/'.$route;
 
-        //@todo:  if $postData, then we should be sending a post request instead of a get request
-        //We'll be expecting an associative array of key value pairs.
+        curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_restServerAddress . $this->_restBasePath . $route) );
 
-        curl_setopt($this->_curlHandle, CURLOPT_URL, $this->_restServerAddress . $this->_restServerRout );
+        if( $method == 'Post' && $data ){
+            //setup our request for posting data, yo!
+            $fields = '';
 
+            foreach($data as $key => $value) {
+                $fields .= $key . '=' . $value . '&';
+            }
+
+            rtrim($fields, '&');
+
+            curl_setopt($this->_curlHandle, CURLOPT_POST, count( $data ) );
+            curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $fields );
+        }
+
+        //execute the curl request, decode our json response.
         $result = json_decode( curl_exec( $this->_curlHandle ) );
 
         if( is_object( $result ) ){
 
             //validate result
-            if( $result->Errors ){ //this ...  needs to be broken out a little.
+            if( $result->Errors[0]->code !== 200 ){
 
                 throw new \Exception('Server Error ['. $result->Errors[0]->code .'] '. $result->Errors[0]->description . ((count($result->Errors) > 1) ? ' (' .(count($result->Errors)-1). ') more errors reported, but not shown.':'') );
             }
 
             //@todo clean up results to be more consistent.  our use-cases are going to expect arrays of results, probably rows..
 
-
             return $result;
         }else{
 
             throw new \Exception('Unknown response from server. ( '. $result .' ) ');
         }
-
 
     }
 

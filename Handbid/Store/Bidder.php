@@ -4,7 +4,7 @@ namespace Handbid\Store;
 
 use Handbid\Store\StoreAbstract;
 
-class Bidders extends StoreAbstract{
+class Bidder extends StoreAbstract{
 
     public function login(){
 

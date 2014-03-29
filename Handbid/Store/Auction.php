@@ -19,10 +19,7 @@ class Auction extends StoreAbstract{
      * @return mixed
      */
     public function recent(){
-        $this->setRout('/v1/rest/auctions.json');
-        $queryString = '';
-
-        $result = $this->query( $queryString );
+        $result = $this->query( 'auctions.json' );
 
         return $result;
     }
