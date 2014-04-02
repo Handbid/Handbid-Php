@@ -11,4 +11,23 @@ class Organization extends StoreAbstract{
 
         return parent::create( $data );
     }
+
+    public function getById( $id ){
+        $this->_restRoute = '/orgs/' . $id . '.json';
+
+        return parent::read();
+    }
+
+    public function updateById( $id, $data ){
+        $this->_restRoute = '/orgs/' . $id . '.json';
+
+        return parent::update( $data );
+    }
+
+    public function deleteById( $id ){
+        $this->_restRoute = '/orgs/' . $id . '.json';
+
+        return parent::delete( );
+    }
+
 }

@@ -32,18 +32,15 @@ class ApiTest extends PHPUnit_Framework_TestCase{
            $authPassword      = 'password',
            $badAuthPassword   = 'badPassword123',
            $dummyOrganization = [
-               'name' => 'Dummy Inc.',
-               'logo' => '',
-               'address' => '1234 generic ave.',
-               'contactName' => 'Mr. Widget',
-               'phone' => '(123) 456 - 7890',
-               'email' => 'dummyMiester@nodomain.com',
-               'website' => 'www.dummy.inc.com.org.io',
-               'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
-               'users' => '',
-               'public' => true,
-               'ein' => '',
-               'tags' => 'Vince, Larry, Daryl'
+               'name'           => 'Dummy Inc.',
+               'address'        => '1234 generic ave.',
+               'contactName'    => 'Mr. Widget',
+               'phone'          => '(123) 456 - 7890',
+               'email'          => 'dummyMiester@nodomain.com',
+               'website'        => 'www.dummy.inc.com.org.io',
+               'description'    => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
+               'public'         => true,
+               'tags'           => 'Vince, Larry, Daryl'
            ];
 
     public function testHandbid(){
@@ -100,13 +97,12 @@ class ApiTest extends PHPUnit_Framework_TestCase{
         $authToken = $auth->getToken();
 
 
-
-
         $store = $handbid->store('Organization');
         $this->assertTrue( $store instanceof \Handbid\Store\StoreInterface );
 
+        //create
         try{
-            $store->create( $this->dummyOrganization );
+            $storeData = $store->create( $this->dummyOrganization );
 
         }
         catch( \Exception $error ){
@@ -114,6 +110,66 @@ class ApiTest extends PHPUnit_Framework_TestCase{
         }
 
         $this->assertTrue( count( $store->_restServer->_error) === 0 );
+        $this->assertTrue( strlen($storeData->_id) > 0 );
+
+        //@TODO:  It might be a good idea to verify every field against the provided values.
+
+
+
+
+
+        //read
+        $dummyStoreId = $storeData->_id;
+
+        try{
+            $newStoreData = $store->getById( $dummyStoreId );
+
+        }catch( \Exception $error ){
+            print_r( $error->getMessage() );
+        }
+
+        $this->assertTrue( count( $store->_restServer->_error ) === 0 );
+        $this->assertTrue( $newStoreData->_id === $dummyStoreId );
+
+
+
+
+
+        //update
+        $dummyStoreId = $storeData->_id;
+
+        $this->dummyOrganization['name']    = 'updated name';
+        $this->dummyOrganization['website'] = 'updated.website.org';
+
+        try{
+            $newStoreData = $store->updateById( $dummyStoreId, $this->dummyOrganization );
+
+        }catch( \Exception $error ){
+            print_r( $error->getMessage() );
+
+        }
+
+        $this->assertTrue( count( $store->_restServer->_error ) === 0 );
+        $this->assertTrue( ($newStoreData->name === 'updated name') && ($newStoreData->website === 'updated.website.org'));
+
+
+
+
+
+        //delete
+        $dummyStoreId = $storeData->_id;
+
+        try{
+            $response = $store->deleteById( $dummyStoreId );
+            $aggressiveDeleteResponse = $store->deleteById( $dummyStoreId );
+
+        }catch( \Exception $error ){
+            print_r( $error->getMessage() . ' (we expect only ONE of these messages)');
+        }
+
+
+        $this->assertTrue( count( $store->_restServer->_error ) === 1 );
+        $this->assertTrue( $response->deleted === 1 );
 
     }
 

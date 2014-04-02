@@ -33,24 +33,21 @@ class StoreAbstract implements StoreInterface{
         }
 
         $this->_restServer = new Rest( $this->_restServerAddress, $this->_restBasePath );
+        $this->_restServer->setAuth( $this->_restAuthToken, $this->_restUserId );
     }
 
     /**
      *
      */
     public function find( $data = [] ){
-
+        throw( new \Exception('coming soon') );
     }
 
     /**
      *
      */
     public function create( $data = [] ){
-        $data['token'] = $this->_restAuthToken;
-        $data['userId'] = $this->_restUserId;
-
         $response = $this->_restServer->query( $this->_restRoute, $data, 'Post' );
-
         //@TODO: validate response
 
         if( count( $this->_restServer->_error ) ){
@@ -64,21 +61,39 @@ class StoreAbstract implements StoreInterface{
      *
      */
     public function read( $data = [] ){
+        $response = $this->_restServer->query( $this->_restRoute, $data );
 
+        if( count( $this->_restServer->_error ) ){
+            throw( new \Exception( $this->_restServer->_error[0] ) );
+        }
+
+        return $response;
     }
 
     /**
      *
      */
     public function update( $data = [] ){
+        $response = $this->_restServer->query( $this->_restRoute, $data, 'Post' );
 
+        if( count( $this->_restServer->_error ) ){
+            throw( new \Exception( $this->_restServer->_error[0] ) );
+        }
+
+        return $response;
     }
 
     /**
      *
      */
     public function delete( $data = [] ){
+        $response = $this->_restServer->query( $this->_restRoute, $data, 'Delete' );
 
+        if( count( $this->_restServer->_error ) ){
+            throw( new \Exception( $this->_restServer->_error[0] ) );
+        }
+
+        return $response;
     }
 
 }

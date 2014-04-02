@@ -6,9 +6,11 @@ use Handbid\RestInterface;
 
 class Rest implements RestInterface{
     public  $_curlHandle,
-        $_serverAddress,
-        $_basePath,
-        $_error = [];
+            $_serverAddress,
+            $_basePath,
+            $_authUsername,
+            $_authPassword,
+            $_error = [];
 
     public function __construct( $serverAddress, $basePath ){
         $this->_serverAddress = !is_null( $serverAddress ) ? $serverAddress : $this->_error[] = 'Rest Error: server address must be defined';
@@ -26,27 +28,36 @@ class Rest implements RestInterface{
     }
 
     public function query( $route, $params = [], $method = 'Get' ){
-
         $query = http_build_query( $params );
+
+
 
         if( $method === 'Post' && $query ){
             //setup our request for posting data, yo!
 
-            curl_setopt($this->_curlHandle, CURLOPT_POST, count( $params ) );
-            curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query );
-
+            //curl_setopt($this->_curlHandle, CURLOPT_POST, true );
             curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_serverAddress . $this->_basePath . $route) );
+            curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query );
 
         }elseif($method === 'Get' && $query ){
             curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_serverAddress . $this->_basePath . $route . '?'. $query ) );
+
+        }elseif($method === 'Delete' ){
+            curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_serverAddress . $this->_basePath . $route) );
+            curl_setopt($this->_curlHandle, CURLOPT_CUSTOMREQUEST, 'DELETE' );
+            curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query );
 
         }else{
             curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_serverAddress . $this->_basePath . $route ) );
 
         }
 
-        $responseText = curl_exec( $this->_curlHandle );
+        //if authorization has been set, use it.
+        if($this->_authUsername && $this->_authPassword){
+            curl_setopt($this->_curlHandle, CURLOPT_USERPWD, $this->_authUsername.':'.$this->_authPassword );
+        }
 
+        $responseText = curl_exec( $this->_curlHandle );
         $response = json_decode( $responseText );
 
         if( is_object( $response ) ){
@@ -69,4 +80,9 @@ class Rest implements RestInterface{
 
     }
 
+    public function setAuth( $username, $password ){
+        $this->_authUsername = $username;
+        $this->_authPassword = $password;
+
+    }
 }

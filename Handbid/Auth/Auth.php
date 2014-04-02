@@ -54,6 +54,8 @@ class Auth{
 
         $this->_authData = $response;
 
+        $this->_restServer->setAuth( $this->getToken, $this->getOwnerId() );
+
         return $this;
 
     }
