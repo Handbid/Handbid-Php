@@ -4,6 +4,8 @@
 //require_once "../../../PHPUnit/Autoload.php";
 
 include( "../../Handbid/Handbid.php" );
+include( "../../Handbid/Rest/RestInterface.php" );
+include( "../../Handbid/Rest/Rest.php" );
 include( "../../Handbid/Auth/Auth.php" );
 include( "../../Handbid/Store/StoreInterface.php");
 include( "../../Handbid/Store/StoreAbstract.php");
@@ -20,120 +22,100 @@ use Handbid\Auth;
 
 class DummyStore extends \Handbid\Store\StoreAbstract{ }
 
+
 class ApiTest extends PHPUnit_Framework_TestCase{
-    public $appId  = '1234567890';
-    public $apiKey = '1234567890';
 
-    public function testServer(){
-        $domain = 'http://rest.newbeta.handbid.com';
-        $resourcePath = '/v1/rest/organizations.json';
+    public $appId             = '1234567890',
+           $apiKey            = '1234567890',
+           $authEmail         = 'admin@rest.handbid.com',
+           $badAuthEmail      = 'badEmail@nodomain.wut',
+           $authPassword      = 'password',
+           $badAuthPassword   = 'badPassword123',
+           $dummyOrganization = [
+               'name' => 'Dummy Inc.',
+               'logo' => '',
+               'address' => '1234 generic ave.',
+               'contactName' => 'Mr. Widget',
+               'phone' => '(123) 456 - 7890',
+               'email' => 'dummyMiester@nodomain.com',
+               'website' => 'www.dummy.inc.com.org.io',
+               'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
+               'users' => '',
+               'public' => true,
+               'ein' => '',
+               'tags' => 'Vince, Larry, Daryl'
+           ];
 
+    public function testHandbid(){
+        //make sure we can instantiate a handbid api instance.
 
-        //build a curl request
-        $curlHandle = curl_init();
+        $handbid = new Handbid();
 
-        curl_setopt($curlHandle, CURLOPT_URL, $domain.$resourcePath);
-        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-
-        //execute the request and decode the results, we expect the response to be json, if we're talking to our handbid rest server.
-        $results = json_decode( curl_exec($curlHandle) );
-
-        //if its not an object, then the response wasn't json, and it probably means a connectivity problem, or a data problem...
-        $this->assertTrue( is_object( $results ) );
+        $this->assertTrue( $handbid instanceof Handbid );
 
     }
 
     public function testAuth(){
-        $appId  = $this->appId;
-        $apiKey = $this->apiKey;
+        //make sure we can authorize our session with no errors.
+        $handbid = new Handbid();
 
-        $auth = new Auth($appId, $apiKey);
-
+        //test good login
+        $auth = $handbid->auth( $this->authEmail, $this->authPassword );
         $this->assertTrue( $auth instanceof Auth );
+
+
+
+        $authToken = $auth->getToken();
+        $this->assertTrue( strlen( $authToken ) > 0 );
+
+
+
+        $authOwnerId = $auth->getOwnerId();
+        $this->assertTrue( strlen($authOwnerId) > 0 );
+
+
+        $authUser  = $auth->getUser();
+        $this->assertTrue( strlen( $authUser->_id ) > 0 );
+
+
+        $this->assertTrue( count( $auth->error ) === 0 );
+
+
+        //test bad login credentials
+        $auth1 = $handbid->auth( $this->badAuthEmail, $this->authPassword    );
+        $auth2 = $handbid->auth( $this->authEmail,    $this->badAuthPassword );
+        $auth3 = $handbid->auth( $this->badAuthEmail, $this->badAuthPassword );
+
+        $this->assertTrue( $auth1->getToken() === null );
+        $this->assertTrue( $auth2->getToken() === null );
+        $this->assertTrue( $auth3->getToken() === null );
     }
 
-    public function testHandbid(){
-        $appId  = $this->appId;
-        $apiKey = $this->apiKey;
+    public function testOrganizationStore(){
+        $handbid = new Handbid();
 
-        $auth = new Auth($appId, $apiKey);
+        //test good login
+        $auth = $handbid->auth( $this->authEmail, $this->authPassword );
 
-        //make sure we can authorize our session
-        $handbid = new Handbid( $auth );
-
-        //make sure we get back a handbid instance.
-        $this->assertTrue( $handbid instanceof Handbid );
-
-        //a few different ways to use this method...
-        $store1 = $handbid->store( 'Auction' );
-        $store2 = $handbid->store( 'Handbid\Store\Auction' );
-        $store3 = $handbid->store( new DummyStore() );
-
-        $this->assertTrue( $store1 instanceof \Handbid\Store\StoreInterface );
-        $this->assertTrue( $store2 instanceof \Handbid\Store\StoreInterface );
-        $this->assertTrue( $store3 instanceof \Handbid\Store\StoreInterface );
+        $authToken = $auth->getToken();
 
 
 
-    }
 
-    public function testStoreInterface(){
-        $appId  = $this->appId;
-        $apiKey = $this->apiKey;
+        $store = $handbid->store('Organization');
+        $this->assertTrue( $store instanceof \Handbid\Store\StoreInterface );
 
-        $auth = new Auth($appId, $apiKey);
+        try{
+            $store->create( $this->dummyOrganization );
 
-        $handbid = new Handbid( $auth );
+        }
+        catch( \Exception $error ){
+            print_r( $error->getMessage() );
+        }
 
-        $dummyStore = $handbid->store( new DummyStore() );
-
-        //@todo: Fills this out when we know more about how our system is supposed to work.
-        $dummyStore->find();
-        $dummyStore->create();
-        $dummyStore->read();
-        $dummyStore->update();
-        $dummyStore->delete();
+        $this->assertTrue( count( $store->_restServer->_error) === 0 );
 
     }
-
-    public function testStoreAbstract(){
-        $appId  = $this->appId;
-        $apiKey = $this->apiKey;
-
-        $auth = new Auth($appId, $apiKey);
-
-        $handbid = new Handbid( $auth );
-
-
-    }
-
-    public function testAuctionStore(){
-
-        //@todo:  Make this something that isn't arbitrary, when our auth module is up.
-        $appId = '1234567890';
-        $apiKey = '1234567890';
-
-        $auth = new Auth($appId, $apiKey);
-
-        $handbid = new Handbid( $auth );
-        $store = $handbid->store('Auction');
-
-
-        //recent
-        $recentAuctions = $store->recent();
-
-            $this->assertTrue( count($recentAuctions) > 0 );
-
-        //current
-
-        //create
-
-        //open
-
-        //close
-
-    }
-
-
 
 }
+

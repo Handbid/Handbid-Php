@@ -4,108 +4,80 @@ namespace Handbid\Store;
 
 use Handbid\Store\StoreInterface;
 
+use Handbid\Rest;
+
 class StoreAbstract implements StoreInterface{
 
-    /* This is an api for a set of rest endpoints
-     * They are to make their query, and pass through the decoded json results.
-     * on error, we will be throwing exceptions.
-     */
-
-    //caching the curl handle like this could significantly improve performance if we have to do a lot of requests to the server.
-    public $_curlHandle;
-
-    public $_restServerAddress = 'http://rest.newbeta.handbid.com';
-    public $_restBasePath = '/v1/rest';
+    public  $_restServer,
+            $_restRoute,
+            $_restServerAddress,
+            $_restBasePath,
+           $_restCollection,            //collection must be overridden in the store implementation class for correct routing.
+            $_restAuthToken,
+            $_restUserId;
 
 
-    public function __construct(){
-        $this->_curlHandle = curl_init( $this->_restServerAddress );
-        curl_setopt($this->_curlHandle, CURLOPT_RETURNTRANSFER, true);
+    public $error = [];
 
-    }
 
-    /**
-     *
-     */
-    public function find(){
+    public function __construct( $restServerAddress, $restBasePath, $auth ){
 
-    }
+        $this->_restServerAddress   = $restServerAddress     ? $restServerAddress    : $this->error[] = 'No rest server address provided.';
+        $this->_restBasePath        = $restBasePath          ? $restBasePath         : $this->error[] = 'No rest base path provided.';
+        $this->_restAuthToken       = $auth->getToken()      ? $auth->getToken()     : $this->error[] = 'No Auth Token returned, can\'t proceed';
+        $this->_restUserId          = $auth->getOwnerId()    ? $auth->getOwnerId()   : $this->error[] = 'No User Id returned, can\'t proceed';
 
-    /**
-     *
-     */
-    public function create(){
-
-    }
-
-    /**
-     *
-     */
-    public function read(){
-
-    }
-
-    /**
-     *
-     */
-    public function update(){
-
-    }
-
-    /**
-     *
-     */
-    public function delete(){
-
-    }
-
-    /**
-     * @param        $route
-     * @param array  $data
-     * @param string $method
-     *
-     * @return object
-     * @throws \Exception
-     */
-    public function query( $route, $data = [], $method = 'Get' ){
-
-        //can never be sure what to expect...
-        $route = ($route[0] === '/') ? $route : '/'.$route;
-
-        curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_restServerAddress . $this->_restBasePath . $route) );
-
-        if( $method == 'Post' && $data ){
-            //setup our request for posting data, yo!
-            $fields = '';
-
-            foreach($data as $key => $value) {
-                $fields .= $key . '=' . $value . '&';
-            }
-
-            rtrim($fields, '&');
-
-            curl_setopt($this->_curlHandle, CURLOPT_POST, count( $data ) );
-            curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $fields );
+        if( count( $this->error ) ){
+            throw( new \Exception( $this->error[0] ) );
+            //@todo: log the errors
         }
 
-        //execute the curl request, decode our json response.
-        $result = json_decode( curl_exec( $this->_curlHandle ) );
+        $this->_restServer = new Rest( $this->_restServerAddress, $this->_restBasePath );
+    }
 
-        if( is_object( $result ) ){
+    /**
+     *
+     */
+    public function find( $data = [] ){
 
-            //validate result
-            if( $result->Errors[0]->code !== 200 ){
+    }
 
-                throw new \Exception('Server Error ['. $result->Errors[0]->code .'] '. $result->Errors[0]->description . ((count($result->Errors) > 1) ? ' (' .(count($result->Errors)-1). ') more errors reported, but not shown.':'') );
-            }
+    /**
+     *
+     */
+    public function create( $data = [] ){
+        $data['token'] = $this->_restAuthToken;
+        $data['userId'] = $this->_restUserId;
 
-            //@todo clean up results to be more consistent.  our use-cases are going to expect arrays of results, probably rows..
+        $response = $this->_restServer->query( $this->_restRoute, $data, 'Post' );
 
-            return $result;
-        }else{
+        //@TODO: validate response
 
-            throw new \Exception('Unknown response from server. ( '. $result .' ) ');
+        if( count( $this->_restServer->_error ) ){
+            throw( new \Exception( $this->_restServer->_error[0] ) );
         }
+
+        return $response;
+    }
+
+    /**
+     *
+     */
+    public function read( $data = [] ){
+
+    }
+
+    /**
+     *
+     */
+    public function update( $data = [] ){
+
+    }
+
+    /**
+     *
+     */
+    public function delete( $data = [] ){
 
     }
 

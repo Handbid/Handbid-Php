@@ -2,67 +2,74 @@
 
 namespace Handbid;
 
-//use Handbid\Store\Auction;
-
 use Handbid\Store\StoreInterface;
 
 class Handbid{
 
-    public $_stores = array();
+    public $_restServerAddress      = 'http://rest.newbeta.handbid.com',
+           $_restBasePath           = '/v1/rest',
+           $_auth                   = null,
+           $_storeCache             = [];
 
-    public function __construct( $auth ){}
+    public function __construct( $restServerAddress = null, $restBasePath = null ){
 
-    public function store( $type ){
-        //$type could be a number of things.
-        //1. a string representing a class in the Handbid\Store namespace
-        //2. a string representing a namespaced class path to some other store class
-        //3. a class reference.
+        //default overrides
+        $this->_restServerAddress   = !is_null( $restServerAddress ) ? $restServerAddress   : $this->_restServerAddress;
+        $this->_restBasePath        = !is_null( $restBasePath )      ? $restBasePath        : $this->_restBasePath;
 
-        //lazy load and cache the store.
-        if( $this->stores[ $type ] ){
+        $this->_auth                = new Auth( $this->_restServerAddress, $this->_restBasePath, '/mobile-toolkit/auth' );
 
-            return $this->stores[ $type ];
-        }else{
+    }
 
-            $store = null;
+    public function auth( $username, $password ){
 
-            if( $type instanceof StoreInterface ){
-                //its a class instance
-                $store = $type;
-
-                $type = get_class( $store );
-
-            }elseif( strpos($type,'\\') !== false ){
-                //it contains a backslash, so its probably a fully qualified namespaced class reference
-                $store = class_exists( $type ) ? new $type : null;
-
-            }else{
-                //We'll assume it's an unqualified classname, we'll look it up in the handbid store adapters.
-                $classPath = 'Handbid\Store\\'.$type;
-                $store = class_exists( $classPath ) ? new $classPath : null;
-
-            }
-
-
-            if( !is_null( $store ) ){
-
-                $this->_stores[ $type ] = $store;
-
-                return $store;
-            }else{
-
-                throw new \Exception( 'Store not found!'.' ( '.$type.' )' );
-            }
+        if( is_null( $username ) ){
+            throw( new \Exception('Auth Failure: Must provide a username for authorization.') );
 
         }
 
+        if( is_null( $password ) ){
+            throw( new \Exception('Auth Failure: Must provide a password for authorization.') );
+
+        }
+
+        $auth = $this->_auth->authenticate( $username, $password );
+
+        //@todo: validate auth results;
+
+        return $auth;
     }
 
-    public function auth(){
+    public function store( $type ){
 
-    }
+        //lazy load and cache the store.
+        if( $this->_storeCache[ $type ] ) return $this->_storeCache[ $type ];
 
-    public function setAuth( $auth ){
+
+        //create the store instance
+        $store = null;
+
+        if( strpos($type,'\\') !== false ){
+            //it contains a backslash, so its probably a fully qualified namespaced class reference
+            $store = class_exists( $type ) ? new $type : null;
+
+        }else{
+            //We'll assume it's an unqualified classname, we'll look it up in the handbid store adapters.
+            $classPath = 'Handbid\Store\\'.$type;
+            $store = class_exists( $classPath ) ? new $classPath( $this->_restServerAddress, $this->_restBasePath, $this->_auth ) : null;
+
+        }
+
+
+        //cache the new store instance
+        if( !is_null( $store ) && $store instanceof StoreInterface ){
+            $this->_storeCache[ $type ] = $store;
+
+            return $store;
+        }
+
+        //if we got here, things aren't well.
+        throw new \Exception( 'Store not found!'.' ( '.$type.' )' );
 
     }
 
