@@ -1,0 +1,12 @@
+{
+    "name": "handbid/handbid-php",
+    "description": "a simple library for interfacing with handbid's RESTful api.",
+    "minimum-stability": "alpha",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Taylor Romero",
+            "email": "taylor@handbid.com"
+        }
+    ]
+}
