@@ -42,7 +42,7 @@ class Handbid
         $path = isset($options['path']) ? $options['path'] : '/v1/rest';
 
         //build our rest class
-        $this->_rest = isset($options['rest']) ? $options['rest'] : new Rest($endpoint, $path, $appId, $apiKey);
+        $this->_rest = isset($options['rest']) ? $options['rest'] : new Rest\Rest($endpoint, $path, $appId, $apiKey);
 
     }
 
