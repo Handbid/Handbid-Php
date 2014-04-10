@@ -2,7 +2,7 @@
 
 use Handbid\Handbid;
 
-require '../../Handbid/Handbid.php';
+require '../../src/Handbid.php';
 
 
 class ApiTest extends PHPUnit_Framework_TestCase
