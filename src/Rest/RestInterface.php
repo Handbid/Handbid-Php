@@ -1,6 +1,6 @@
 <?php
 
-namespace Handbid;
+namespace Handbid\Rest;
 
 use Handbid\Auth\AuthInterface;
 

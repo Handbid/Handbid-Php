@@ -1,9 +1,9 @@
 <?php
 
-namespace Handbid;
+namespace Handbid\Rest;
 
 use Handbid\Auth\AuthInterface;
-use Handbid\RestInterface;
+use Handbid\Rest\RestInterface;
 
 class Rest implements RestInterface
 {
