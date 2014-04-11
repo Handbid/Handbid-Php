@@ -9,7 +9,7 @@ So, you have your appId and your apiKey and want to see if they are legit? Try t
 
 ```php
 $hb = new Handbid($appId, $apiKey);
-try
+try {
 
     $hb->testAppCreds();
 
