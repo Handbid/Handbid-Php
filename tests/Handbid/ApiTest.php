@@ -26,10 +26,17 @@ class ApiTest extends PHPUnit_Framework_TestCase
         'tags' => 'Vince, Larry, Daryl'
     ];
 
-    public static function setUpBeforeClass() {
+    /**
+     * Include all handbid dependencies (for systems w/out autoloaders)
+     */
+    public static function setUpBeforeClass()
+    {
         Handbid::includeDependencies();
     }
 
+    /**
+     * Make sure creating a new handbid does not crash
+     */
     public function testInstantiatingHandbid()
     {
         //make sure we can instantiate a handbid api instance.
@@ -39,14 +46,20 @@ class ApiTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test that our app key and apikey are good
+     * Test that our app key and apikey are good.
+     *
+     * @expectedException \Handbid\Exception\App
      */
     public function testBadAppCreds()
     {
-
-        $hb = new Handbid($this->appId, $this->apiKey);
+        $hb = new Handbid('0', '1');
         $hb->testAppCreds();
+    }
 
+    public function testGoodAppGreds()
+    {
+        $hb = new Handbid('0', '1');
+        $this->assertTrue($hb->testAppCreds());
     }
 
 //
