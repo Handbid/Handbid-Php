@@ -5,10 +5,10 @@ PHP adapters for Handbid. This entire library was built to have the fewest depen
 with Handbid as simple and clean as can be.
 
 # Testing app credentials
-So, you have your appId and your apiKey and want to see if they are legit? Try this:
+So, you have your consumer key and your consumer secret and want to see if they are legit? Try this:
 
 ```php
-$hb = new Handbid($appId, $apiKey);
+$hb = new Handbid($consumerKey, $consumerSecret);
 try
 
     $hb->testAppCreds();

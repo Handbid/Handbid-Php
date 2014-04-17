@@ -9,10 +9,8 @@ interface RestInterface{
     /**
      * @param $endpoint
      * @param $basePath
-     * @param $appId
-     * @param $apiKey
      */
-    public function __construct($endpoint, $basePath, $appId, $apiKey);
+    public function __construct($endpoint, $basePath);
 
     /**
      * If this request is supposed to be under a user account, pass an auth object.
@@ -61,6 +59,23 @@ interface RestInterface{
      * @return mixed
      */
     public function delete($route, $query = []);
+
+    /**
+     * Set a header to be sent with each request
+     *
+     * @param $named
+     * @param $value
+     * @return $this
+     */
+    public function setHeader($named, $value);
+
+    /**
+     * This header will no longer be sent.
+     *
+     * @param $named
+     * @return mixed
+     */
+    public function clearHeader($named);
 
 
 }

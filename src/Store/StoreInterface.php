@@ -2,12 +2,11 @@
 
 namespace Handbid\Store;
 
-interface StoreInterface {
+use Handbid\Rest\RestInterface;
 
-    public function find(   $data = [] );
-    public function create( $data = [] );
-    public function read(   $data = [] );
-    public function update( $data = [] );
-    public function delete( $data = [] );
+interface StoreInterface
+{
+
+    public function __construct(RestInterface $rest);
 
 }

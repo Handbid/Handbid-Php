@@ -8,23 +8,24 @@ require '../../src/Handbid.php';
 class ApiTest extends PHPUnit_Framework_TestCase
 {
 
-    public $appId = '1234567890',
-        $apiKey = '1234567890',
-        $authEmail = 'admin@rest.handbid.com',
-        $badAuthEmail = 'badEmail@nodomain.wut',
-        $authPassword = 'password',
-        $badAuthPassword = 'badPassword123',
-        $dummyOrganization = [
-        'name' => 'Dummy Inc.',
-        'address' => '1234 generic ave.',
-        'contactName' => 'Mr. Widget',
-        'phone' => '(123) 456 - 7890',
-        'email' => 'dummyMiester@nodomain.com',
-        'website' => 'www.dummy.inc.com.org.io',
-        'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
-        'public' => true,
-        'tags' => 'Vince, Larry, Daryl'
-    ];
+    public $consumerKey     = 'db03ec50c3387d042f837356d4e965a5',
+        $consumerSecret     = '79e4d4eaf8c72ea6513fc35c485a78cd',
+        $authEmail          = 'test@handbid.com',
+        $badAuthEmail       = 'bad@handbid.com',
+        $authPassword       = 'password',
+        $badAuthPassword    = 'badPassword123',
+        $dummyOrganization  = [
+            'name' => 'Dummy Inc.',
+            'address' => '1234 generic ave.',
+            'contactName' => 'Mr. Widget',
+            'phone' => '(123) 456 - 7890',
+            'email' => 'dummyMiester@nodomain.com',
+            'website' => 'www.dummy.inc.com.org.io',
+            'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
+            'public' => true,
+            'tags' => 'Vince, Larry, Daryl'
+        ];
+
 
     /**
      * Include all handbid dependencies (for systems w/out autoloaders)
@@ -35,18 +36,28 @@ class ApiTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Get us a good handbid instance
+     *
+     * @return Handbid
+     */
+    public static function goodHandbid()
+    {
+        return new Handbid('db03ec50c3387d042f837356d4e965a5', '79e4d4eaf8c72ea6513fc35c485a78cd');
+    }
+
+    /**
      * Make sure creating a new handbid does not crash
      */
     public function testInstantiatingHandbid()
     {
         //make sure we can instantiate a handbid api instance.
-        $hb = new Handbid($this->appId, $this->apiKey);
+        $hb = new Handbid($this->consumerKey, $this->consumerSecret);
         $this->assertTrue($hb instanceof Handbid);
 
     }
 
     /**
-     * Test that our app key and apikey are good.
+     * Test that our app key and consumerSecret are good.
      *
      * @expectedException \Handbid\Exception\App
      */
@@ -56,10 +67,23 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $hb->testAppCreds();
     }
 
+    /**
+     * Test if we can gain an access token
+     */
     public function testGoodAppGreds()
     {
-        $hb = new Handbid('0', '1');
+        $hb = static::goodHandbid();
         $this->assertTrue($hb->testAppCreds());
+    }
+
+
+    public function testFetchingOrganizations()
+    {
+        $hb     = static::goodHandbid();
+        $store  = $hb->store('Organization');
+
+        $orgs   = $store->all();
+
     }
 
 //

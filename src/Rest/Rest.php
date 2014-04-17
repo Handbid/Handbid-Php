@@ -3,19 +3,23 @@
 namespace Handbid\Rest;
 
 use Handbid\Auth\AuthInterface;
+use Handbid\Exception\Network as NetworkException;
 use Handbid\Rest\RestInterface;
 
 class Rest implements RestInterface
 {
     public $_curlHandle,
-        $_serverAddress,
-        $_basePath,
-        $_authUsername,
-        $_authPassword,
-        $_error = [];
+           $_endpoint,
+           $_basePath,
+           $_error      = [],
+           $_headers    = [];
 
-    public function __construct($endpoint, $basePath, $appId, $apiKey)
+    public function __construct($endpoint, $basePath)
     {
+
+        $this->_endpoint = $endpoint;
+        $this->_basePath = $basePath;
+
 //        $this->_serverAddress = !is_null($serverAddress) ? $serverAddress : $this->_error[] = 'Rest Error: server address must be defined';
 //        $this->_basePath = !is_null($basePath) ? $basePath : $this->_error[] = 'Rest Error: base path must be defined';
 //
@@ -24,33 +28,31 @@ class Rest implements RestInterface
 //            //@todo: log the errors
 //        }
 //
-//        $this->_curlHandle = curl_init($this->_serverAddress . $this->_basePath);
 //
-//        curl_setopt($this->_curlHandle, CURLOPT_RETURNTRANSFER, true);
 
     }
 
 
-    public function get($route, $query = [])
+    public function get($route, $query = [], $headers = [])
     {
-        return $this->_request('get', $route, $query);
+        return $this->_request('get', $route, $query, [], $headers);
     }
 
-    public function post($route, $data = [], $query = [])
+
+    public function post($route, $data = [], $query = [], $headers = [])
     {
-        return $this->_request('post', $route, $query, $data);
+        return $this->_request('post', $route, $query, $data, $headers);
     }
 
-    public function put($route, $data = [], $query = [])
+    public function put($route, $data = [], $query = [], $headers = [])
     {
-        return $this->_request('PUT', $route, $query, $data);
+        return $this->_request('PUT', $route, $query, $data, $headers);
     }
 
-    public function delete($route, $query = [])
+    public function delete($route, $query = [], $headers = [])
     {
-        return $this->_request('DELETE', $route, $query);
+        return $this->_request('DELETE', $route, $query, $headers);
     }
-
 
     /**
      * Request utility. Actually makes requests.
@@ -59,64 +61,96 @@ class Rest implements RestInterface
      * @param $route the path (not including endpoint and base path)
      * @param array $query added to the query string of the route, e.g. ?foo=bar&hello=world
      * @param array $data data for any post or put
-     * @throws \Exception
+     * @param array $headers
+     * @return mixed
+     * @throws \Handbid\Exception\Network
      */
-    public function _request($method, $route, $query = [], $data = [])
+    public function _request($method, $route, $query = [], $data = [], $headers = [])
     {
-        $query = http_build_query($query);
+        $query      = http_build_query($query);
+        $method     = strtoupper($method);
+        //store for posterity
+        $this->_curlHandle = curl_init($this->_endpoint . $this->_basePath);
+        curl_setopt($this->_curlHandle, CURLOPT_RETURNTRANSFER, true);
 
-        $method = strtoupper($method);
+        $method     = strtoupper($method);
+        $headers    = ($headers) ? $headers : $this->_headers;
+        $uri        = $this->_endpoint . $this->_basePath . $route;
 
-        if ($method === 'POST' && $query) {
+        if($headers) {
+
+            $_headers = [];
+            foreach($headers as $k => $v) {
+                $_headers[] = $k . ': ' . $v;
+            }
+
+            curl_setopt($this->_curlHandle, CURLOPT_HTTPHEADER, $_headers);
+        }
+
+        if ($method === 'POST') {
             //setup our request for posting data, yo!
 
             //curl_setopt($this->_curlHandle, CURLOPT_POST, true );
-            curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_serverAddress . $this->_basePath . $route));
-            curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query);
+            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
+            curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
 
         } elseif ($method === 'GET' && $query) {
-            curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_serverAddress . $this->_basePath . $route . '?' . $query));
+            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri . '?' . $query);
 
         } elseif ($method === 'DELETE') {
-            curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_serverAddress . $this->_basePath . $route));
+            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
             curl_setopt($this->_curlHandle, CURLOPT_CUSTOMREQUEST, 'DELETE');
             curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query);
 
         } else {
-            curl_setopt($this->_curlHandle, CURLOPT_URL, ($this->_serverAddress . $this->_basePath . $route));
+            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
 
         }
 
-        //if authorization has been set, use it.
-        if ($this->_authUsername && $this->_authPassword) {
-            curl_setopt($this->_curlHandle, CURLOPT_USERPWD, $this->_authUsername . ':' . $this->_authPassword);
+        $responseText   = curl_exec($this->_curlHandle);
+        $info           = curl_getinfo($this->_curlHandle);
+
+        //no content, should we care?
+        if($info['http_code'] == 204) {
+            throw new NetworkException('No response from server', 70000);
         }
+        //oops
+        elseif($info['http_code'] != 200) {
 
-        $responseText = curl_exec($this->_curlHandle);
-        $response = json_decode($responseText);
-
-        if (is_object($response)) {
-            //validate response
-            if (!is_null($response->Errors) && $response->Errors[0]->code !== 200) {
-
-                foreach ($response->Errors as $error) {
-                    $this->_error[] = 'Server Error [' . $response->Errors[0]->code . '] ' . $response->Errors[0]->description;
-
-                    //@TODO: Log errors
-                }
-
+            $response = json_decode($responseText);
+            if($response) {
+                throw new NetworkException($response->Errors[0]->description, $info['http_code']);
+            } else {
+                throw new NetworkException('Unknown response from server. ( ' . $response . ' ) ', $info['http_code']);
             }
 
-            return $response;
-        } else {
+        }
+        //this is a strange one and should really never happen
+        elseif(!$responseText) {
 
-            throw new \Exception('Unknown response from server. ( ' . $response . ' ) ');
+            throw new NetworkException('Response was empty.', Network::ERROR_REQUEST_FAILED);
+
+        }
+        //all is well
+        else {
+            $response = json_decode($responseText);
         }
 
+        return $response;
     }
 
     public function setAuth(AuthInterface $auth)
     {
         throw new Exception('not finished');
+    }
+
+    public function setHeader($named, $value) {
+        $this->_headers[$named] = $value;
+        return $this;
+    }
+
+    public function clearHeader($named) {
+        unset($this->_headers[$named]);
+        return $this;
     }
 }
