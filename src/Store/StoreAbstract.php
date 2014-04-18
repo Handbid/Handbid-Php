@@ -9,7 +9,6 @@ class StoreAbstract implements StoreInterface
 {
 
     public $_rest;
-    public $_basePath;
     public $error = [];
 
 

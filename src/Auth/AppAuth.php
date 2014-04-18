@@ -33,7 +33,7 @@ class AppAuth implements AuthInterface
 
         try {
 
-            $response = $this->_rest->post('apps/token', [
+            $response = $this->_rest->post('apps/token.json', [
                 'grant_type' => 'client_credentials'
             ], [], [
                 'Authorization' => 'Basic ' . base64_encode($this->_consumerKey . ':' . $this->_consumerSecret)

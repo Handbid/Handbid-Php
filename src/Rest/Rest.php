@@ -32,12 +32,10 @@ class Rest implements RestInterface
 
     }
 
-
     public function get($route, $query = [], $headers = [])
     {
         return $this->_request('get', $route, $query, [], $headers);
     }
-
 
     public function post($route, $data = [], $query = [], $headers = [])
     {

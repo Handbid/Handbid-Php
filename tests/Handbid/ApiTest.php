@@ -84,6 +84,8 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
         $orgs   = $store->all();
 
+        count($orgs);
+
     }
 
 //
