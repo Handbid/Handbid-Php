@@ -44,7 +44,7 @@ class Handbid
     public function __construct($consumerKey, $consumerSecret, $options = [])
     {
         //defaults
-        $endpoint = isset($options['endpoint']) ? $options['endpoint'] : 'http://hbs.local';
+        $endpoint = isset($options['endpoint']) ? $options['endpoint'] : 'http://rest.newbeta.handbid.com';
         $path = isset($options['path']) ? $options['path'] : '/v1/rest/';
 
         //build our rest supporting classes
