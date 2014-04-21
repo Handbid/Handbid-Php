@@ -8,23 +8,23 @@ require '../../src/Handbid.php';
 class ApiTest extends PHPUnit_Framework_TestCase
 {
 
-    public $consumerKey = 'db03ec50c3387d042f837356d4e965a5',
-        $consumerSecret = '79e4d4eaf8c72ea6513fc35c485a78cd',
-        $authEmail = 'test@handbid.com',
-        $badAuthEmail = 'bad@handbid.com',
-        $authPassword = 'password',
-        $badAuthPassword = 'badPassword123',
-        $dummyOrganization = [
-        'name' => 'Dummy Inc.',
-        'address' => '1234 generic ave.',
-        'contactName' => 'Mr. Widget',
-        'phone' => '(123) 456 - 7890',
-        'email' => 'dummyMiester@nodomain.com',
-        'website' => 'www.dummy.inc.com.org.io',
-        'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
-        'public' => true,
-        'tags' => 'Vince, Larry, Daryl'
-    ];
+    public static $consumerKey = 'c1f7f60c389d587667f7e1e005c2b55e',
+           $consumerSecret = '528e40928d13bd0233cf8caa7727106a',
+           $authEmail = 'test@handbid.com',
+           $badAuthEmail = 'bad@handbid.com',
+           $authPassword = 'password',
+           $badAuthPassword = 'badPassword123',
+           $dummyOrganization = [
+                'name' => 'Dummy Inc.',
+                'address' => '1234 generic ave.',
+                'contactName' => 'Mr. Widget',
+                'phone' => '(123) 456 - 7890',
+                'email' => 'dummyMiester@nodomain.com',
+                'website' => 'www.dummy.inc.com.org.io',
+                'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
+                'public' => true,
+                'tags' => 'Vince, Larry, Daryl'
+           ];
 
 
     /**
@@ -42,7 +42,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
      */
     public static function goodHandbid()
     {
-        return new Handbid('db03ec50c3387d042f837356d4e965a5', '79e4d4eaf8c72ea6513fc35c485a78cd');
+        return new Handbid(self::$consumerKey, self::$consumerSecret);
     }
 
     /**
