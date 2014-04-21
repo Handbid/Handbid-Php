@@ -8,23 +8,23 @@ require '../../src/Handbid.php';
 class ApiTest extends PHPUnit_Framework_TestCase
 {
 
-    public $consumerKey     = 'db03ec50c3387d042f837356d4e965a5',
-        $consumerSecret     = '79e4d4eaf8c72ea6513fc35c485a78cd',
-        $authEmail          = 'test@handbid.com',
-        $badAuthEmail       = 'bad@handbid.com',
-        $authPassword       = 'password',
-        $badAuthPassword    = 'badPassword123',
-        $dummyOrganization  = [
-            'name' => 'Dummy Inc.',
-            'address' => '1234 generic ave.',
-            'contactName' => 'Mr. Widget',
-            'phone' => '(123) 456 - 7890',
-            'email' => 'dummyMiester@nodomain.com',
-            'website' => 'www.dummy.inc.com.org.io',
-            'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
-            'public' => true,
-            'tags' => 'Vince, Larry, Daryl'
-        ];
+    public $consumerKey = 'db03ec50c3387d042f837356d4e965a5',
+        $consumerSecret = '79e4d4eaf8c72ea6513fc35c485a78cd',
+        $authEmail = 'test@handbid.com',
+        $badAuthEmail = 'bad@handbid.com',
+        $authPassword = 'password',
+        $badAuthPassword = 'badPassword123',
+        $dummyOrganization = [
+        'name' => 'Dummy Inc.',
+        'address' => '1234 generic ave.',
+        'contactName' => 'Mr. Widget',
+        'phone' => '(123) 456 - 7890',
+        'email' => 'dummyMiester@nodomain.com',
+        'website' => 'www.dummy.inc.com.org.io',
+        'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
+        'public' => true,
+        'tags' => 'Vince, Larry, Daryl'
+    ];
 
 
     /**
@@ -77,6 +77,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * All orgs
+     */
     public function testFetchingOrganizations()
     {
         $hb     = static::goodHandbid();
@@ -84,7 +87,22 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
         $orgs   = $store->all();
 
-        count($orgs);
+        $this->assertGreaterThan(count($orgs), 0);
+
+    }
+
+    /**
+     * An org by id
+     */
+    public function testFetchingOrgById()
+    {
+
+        $hb     = static::goodHandbid();
+        $store  = $hb->store('Organization');
+
+        $org    = $store->byId('533c8249b05f8bc65e000031');
+
+        $this->assertTrue(!!$org);
 
     }
 

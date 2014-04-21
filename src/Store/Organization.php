@@ -22,4 +22,10 @@ class Organization extends StoreAbstract
         ]);
     }
 
+    public function byId($id)
+    {
+        return $this->_rest->get('orgs/' . $id . '.json');
+
+    }
+
 }
