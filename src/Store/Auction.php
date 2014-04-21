@@ -20,4 +20,13 @@ class Auction extends StoreAbstract
         return $this->all(1, 2);
     }
 
+
+    public function recent() {
+        return $this->all();
+    }
+
+    public function past() {
+        return $this->all();
+    }
+
 }
