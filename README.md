@@ -32,3 +32,24 @@ try
 
 }
 ```
+# Fetching organizations
+```php
+
+$hb         = new Handbid($consumerKey, $consumerSecret);
+$store      = $hb->store('Organization');
+$orgs       = $store->all();
+$org        = $store->byId('234230582340723402342');
+$org        = $store->byKey('my-favorite-org');
+
+
+```
+
+# Fetching auctions
+```php
+
+$hb         = new Handbid($consumerKey, $consumerSecret);
+$store      = $hb->store('Auction');
+$auctions   = $store->all();
+$auctions   = $story->byOrg($org->_id);
+
+```

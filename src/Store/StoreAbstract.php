@@ -14,17 +14,20 @@ class StoreAbstract implements StoreInterface
 
     public function __construct(RestInterface $rest)
     {
-        $this->_rest        = $rest;
+        $this->_rest = $rest;
     }
 
     public function all($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC')
     {
-        return $this->_rest->get($this->_base . '.json', [
-            'skip'          => $page * $perPage,
-            'limit'         => $perPage,
-            'sortField'     => $sortField,
-            'sortDirection' => $sortDirection
-        ]);
+        return $this->_rest->get(
+            $this->_base . '.json',
+            [
+                'skip'          => $page * $perPage,
+                'limit'         => $perPage,
+                'sortField'     => $sortField,
+                'sortDirection' => $sortDirection
+            ]
+        );
     }
 
     public function byId($id)
@@ -37,4 +40,13 @@ class StoreAbstract implements StoreInterface
         return $this->_rest->get($this->_base . '/by/key/' . $id . '.json');
     }
 
+    public function byField($name, $value)
+    {
+        return $this->_rest->get($this->_base . '/by/' . $name . '.json', ['q' => $value]);
+    }
+
+    public function where($keywords)
+    {
+        return $this->_rest->get($this->_base . '.json');
+    }
 }

@@ -23,7 +23,7 @@ interface RestInterface{
     /**
      * A GET request to your route. Will prepend endpoint and basePath.
      *
-     * @param $route relative path from endpoint+basePath
+     * @param string $route relative path from endpoint+basePath
      * @param array $query added to query string.
      * @return mixed the results of the request
      * @throws \Handbid\Exception\*
