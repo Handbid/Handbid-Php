@@ -8,28 +8,28 @@ require '../../src/Handbid.php';
 class ApiTest extends PHPUnit_Framework_TestCase
 {
 
-    public static $consumerKey  = 'c1f7f60c389d587667f7e1e005c2b55e',
-                $consumerSecret = '528e40928d13bd0233cf8caa7727106a',
-                $orgId          = '533c8249b05f8bc65e000031',
-                $options        = [
-                    'endpoint'  => 'http://hbs.local'
-                ],
-                $orgKey         = 'dummy-inc',
-                $authEmail      = 'test@handbid.com',
-                $badAuthEmail   = 'bad@handbid.com',
-                $authPassword   = 'password',
-                $badAuthPassword    = 'badPassword123',
-                $dummyOrganization  = [
-                        'name'        => 'Dummy Inc.',
-                        'address'     => '1234 generic ave.',
-                        'contactName' => 'Mr. Widget',
-                        'phone'       => '(123) 456 - 7890',
-                        'email'       => 'dummyMiester@nodomain.com',
-                        'website'     => 'www.dummy.inc.com.org.io',
-                        'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
-                        'public'      => true,
-                        'tags'        => 'Vince, Larry, Daryl'
-                ];
+    public static $consumerKey = 'c1f7f60c389d587667f7e1e005c2b55e',
+        $consumerSecret = '528e40928d13bd0233cf8caa7727106a',
+        $orgId = '533c8249b05f8bc65e000031',
+        $options = [
+        'endpoint' => 'http://hbs.local'
+    ],
+        $orgKey = 'dummy-inc',
+        $authEmail = 'test@handbid.com',
+        $badAuthEmail = 'bad@handbid.com',
+        $authPassword = 'password',
+        $badAuthPassword = 'badPassword123',
+        $dummyOrganization = [
+        'name'        => 'Dummy Inc.',
+        'address'     => '1234 generic ave.',
+        'contactName' => 'Mr. Widget',
+        'phone'       => '(123) 456 - 7890',
+        'email'       => 'dummyMiester@nodomain.com',
+        'website'     => 'www.dummy.inc.com.org.io',
+        'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
+        'public'      => true,
+        'tags'        => 'Vince, Larry, Daryl'
+    ];
 
 
     /**
@@ -102,10 +102,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function testFetchingOrgById()
     {
 
-        $hb     = static::goodHandbid();
-        $store  = $hb->store('Organization');
+        $hb    = static::goodHandbid();
+        $store = $hb->store('Organization');
 
-        $org    = $store->byId(static::$orgId);
+        $org = $store->byId(static::$orgId);
 
         $this->assertTrue(!!$org);
 
@@ -117,10 +117,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function testFetchingOrgByKey()
     {
 
-        $hb     = static::goodHandbid();
-        $store  = $hb->store('Organization');
+        $hb    = static::goodHandbid();
+        $store = $hb->store('Organization');
 
-        $org    = $store->byKey(static::$orgKey);
+        $org = $store->byKey(static::$orgKey);
 
         $this->assertTrue(!!$org);
 
@@ -130,11 +130,16 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function testAuctionsByOrg()
     {
 
-        $hb         = static::goodHandbid();
-        $store      = $hb->store('Auction');
-        $auctions   = $store->byOrg(static::$orgId);
+        $hb       = static::goodHandbid();
+        $store    = $hb->store('Auction');
+        $auctions = $store->byOrg(static::$orgId);
 
         $this->assertNotNull($auctions);
+    }
+
+    public function itemsByAuction()
+    {
+
     }
 //
 //    public function testAuth()
