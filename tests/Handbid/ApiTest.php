@@ -134,7 +134,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $store      = $hb->store('Auction');
         $auctions   = $store->byOrg(static::$orgId);
 
-        $this->assertTrue(!!$auctions);
+        $this->assertNotNull($auctions);
     }
 //
 //    public function testAuth()

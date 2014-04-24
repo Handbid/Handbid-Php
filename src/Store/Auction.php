@@ -17,7 +17,7 @@ class Auction extends StoreAbstract
      */
     public function byOrg($id)
     {
-        return $this->_rest->get('/orgs/' . $id . '/auctions/.json');
+        return $this->_rest->get('orgs/' . $id . '/auctions.json');
     }
 
 

@@ -45,7 +45,7 @@ class StoreAbstract implements StoreInterface
         return $this->_rest->get($this->_base . '/by/' . $name . '.json', ['q' => $value]);
     }
 
-    public function where($keywords)
+    public function search($keywords)
     {
         return $this->_rest->get($this->_base . '.json');
     }
