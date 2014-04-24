@@ -32,4 +32,9 @@ class StoreAbstract implements StoreInterface
         return $this->_rest->get($this->_base . '/' . $id . '.json');
     }
 
+    public function byKey($id)
+    {
+        return $this->_rest->get($this->_base . '/by/key/' . $id . '.json');
+    }
+
 }
