@@ -21,12 +21,25 @@ class Auction extends StoreAbstract
     }
 
 
-    public function upcoming() {
-        return $this->all();
+    public function upcoming($orgId = '')
+    {
+
+        if ($orgId) {
+            return $this->_rest->get('orgs/' . $orgId . '/auctions/upcoming.json');
+        } else {
+
+            return $this->_rest->get('auctions/upcoming.json');
+        }
     }
 
-    public function past() {
-        return $this->all();
+    public function past($orgId = '')
+    {
+        if ($orgId) {
+            return $this->_rest->get('orgs/' . $orgId . '/auctions/past.json');
+        } else {
+
+            return $this->_rest->get('auctions/past.json');
+        }
     }
 
 }
