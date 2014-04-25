@@ -10,25 +10,27 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     public static $consumerKey = 'c1f7f60c389d587667f7e1e005c2b55e',
         $consumerSecret = '528e40928d13bd0233cf8caa7727106a',
-        $orgId = '533c8249b05f8bc65e000031',
+        $orgId = '53559a46b05f8b6e7b000003',
         $options = [
-        'endpoint' => 'http://hbs.local'
+//        'endpoint' => 'http://hbs.local'
     ],
         $orgKey = 'dummy-inc',
+        $auctionId = '53559a90b05f8b8f7b000013',
+        $auctionKey = 'handbid-demo-auction',
         $authEmail = 'test@handbid.com',
         $badAuthEmail = 'bad@handbid.com',
         $authPassword = 'password',
         $badAuthPassword = 'badPassword123',
         $dummyOrganization = [
-        'name'        => 'Dummy Inc.',
-        'address'     => '1234 generic ave.',
+        'name' => 'Dummy Inc.',
+        'address' => '1234 generic ave.',
         'contactName' => 'Mr. Widget',
-        'phone'       => '(123) 456 - 7890',
-        'email'       => 'dummyMiester@nodomain.com',
-        'website'     => 'www.dummy.inc.com.org.io',
+        'phone' => '(123) 456 - 7890',
+        'email' => 'dummyMiester@nodomain.com',
+        'website' => 'www.dummy.inc.com.org.io',
         'description' => 'We are the leading provider of dummys. Specializing in crash test models, with the capacity to meet the demands of all organizations and individuals alike. Please consider a tour of our facility today! A shuttle can be arranged for transport- its a little short though.',
-        'public'      => true,
-        'tags'        => 'Vince, Larry, Daryl'
+        'public' => true,
+        'tags' => 'Vince, Larry, Daryl'
     ];
 
 
@@ -87,7 +89,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
      */
     public function testFetchingOrganizations()
     {
-        $hb    = static::goodHandbid();
+        $hb = static::goodHandbid();
         $store = $hb->store('Organization');
 
         $orgs = $store->all();
@@ -102,7 +104,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function testFetchingOrgById()
     {
 
-        $hb    = static::goodHandbid();
+        $hb = static::goodHandbid();
         $store = $hb->store('Organization');
 
         $org = $store->byId(static::$orgId);
@@ -117,7 +119,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function testFetchingOrgByKey()
     {
 
-        $hb    = static::goodHandbid();
+        $hb = static::goodHandbid();
         $store = $hb->store('Organization');
 
         $org = $store->byKey(static::$orgKey);
@@ -126,21 +128,50 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function testAuctionByKey()
+    {
+
+//        $hb       = static::goodHandbid();
+//        $store    = $hb->store('Auction');
+//        $auction  = $store->byKey(static::$auctionKey);
+//
+//        $this->assertNotNull($auction);
+    }
+
 
     public function testAuctionsByOrg()
     {
 
-        $hb       = static::goodHandbid();
-        $store    = $hb->store('Auction');
+        $hb = static::goodHandbid();
+        $store = $hb->store('Auction');
         $auctions = $store->byOrg(static::$orgId);
 
         $this->assertNotNull($auctions);
+        $this->assertGreaterThan(0, count($auctions));
     }
 
-    public function itemsByAuction()
+    public function testItemCategoriesByAuction()
     {
+        $hb    = static::goodHandbid();
+        $store = $hb->store('ItemCategory');
+        $items = $store->byAuction(static::$auctionId);
 
+        $this->assertNotNull($items);
+        $this->assertGreaterThan(0, count($items));
     }
+
+    public function testItemsByAuction()
+    {
+        $hb = static::goodHandbid();
+        $store = $hb->store('Item');
+        $items = $store->byAuction(static::$auctionId);
+
+        $this->assertNotNull($items);
+        $this->assertGreaterThan(0, count($items));
+    }
+
+
+
 //
 //    public function testAuth()
 //    {

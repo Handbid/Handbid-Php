@@ -28,6 +28,7 @@ class Handbid
         require __DIR__ . "/Auth/AppAuth.php";
         require __DIR__ . "/Store/StoreInterface.php";
         require __DIR__ . "/Store/StoreAbstract.php";
+        require __DIR__ . "/Store/TaxonomyTerm.php";
         require __DIR__ . "/Store/Auction.php";
         require __DIR__ . "/Store/Bidder.php";
         require __DIR__ . "/Store/Donor.php";

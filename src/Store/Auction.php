@@ -21,7 +21,7 @@ class Auction extends StoreAbstract
     }
 
 
-    public function recent() {
+    public function upcoming() {
         return $this->all();
     }
 
