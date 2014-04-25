@@ -154,10 +154,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
     {
         $hb    = static::goodHandbid();
         $store = $hb->store('ItemCategory');
-        $items = $store->byAuction(static::$auctionId);
+        $cats  = $store->byAuction(static::$auctionId);
 
-        $this->assertNotNull($items);
-        $this->assertGreaterThan(0, count($items));
+        $this->assertNotNull($cats);
+        $this->assertGreaterThan(0, count($cats));
     }
 
     public function testItemsByAuction()
