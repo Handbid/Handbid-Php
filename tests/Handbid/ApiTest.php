@@ -8,15 +8,15 @@ require '../../src/Handbid.php';
 class ApiTest extends PHPUnit_Framework_TestCase
 {
 
-    public static $consumerKey = 'c1f7f60c389d587667f7e1e005c2b55e',
-        $consumerSecret = '528e40928d13bd0233cf8caa7727106a',
-        $orgId = '53559a46b05f8b6e7b000003',
+    public static $consumerKey = '6697aaa674a82c2d58d96921822db0de',
+        $consumerSecret = 'c676e62fe495bea2e97d35f2c4a627f0',
+        $orgId = '5359d0742d7f3897088b61b8',
         $options = [
-//        'endpoint' => 'http://hbs.local'
+        'endpoint' => 'http://hbs.local'
     ],
-        $orgKey = 'dummy-inc',
-        $auctionId = '53559a90b05f8b8f7b000013',
-        $auctionKey = 'handbid-demo-auction',
+        $orgKey = 'aserf',
+        $auctionId = '5359d0bc2d7f3897088b62f2',
+        $auctionKey = 'bidz4kidz',
         $authEmail = 'test@handbid.com',
         $badAuthEmail = 'bad@handbid.com',
         $authPassword = 'password',
@@ -49,7 +49,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
      */
     public static function goodHandbid()
     {
-        return new Handbid(self::$consumerKey, self::$consumerSecret);
+        return new Handbid(self::$consumerKey, self::$consumerSecret, self::$options);
     }
 
     /**
@@ -175,6 +175,26 @@ class ApiTest extends PHPUnit_Framework_TestCase
         $hb         = static::goodHandbid();
         $org        = $hb->store('Organization')->byId(self::$orgId);
         $auctions   = $hb->store('Auction')->upcoming($org->_id);
+
+        $this->assertNotNull($auctions);
+        $this->assertGreaterThan(0, count($auctions));
+    }
+
+    public function testPastAuctionsForOrg()
+    {
+        $hb         = static::goodHandbid();
+        $org        = $hb->store('Organization')->byId(self::$orgId);
+        $auctions   = $hb->store('Auction')->past($org->_id);
+
+        $this->assertNotNull($auctions);
+        $this->assertGreaterThan(0, count($auctions));
+    }
+
+    public function testTicketsForAuction()
+    {
+        $hb         = static::goodHandbid();
+        $auction    = $hb->store('Auction')->byId(self::$auctionId);
+        $auctions   = $hb->store('Ticket')->byAuction($auction->_id);
 
         $this->assertNotNull($auctions);
         $this->assertGreaterThan(0, count($auctions));

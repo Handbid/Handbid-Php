@@ -117,7 +117,7 @@ class Rest implements RestInterface
 
             $response = json_decode($responseText);
             if($response) {
-                throw new NetworkException($response->Errors[0]->description, $info['http_code']);
+                throw new NetworkException($response->Errors[0]->description, $info['http_code'], new NetworkException($uri));
             } else {
                 throw new NetworkException('Unknown response from server. ( ' . $response . ' ) ', $info['http_code']);
             }

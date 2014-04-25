@@ -9,15 +9,8 @@ class Ticket extends StoreAbstract
 
     public $_base = 'tickets';
 
-    /**
-     * Auctions by org, simply stubbed out for now.
-     *
-     * @param $id
-     * @return mixed
-     */
-    public function byAuction($id)
-    {
-        return $this->all(1, 2);
+    public function byAuction($id) {
+        return $this->_rest->get('auctions/' . $id . '/tickets.json');
     }
 
 }
