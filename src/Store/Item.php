@@ -4,7 +4,7 @@ namespace Handbid\Store;
 
 use Handbid\Store\StoreAbstract;
 
-class Bid extends StoreAbstract{
+class Item extends StoreAbstract{
 
     public $_base = 'items';
 
