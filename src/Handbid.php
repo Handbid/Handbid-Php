@@ -8,7 +8,6 @@ class Handbid
 {
 
     public $_rest,
-        $_appAuth,
         $_auth,
         $_consumerKey,
         $_consumerSecret,
@@ -26,9 +25,11 @@ class Handbid
         require __DIR__ . "/Rest/Rest.php";
         require __DIR__ . "/Auth/AuthInterface.php";
         require __DIR__ . "/Auth/AppAuth.php";
+        require __DIR__ . "/Auth/UserXAuth.php";
         require __DIR__ . "/Store/StoreInterface.php";
         require __DIR__ . "/Store/StoreAbstract.php";
         require __DIR__ . "/Store/TaxonomyTerm.php";
+        require __DIR__ . "/Store/Bid.php";
         require __DIR__ . "/Store/Ticket.php";
         require __DIR__ . "/Store/Auction.php";
         require __DIR__ . "/Store/Bidder.php";
@@ -39,20 +40,46 @@ class Handbid
     }
 
     /**
-     * @param $consumerKey
-     * @param $consumerSecret
+     * @param       $consumerKey
+     * @param       $consumerSecret
      * @param array $options
      */
     public function __construct($consumerKey, $consumerSecret, $options = [])
     {
         //defaults
         $endpoint = isset($options['endpoint']) ? $options['endpoint'] : 'http://rest.newbeta.handbid.com';
-        $path = isset($options['path']) ? $options['path'] : '/v1/rest/';
+        $path     = isset($options['path']) ? $options['path'] : '/v1/rest/';
 
         //build our rest supporting classes
-        $this->_rest = isset($options['rest']) ? $options['rest'] : new Rest\Rest($endpoint, $path);
-        $this->_appAuth = isset($options['appAuth']) ? $options['appAuth'] : new Auth\AppAuth($this->_rest, $consumerKey, $consumerSecret);
+        $this->_rest    = isset($options['rest']) ? $options['rest'] : new Rest\Rest($endpoint, $path);
+        $auth           = isset($options['auth']) ? $options['auth'] : new Auth\AppAuth($consumerKey, $consumerSecret);
 
+        $this->setAuth($auth);
+
+    }
+
+    /**
+     * Set a new auth adapter. See ./Auth/AuthInterface.php for details.
+     *
+     * @param Auth\AuthInterface $auth
+     *
+     * @return $this
+     */
+    public function setAuth(Auth\AuthInterface $auth)
+    {
+        $auth->setRest($this->_rest);
+        $this->_auth = $auth;
+        return $this;
+    }
+
+    /**
+     * The object responsible for all communication with the handbid servers
+     *
+     * @return Rest\RestInterface
+     */
+    public function rest()
+    {
+        return $this->_rest;
     }
 
     /**
@@ -60,43 +87,17 @@ class Handbid
      *
      * @throws \Handbid\Exception\App
      */
-    public function testAppCreds()
+    public function testAuth()
     {
-        $token = $this->_appAuth->fetchBearerToken();
+        $token = $this->_auth->fetchToken();
         return true;
-    }
-
-
-    /**
-     * @param $username
-     * @param $password
-     * @return mixed
-     * @throws \Exception
-     */
-    public function auth($username, $password)
-    {
-
-        if (is_null($username)) {
-            throw(new \Exception('Auth Failure: Must provide a username for authorization.'));
-
-        }
-
-        if (is_null($password)) {
-            throw(new \Exception('Auth Failure: Must provide a password for authorization.'));
-
-        }
-
-        $auth = $this->_auth->authenticate($username, $password);
-
-        //@todo: validate auth results;
-
-        return $auth;
     }
 
     /**
      * Factory for creating a store.
      *
      * @param $type
+     *
      * @throws \Exception
      */
     public function store($type)
@@ -105,9 +106,9 @@ class Handbid
         //lazy load and cache the store.
         if (!isset($this->_storeCache[$type])) {
 
-            //do we have a bearer token (we want one before we create a store)
-            if (!$this->_appAuth->hasBearerToken()) {
-                $this->_appAuth->refreshBearerToken();
+            //do we have a bearer or access token? (we want one before we create a store)
+            if (!$this->_auth->hasToken()) {
+                $this->_auth->refreshToken();
             }
 
             //create the store instance
@@ -120,10 +121,9 @@ class Handbid
             } else {
                 //We'll assume it's an unqualified classname, we'll look it up in the handbid store adapters.
                 $classPath = 'Handbid\Store\\' . $type;
-                $store = class_exists($classPath) ? new $classPath($this->_rest, $this->_auth) : null;
+                $store     = class_exists($classPath) ? new $classPath($this->_rest, $this->_auth) : null;
 
             }
-
 
             //cache the new store instance
             if (!is_null($store) && $store instanceof StoreInterface) {

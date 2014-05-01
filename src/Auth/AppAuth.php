@@ -1,7 +1,8 @@
 <?php
 
 /**
- * The auth adapters sole responsibility is configuring headers for requests
+ * The auth adapters sole responsibility is configuring headers for requests for apps. For user authentication/authorization
+ * use UserAuth
  */
 
 namespace Handbid\Auth;
@@ -14,13 +15,17 @@ class AppAuth implements AuthInterface
            $_consumerSecret,
            $_bearerToken;
 
-    public function __construct(\Handbid\Rest\RestInterface $rest, $consumerKey, $consumerSecret, $bearerToken = null)
+    public function __construct($consumerKey, $consumerSecret, $bearerToken = null)
     {
-        $this->_rest = $rest;
-        $this->_consumerKey = $consumerKey;
-        $this->_consumerSecret = $consumerSecret;
-        $this->_bearerToken = $bearerToken;
+        $this->_consumerKey     = $consumerKey;
+        $this->_consumerSecret  = $consumerSecret;
+        $this->_bearerToken     = $bearerToken;
 
+    }
+
+    public function setRest(\Handbid\Rest\RestInterface $rest) {
+        $this->_rest = $rest;
+        return $this;
     }
 
     /**
@@ -28,7 +33,7 @@ class AppAuth implements AuthInterface
      *
      * @throws Network|\Handbid\Exception\App
      */
-    public function fetchBearerToken()
+    public function fetchToken()
     {
 
         try {
@@ -59,18 +64,22 @@ class AppAuth implements AuthInterface
      *
      * @return bool
      */
-    public function hasBearerToken()
+    public function hasToken()
     {
         return !!$this->_bearerToken;
+    }
+
+    public function token() {
+        return $this->_bearerToken;
     }
 
     /**
      * /* Fetches a new bearer token and sets it to ourselves
      * @return $this
      */
-    public function refreshBearerToken()
+    public function refreshToken()
     {
-        $this->setBearerToken($this->fetchBearerToken());
+        $this->setToken($this->fetchToken());
         return $this;
     }
 
@@ -79,7 +88,7 @@ class AppAuth implements AuthInterface
      *
      * @param $token
      */
-    public function setBearerToken($token)
+    public function setToken($token)
     {
         $this->_bearerToken = $token;
         $this->_rest->setHeader('Authorization', 'Bearer' . $this->_bearerToken);

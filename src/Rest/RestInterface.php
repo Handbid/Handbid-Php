@@ -78,4 +78,12 @@ interface RestInterface{
     public function clearHeader($named);
 
 
+    /**
+     * Give a partial route and it'll come back with the full url (including http, etc.)
+     *
+     * @param $partial
+     *
+     * @return string
+     */
+    public function resolveRoute($partial);
 }

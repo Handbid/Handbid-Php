@@ -73,7 +73,7 @@ class Rest implements RestInterface
 
         $method     = strtoupper($method);
         $headers    = ($headers) ? $headers : $this->_headers;
-        $uri        = $this->_endpoint . $this->_basePath . $route;
+        $uri        = $this->resolveRoute($route);
 
         if($headers) {
 
@@ -135,6 +135,10 @@ class Rest implements RestInterface
         }
 
         return $response;
+    }
+
+    public function resolveRoute($partial) {
+        return $this->_endpoint . $this->_basePath . $partial;
     }
 
     public function setAuth(AuthInterface $auth)
