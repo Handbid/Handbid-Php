@@ -10,22 +10,16 @@ namespace Handbid\Auth;
 class AppAuth implements AuthInterface
 {
 
-    public $_rest,
-           $_consumerKey,
-           $_consumerSecret,
-           $_bearerToken;
+    public  $_consumerKey,
+            $_consumerSecret,
+            $_bearerToken;
 
     public function __construct($consumerKey, $consumerSecret, $bearerToken = null)
     {
-        $this->_consumerKey     = $consumerKey;
-        $this->_consumerSecret  = $consumerSecret;
-        $this->_bearerToken     = $bearerToken;
+        $this->_consumerKey    = $consumerKey;
+        $this->_consumerSecret = $consumerSecret;
+        $this->_bearerToken    = $bearerToken;
 
-    }
-
-    public function setRest(\Handbid\Rest\RestInterface $rest) {
-        $this->_rest = $rest;
-        return $this;
     }
 
     /**
@@ -33,16 +27,21 @@ class AppAuth implements AuthInterface
      *
      * @throws Network|\Handbid\Exception\App
      */
-    public function fetchToken()
+    public function fetchToken(\Handbid\Rest\RestInterface $rest)
     {
 
         try {
 
-            $response = $this->_rest->post('apps/token.json', [
-                'grant_type' => 'client_credentials'
-            ], [], [
-                'Authorization' => 'Basic ' . base64_encode($this->_consumerKey . ':' . $this->_consumerSecret)
-            ]);
+            $response = $rest->post(
+                'apps/token.json',
+                [
+                    'grant_type' => 'client_credentials'
+                ],
+                [],
+                [
+                    'Authorization' => 'Basic ' . base64_encode($this->_consumerKey . ':' . $this->_consumerSecret)
+                ]
+            );
         } //i will attempt to help the user out
         catch (\Handbid\Exception\Network $e) {
 
@@ -69,17 +68,26 @@ class AppAuth implements AuthInterface
         return !!$this->_bearerToken;
     }
 
-    public function token() {
+    /**
+     * Our bearer token if we have one
+     *
+     * @return string
+     */
+    public function token()
+    {
         return $this->_bearerToken;
     }
 
     /**
-     * /* Fetches a new bearer token and sets it to ourselves
+     * Fetches a new bearer token and sets it to ourselves
+     *
+     * @param \Handbid\Rest\RestInterface $rest
+     *
      * @return $this
      */
-    public function refreshToken()
+    public function refreshToken(\Handbid\Rest\RestInterface $rest)
     {
-        $this->setToken($this->fetchToken());
+        $this->setToken($this->fetchToken($rest));
         return $this;
     }
 
@@ -87,11 +95,19 @@ class AppAuth implements AuthInterface
      * Sets a new bearer token locall, and then updates Rest to have the proper headings
      *
      * @param $token
+     * @return $this
      */
     public function setToken($token)
     {
         $this->_bearerToken = $token;
-        $this->_rest->setHeader('Authorization', 'Bearer' . $this->_bearerToken);
+        return $this;
+    }
 
+    public function initRequest(&$method, &$url, &$query, &$postData, &$headers)
+    {
+        if($this->_bearerToken) {
+            $headers['Authorization'] = 'Bearer' . $this->_bearerToken;
+        }
+        return $this;
     }
 }

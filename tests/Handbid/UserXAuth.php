@@ -33,19 +33,35 @@ class UserXAuth extends PHPUnit_Framework_TestCase
      */
     public static function goodHandbid()
     {
-        $options            = static::$config->options;
-        $options['auth']    = static::goodXAuth();
+        $options         = static::$config->options;
+        $options['auth'] = static::goodXAuth();
 
         return new Handbid(static::$config->consumerKey, static::$config->consumerSecret, $options);
     }
 
+    /**
+     * Test getting token
+     */
     public function testAcquiringToken()
     {
 
-        $hb      = $this->goodHandbid();
-        $token   = $hb->testAuth();
+        $hb    = $this->goodHandbid();
+        $token = $hb->testAuth();
 
-        var_dump($token);
+        $this->assertTrue($token, 'fetching xauth token failed');
+
+    }
+
+    /**
+     * Test getting the bidder's profile
+     */
+    public function testFetchingProfile()
+    {
+
+        $hb         = $this->goodHandbid();
+        $profile    = $hb->store('Manager')->profile();
+
+        print_r($profile);exit;
 
     }
 

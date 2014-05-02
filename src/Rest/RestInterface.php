@@ -60,23 +60,6 @@ interface RestInterface{
      */
     public function delete($route, $query = []);
 
-    /**
-     * Set a header to be sent with each request
-     *
-     * @param $named
-     * @param $value
-     * @return $this
-     */
-    public function setHeader($named, $value);
-
-    /**
-     * This header will no longer be sent.
-     *
-     * @param $named
-     * @return mixed
-     */
-    public function clearHeader($named);
-
 
     /**
      * Give a partial route and it'll come back with the full url (including http, etc.)

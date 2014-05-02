@@ -25,6 +25,7 @@ class Handbid
         require __DIR__ . "/Rest/Rest.php";
         require __DIR__ . "/Auth/AuthInterface.php";
         require __DIR__ . "/Auth/AppAuth.php";
+        require __DIR__ . "/Auth/OAuth.php";
         require __DIR__ . "/Auth/UserXAuth.php";
         require __DIR__ . "/Store/StoreInterface.php";
         require __DIR__ . "/Store/StoreAbstract.php";
@@ -36,6 +37,7 @@ class Handbid
         require __DIR__ . "/Store/Donor.php";
         require __DIR__ . "/Store/ItemCategory.php";
         require __DIR__ . "/Store/Item.php";
+        require __DIR__ . "/Store/Manager.php";
         require __DIR__ . "/Store/Organization.php";
     }
 
@@ -59,7 +61,8 @@ class Handbid
     }
 
     /**
-     * Set a new auth adapter. See ./Auth/AuthInterface.php for details.
+     * Set a new auth adapter. See ./Auth/AuthInterface.php for details. Anything you set here is passed through to the
+     * REST class.
      *
      * @param Auth\AuthInterface $auth
      *
@@ -67,8 +70,8 @@ class Handbid
      */
     public function setAuth(Auth\AuthInterface $auth)
     {
-        $auth->setRest($this->_rest);
         $this->_auth = $auth;
+        $this->_rest->setAuth($auth);
         return $this;
     }
 
@@ -89,7 +92,7 @@ class Handbid
      */
     public function testAuth()
     {
-        $token = $this->_auth->fetchToken();
+        $token = $this->_auth->fetchToken($this->_rest);
         return true;
     }
 
@@ -106,9 +109,9 @@ class Handbid
         //lazy load and cache the store.
         if (!isset($this->_storeCache[$type])) {
 
-            //do we have a bearer or access token? (we want one before we create a store)
+            //if our auth is missing a token, lets try and refresh it from the server (this will throw an exception on failure)
             if (!$this->_auth->hasToken()) {
-                $this->_auth->refreshToken();
+                $this->_auth->refreshToken($this->_rest);
             }
 
             //create the store instance

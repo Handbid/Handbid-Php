@@ -6,15 +6,11 @@
 
 namespace Handbid\Auth;
 
-class UserXAuth implements AuthInterface
+class UserXAuth extends OAuth
 {
 
-    public $_rest,
-        $_email,
-        $_password,
-        $_consumerKey,
-        $_consumerSecret,
-        $_accessToken;
+    public $_email,
+           $_password;
 
     public function __construct($consumerKey, $consumerSecret, $email, $password)
     {
@@ -25,77 +21,36 @@ class UserXAuth implements AuthInterface
 
     }
 
-    public function hasToken()
-    {
-        return !!$this->_accessToken;
-    }
 
-    public function token()
+    public function refreshToken(\Handbid\Rest\RestInterface $rest)
     {
-        return $this->_accessToken;
-    }
+        $response = $this->fetchToken($rest);
 
-    public function refreshToken()
-    {
-        $this->setAccessToken($this->fetchAccessToken());
-    }
+        $this->setToken($response['oauth_token']);
+        $this->setTokenSecret($response['oauth_token_secret']);
 
-    public function setRest(\Handbid\Rest\RestInterface $rest)
-    {
-        $this->_rest = $rest;
         return $this;
-    }
-
-    public function oauthHeaders()
-    {
-        return [
-            'oauth_consumer_key="' . $this->_consumerKey . '"',
-            'oauth_consumer_nonce="' . preg_replace('/[^a-zA-Z0-9]/', '', base64_encode(microtime())) . '"',
-            'oauth_signature_method="HMAC-SHA1"',
-            'oauth_timestamp="' . time() . '"',
-            'oauth_version="1.0"',
-        ];
-    }
-
-    public function generateSignature($method, $url, $body, $headers = null)
-    {
-        $headers = ($headers) ? $headers : $this->oauthHeaders();
-        $params  = $body;
-
-        foreach ($headers as $v) {
-            $parts             = explode('=', $v);
-            $params[$parts[0]] = str_replace('"', '', $parts[1]);
-        }
-
-        ksort($params);
-
-        $paramstring = http_build_query($params);
-        $base        = strtoupper($method) . '&' . urlencode($url) . '&' . urlencode($paramstring);
-        $signingKey  = urlencode($this->_consumerSecret) . '&'; //we have no user token
-        $hmac        = hash_hmac('sha1', $base, $signingKey);
-        $sig         = base64_encode($hmac);
-
-        return $sig;
 
     }
 
-    public function fetchToken()
+    public function fetchToken(\Handbid\Rest\RestInterface $rest)
     {
 
         try {
 
-            $headers = $this->oauthHeaders();
+            $headers = $this->oauthHeader();
             $body    = [
-                'x_auth_model'    => 'client_auth',
+                'x_auth_mode'     => 'client_auth',
                 'x_auth_email'    => $this->_email,
                 'x_auth_password' => $this->_password
             ];
-            $url     = $this->_rest->resolveRoute('oauth/access_token.json');
 
-            $headers[] = 'oauth_signature="' . $this->generateSignature('post', $url, $body, $headers) . '"';
+            $url        = $rest->resolveRoute('xauth/access_token.json');
 
-            $response = $this->_rest->post(
-                'oauth/access_token.json',
+            $headers[]  = 'oauth_signature="' . $this->generateSignature('post', $url, $body, $headers) . '"';
+
+            $response   = $rest->post(
+                'xauth/token.json',
                 $body,
                 [],
                 [
@@ -118,13 +73,8 @@ class UserXAuth implements AuthInterface
 
         }
 
-        return $response->access_token;
+        return (array) $response;
 
-    }
-
-    public function setToken($token)
-    {
-        $this->_accessToken = $token;
     }
 
 }

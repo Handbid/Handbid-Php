@@ -8,7 +8,7 @@ $config = [
         'endpoint' => 'http://hbs.local'
     ],
     'managerEmail'      => 'demo@handbid.com',
-    'managerPassword'   => 'getit4me'
+    'managerPassword'   => 'password'
 ];
 
 $config = (object) $config;
