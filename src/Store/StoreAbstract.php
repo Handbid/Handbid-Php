@@ -52,7 +52,7 @@ class StoreAbstract implements StoreInterface
 
     public function create($values)
     {
-        return $this->_rest->post($this->_base . '.json?XDEBUG_SESSION_START=18853', $values);
+        return $this->_rest->post($this->_base . '.json', $values);
     }
 
 }
