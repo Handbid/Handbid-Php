@@ -31,21 +31,35 @@ class Handbid
         require __DIR__ . "/Auth/OAuth.php";
         require __DIR__ . "/Auth/UserXAuth.php";
 
+        //store abstract
+        require __DIR__ . "/Store/StoreInterface.php";
+        require __DIR__ . "/Store/Legacy/StoreAbstract.php";
+        require __DIR__ . "/Store/StoreAbstract.php";
+
+        //org
+        require __DIR__ . "/Store/Organization.php";
+        require __DIR__ . "/Store/Legacy/Organization.php";
+
+
         //auction
         require __DIR__ . "/Store/Auction.php";
         require __DIR__ . "/Store/Legacy/Auction.php";
 
-        require __DIR__ . "/Store/StoreInterface.php";
-        require __DIR__ . "/Store/StoreAbstract.php";
+        //categories
         require __DIR__ . "/Store/TaxonomyTerm.php";
+        require __DIR__ . "/Store/ItemCategory.php";
+        require __DIR__ . "/Store/Legacy/ItemCategory.php";
+
+        //item
+        require __DIR__ . "/Store/Item.php";
+        require __DIR__ . "/Store/Legacy/Item.php";
+
+
         require __DIR__ . "/Store/Bid.php";
         require __DIR__ . "/Store/Ticket.php";
         require __DIR__ . "/Store/Bidder.php";
         require __DIR__ . "/Store/Donor.php";
-        require __DIR__ . "/Store/ItemCategory.php";
-        require __DIR__ . "/Store/Item.php";
         require __DIR__ . "/Store/Manager.php";
-        require __DIR__ . "/Store/Organization.php";
     }
 
     /**
@@ -55,19 +69,25 @@ class Handbid
      */
     public function __construct($consumerKey, $consumerSecret, $options = [])
     {
+        //default support is legacy now
+        if (!isset($options['legacy']) || !$options['legacy']) {
+            $this->_storePrefix  = 'Handbid\\Store\\Legacy\\';
+            $options['endpoint'] = 'http://handbid.com';
+            $options['auth']     = false;
+
+        }
+
         //defaults
         $endpoint = isset($options['endpoint']) ? $options['endpoint'] : 'http://rest.newbeta.handbid.com';
         $path     = isset($options['path']) ? $options['path'] : '/v1/rest/';
 
         //build our rest supporting classes
-        $this->_rest    = isset($options['rest']) ? $options['rest'] : new Rest\Rest($endpoint, $path);
-        $auth           = isset($options['auth']) ? $options['auth'] : new Auth\AppAuth($consumerKey, $consumerSecret);
+        $this->_rest = isset($options['rest']) ? $options['rest'] : new Rest\Rest($endpoint, $path);
+        $auth        = isset($options['auth']) ? $options['auth'] : new Auth\AppAuth($consumerKey, $consumerSecret);
 
-        if($options['legacy']) {
-            $this->_storePrefix = 'Handbid\\Store\\Legacy';
+        if ($auth) {
+            $this->setAuth($auth);
         }
-
-        $this->setAuth($auth);
 
     }
 
@@ -103,7 +123,13 @@ class Handbid
      */
     public function testAuth()
     {
-        $token = $this->_auth->fetchToken($this->_rest);
+
+        if($this->_auth) {
+            $token = $this->_auth->fetchToken($this->_rest);
+        } else {
+            throw new \Handbid\Exception\App('No valid auth set.');
+        }
+
         return true;
     }
 
@@ -121,7 +147,7 @@ class Handbid
         if (!isset($this->_storeCache[$type])) {
 
             //if our auth is missing a token, lets try and refresh it from the server (this will throw an exception on failure)
-            if (!$this->_auth->hasToken()) {
+            if ($this->_auth && !$this->_auth->hasToken()) {
                 $this->_auth->refreshToken($this->_rest);
             }
 

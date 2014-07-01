@@ -1,6 +1,6 @@
 <?php
 
-namespace Handbid\Store;
+namespace Handbid\Store\Legacy;
 
 use Handbid\Store\StoreInterface;
 use Handbid\Rest\RestInterface;
@@ -10,34 +10,38 @@ class StoreAbstract implements StoreInterface
 
     public $_rest;
     public $_base;
+    public $_resultsKey;
+    public $_resultsKeyPlural;
 
 
     public function __construct(RestInterface $rest)
     {
         $this->_rest = $rest;
+
+        if(!$this->_resultsKeyPlural) {
+            $this->_resultsKeyPlural = $this->_resultsKey . 's';
+        }
     }
 
     public function all($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC')
     {
-        return $this->_rest->get(
-            $this->_base . '.json',
-            [
-                'skip'          => $page * $perPage,
-                'limit'         => $perPage,
-                'sortField'     => $sortField,
-                'sortDirection' => $sortDirection
-            ]
-        );
+        return $this->mapMany($this->_rest->get($this->_base)->{$this->_resultsKeyPlural});
     }
 
     public function byId($id)
     {
-        return $this->_rest->get($this->_base . '/' . $id . '.json');
+        return $this->map($this->_rest->get($this->_base . '/' . $id)->{$this->_resultsKey});
     }
 
-    public function byKey($id)
+    public function byKey($key)
     {
-        return $this->_rest->get($this->_base . '/by/key/' . $id . '.json');
+        $results = $this->_rest->get($this->_base, ['query' => ['key' => $key]])->{$this->_resultsKeyPlural};
+
+        if (count($results) == 0) {
+            throw new \Handbid\Exception\Network('Could not find entity with key ' . $key);
+        }
+
+        return $this->map($results[0]);
     }
 
     public function byField($name, $value)
@@ -53,6 +57,20 @@ class StoreAbstract implements StoreInterface
     public function create($values)
     {
         return $this->_rest->post($this->_base . '.json', $values);
+    }
+
+    public function map($entity)
+    {
+        return $entity;
+    }
+
+    public function mapMany($entities)
+    {
+        foreach ($entities as $entity) {
+            $this->map($entity);
+        }
+
+        return $entities;
     }
 
 }

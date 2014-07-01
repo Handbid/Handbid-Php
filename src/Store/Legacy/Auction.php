@@ -1,45 +1,41 @@
 <?php
 
-namespace Handbid\Store;
+namespace Handbid\Store\Legacy;
 
-use Handbid\Store\StoreAbstract;
+use Handbid\Store\Legacy\StoreAbstract;
 
 class Auction extends StoreAbstract
 {
 
-    public $_base = 'auctions';
+    public $_base = 'models/Auction';
+    public $_resultsKey = 'Auction';
 
-    /**
-     * Auctions by org
-     *
-     * @param $id
-     * @return mixed
-     */
     public function byOrg($id)
     {
-        return $this->_rest->get('orgs/' . $id . '/auctions.json');
+        return $this->mapMany($this->_rest->get($this->_base, ['query' => ['organization' => $id]])->{$this->_resultsKey . 's'});
     }
-
 
     public function upcoming($orgId = '')
     {
 
-        if ($orgId) {
-            return $this->_rest->get('orgs/' . $orgId . '/auctions/upcoming.json');
-        } else {
+        $query = ['startTime' => ['$gt' => time() - 3600]];
 
-            return $this->_rest->get('auctions/upcoming.json');
+        if ($orgId) {
+            $query['organization'] = $orgId;
         }
+
+        return $this->mapMany($this->_rest->get($this->_base, ['query' => $query])->{$this->_resultsKeyPlural});
     }
 
     public function past($orgId = '')
     {
-        if ($orgId) {
-            return $this->_rest->get('orgs/' . $orgId . '/auctions/past.json');
-        } else {
+        $query = ['startTime' => ['$lt' => time() - 3600]];
 
-            return $this->_rest->get('auctions/past.json');
+        if ($orgId) {
+            $query['organization'] = $orgId;
         }
-    }
+
+        return $this->mapMany($this->_rest->get($this->_base, ['query' => $query])->{$this->_resultsKeyPlural});
+     }
 
 }
