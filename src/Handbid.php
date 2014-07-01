@@ -11,7 +11,8 @@ class Handbid
         $_auth,
         $_consumerKey,
         $_consumerSecret,
-        $_storeCache = [];
+        $_storeCache = [],
+        $_storePrefix = 'Handbid\\Store\\';
 
     /**
      * Include all dependencies
@@ -21,18 +22,24 @@ class Handbid
         require __DIR__ . "/Exception/App.php";
         require __DIR__ . "/Exception/Bid.php";
         require __DIR__ . "/Exception/Network.php";
+
         require __DIR__ . "/Rest/RestInterface.php";
         require __DIR__ . "/Rest/Rest.php";
+
         require __DIR__ . "/Auth/AuthInterface.php";
         require __DIR__ . "/Auth/AppAuth.php";
         require __DIR__ . "/Auth/OAuth.php";
         require __DIR__ . "/Auth/UserXAuth.php";
+
+        //auction
+        require __DIR__ . "/Store/Auction.php";
+        require __DIR__ . "/Store/Legacy/Auction.php";
+
         require __DIR__ . "/Store/StoreInterface.php";
         require __DIR__ . "/Store/StoreAbstract.php";
         require __DIR__ . "/Store/TaxonomyTerm.php";
         require __DIR__ . "/Store/Bid.php";
         require __DIR__ . "/Store/Ticket.php";
-        require __DIR__ . "/Store/Auction.php";
         require __DIR__ . "/Store/Bidder.php";
         require __DIR__ . "/Store/Donor.php";
         require __DIR__ . "/Store/ItemCategory.php";
@@ -55,6 +62,10 @@ class Handbid
         //build our rest supporting classes
         $this->_rest    = isset($options['rest']) ? $options['rest'] : new Rest\Rest($endpoint, $path);
         $auth           = isset($options['auth']) ? $options['auth'] : new Auth\AppAuth($consumerKey, $consumerSecret);
+
+        if($options['legacy']) {
+            $this->_storePrefix = 'Handbid\\Store\\Legacy';
+        }
 
         $this->setAuth($auth);
 
@@ -123,7 +134,7 @@ class Handbid
 
             } else {
                 //We'll assume it's an unqualified classname, we'll look it up in the handbid store adapters.
-                $classPath = 'Handbid\Store\\' . $type;
+                $classPath = $this->_storePrefix . $type;
                 $store     = class_exists($classPath) ? new $classPath($this->_rest, $this->_auth) : null;
 
             }
