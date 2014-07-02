@@ -26,6 +26,7 @@ class Item extends StoreAbstract{
 
         $entity->terms = [$entity->_restMetaData->categoryName];
         $entity->closingTime = $entity->_restMetaData->closingTime;
+        $entity->highestBid = isset($entity->highestBid->amount) ? $entity->highestBid->amount : null;
 
         return $entity;
     }
