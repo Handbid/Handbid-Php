@@ -39,7 +39,7 @@ class Item extends StoreAbstract{
                 ],
                 'options' => [
                     'images' => [
-                        'w' => 250,
+                        'w' => 400,
                         'h' => false
                     ]
                 ]
