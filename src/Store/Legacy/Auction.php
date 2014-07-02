@@ -36,6 +36,23 @@ class Auction extends StoreAbstract
         }
 
         return $this->mapMany($this->_rest->get($this->_base, ['query' => $query])->{$this->_resultsKeyPlural});
-     }
+    }
+
+    public function map($entity)
+    {
+
+        $entity->location->coords = null;
+        $entity->meta = (object)[
+            'totalItems' => $entity->_restMetaData->numItems,
+            'organization' => (object)[
+                'key'  => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->key : null,
+                'name' => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->name : null,
+            ]
+        ];
+
+        return $entity;
+
+    }
+
 
 }

@@ -21,4 +21,37 @@ class Item extends StoreAbstract{
         );
     }
 
+    public function map($entity)
+    {
+
+        $entity->terms = [$entity->_restMetaData->categoryName];
+        $entity->closingTime = $entity->_restMetaData->closingTime;
+
+        return $entity;
+    }
+
+    public function byKey($key)
+    {
+
+        $results = $this->_rest->get($this->_base, [
+                'query' => [
+                    'key' => $key
+                ],
+                'options' => [
+                    'images' => [
+                        'w' => 250,
+                        'h' => false
+                    ]
+                ]
+            ])->{$this->_resultsKeyPlural};
+
+        if (count($results) == 0) {
+            throw new \Handbid\Exception\Network('Could not find entity with key ' . $key);
+        }
+
+        $result = $this->map($results[0]);
+
+        return $result;
+    }
+
 }
