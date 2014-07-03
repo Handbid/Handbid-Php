@@ -54,5 +54,4 @@ class Auction extends StoreAbstract
 
     }
 
-
 }

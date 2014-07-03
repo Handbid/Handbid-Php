@@ -8,8 +8,8 @@ class Item extends StoreAbstract{
 
     public $_base = 'items';
 
-    public function byAuction($id) {
-        return $this->_rest->get('auctions/' . $id . '/items.json');
+    public function byAuction($id, $query = []) {
+        return $this->_rest->get('auctions/' . $id . '/items.json', $query);
     }
 
 }

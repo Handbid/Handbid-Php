@@ -18,7 +18,7 @@ class StoreAbstract implements StoreInterface
     {
         $this->_rest = $rest;
 
-        if(!$this->_resultsKeyPlural) {
+        if (!$this->_resultsKeyPlural) {
             $this->_resultsKeyPlural = $this->_resultsKey . 's';
         }
     }
@@ -33,9 +33,19 @@ class StoreAbstract implements StoreInterface
         return $this->map($this->_rest->get($this->_base . '/' . $id)->{$this->_resultsKey});
     }
 
-    public function byKey($key)
+    public function byKey($key, $query = [])
     {
-        $results = $this->_rest->get($this->_base, ['query' => ['key' => $key]])->{$this->_resultsKeyPlural};
+
+        $query   = array_merge(
+            [
+                'query' => [
+                    'key' => $key
+                ]
+            ],
+            $query
+        );
+        $results = $this->_rest->get($this->_base, $query)->{
+        $this->_resultsKeyPlural};
 
         if (count($results) == 0) {
             throw new \Handbid\Exception\Network('Could not find entity with key ' . $key);

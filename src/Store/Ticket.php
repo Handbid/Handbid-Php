@@ -9,8 +9,8 @@ class Ticket extends StoreAbstract
 
     public $_base = 'tickets';
 
-    public function byAuction($id) {
-        return $this->_rest->get('auctions/' . $id . '/tickets.json');
+    public function byAuction($id, $query = []) {
+        return $this->_rest->get('auctions/' . $id . '/tickets.json', $query);
     }
 
 }

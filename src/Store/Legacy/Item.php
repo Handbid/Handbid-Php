@@ -4,19 +4,30 @@ namespace Handbid\Store\Legacy;
 
 use Handbid\Store\Legacy\StoreAbstract;
 
-class Item extends StoreAbstract{
+class Item extends StoreAbstract
+{
 
     public $_base = 'models/Item';
     public $_resultsKey = 'Item';
 
-    public function byAuction($id) {
+    public function byAuction($id, $query = [])
+    {
+
+        $query = array_merge(
+            [
+                'config' => [
+                    'limit' => 9999
+                ],
+                'query'  => [
+                    'auction' => $id
+                ]
+            ],
+            $query
+        );
         return $this->mapMany(
             $this->_rest->get(
                 $this->_base,
-                [
-                    'config' => ['limit' => 9999],
-                    'query'  => ['auction' => $id]
-                ]
+                $query
             )->{$this->_resultsKeyPlural}
         );
     }
@@ -24,18 +35,19 @@ class Item extends StoreAbstract{
     public function map($entity)
     {
 
-        $entity->terms = [$entity->_restMetaData->categoryName];
+        $entity->terms       = [$entity->_restMetaData->categoryName];
         $entity->closingTime = $entity->_restMetaData->closingTime;
-        $entity->highestBid = isset($entity->highestBid->amount) ? $entity->highestBid->amount : null;
+        $entity->highestBid  = isset($entity->highestBid->amount) ? $entity->highestBid->amount : null;
 
         return $entity;
     }
 
-    public function byKey($key)
+    public function byKey($key, $query = [])
     {
 
-        $results = $this->_rest->get($this->_base, [
-                'query' => [
+        $query   = array_merge(
+            [
+                'query'   => [
                     'key' => $key
                 ],
                 'options' => [
@@ -44,7 +56,13 @@ class Item extends StoreAbstract{
                         'h' => false
                     ]
                 ]
-            ])->{$this->_resultsKeyPlural};
+            ],
+            $query
+        );
+        $results = $this->_rest->get(
+            $this->_base,
+            $query
+        )->{$this->_resultsKeyPlural};
 
         if (count($results) == 0) {
             throw new \Handbid\Exception\Network('Could not find entity with key ' . $key);
@@ -54,5 +72,6 @@ class Item extends StoreAbstract{
 
         return $result;
     }
+
 
 }

@@ -18,15 +18,24 @@ class ItemCategory extends StoreAbstract
      *
      * @return mixed
      */
-    public function byAuction($id)
+    public function byAuction($id, $query = [])
     {
+        $query = array_merge(
+            [
+                'config' => [
+                    'limit' => 9999
+                ],
+                'query'  => [
+                    'auction' => $id
+                ]
+            ],
+            $query
+        );
+
         return $this->mapMany(
             $this->_rest->get(
                 $this->_base,
-                [
-                    'config' => ['limit' => 9999],
-                    'query'  => ['auction' => $id]
-                ]
+                $query
             )->{$this->_resultsKeyPlural}
         );
     }
