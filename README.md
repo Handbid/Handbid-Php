@@ -53,3 +53,12 @@ $auctions   = $store->all();
 $auctions   = $story->byOrg($org->_id);
 
 ```
+
+# Logging in a user
+```php
+
+$hb         = new Handbid($consumerKey, $consumerSecret);
+$auth       = new
+
+
+```
