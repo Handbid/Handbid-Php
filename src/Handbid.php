@@ -103,6 +103,12 @@ class Handbid
     {
         $this->_auth = $auth;
         $this->_rest->setAuth($auth);
+
+        //if our auth is missing a token, lets try and refresh it from the server (this will throw an exception on failure)
+        if ($this->_auth && !$this->_auth->hasToken()) {
+            $this->_auth->refreshToken($this->_rest);
+        }
+
         return $this;
     }
 
@@ -145,11 +151,6 @@ class Handbid
 
         //lazy load and cache the store.
         if (!isset($this->_storeCache[$type])) {
-
-            //if our auth is missing a token, lets try and refresh it from the server (this will throw an exception on failure)
-            if ($this->_auth && !$this->_auth->hasToken()) {
-                $this->_auth->refreshToken($this->_rest);
-            }
 
             //create the store instance
             $store = null;
