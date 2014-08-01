@@ -37,8 +37,10 @@ class Bidder extends StoreAbstract
             $this->_bidCache = $this->_rest->get(
                 'models/Bid',
                 [
-                    'auction' => $auctionId,
-                    'pin'     => $profile['pin']
+                    'query' => [
+                        'auction' => $auctionId,
+                        'pin'     => $profile->pin
+                    ]
                 ]
             );
         }
@@ -58,17 +60,21 @@ class Bidder extends StoreAbstract
     {
         $bids = $this->_fetchBids($auctionId);
 
-        return ($bids && $bids['Bids']) ? $bids['Bids'] : [];
+        return $bids->Bids;
     }
 
     public function myProxyBids($auctionId)
     {
-        return $this->_bidCache["ProxyBids"];
+        $bids = $this->_fetchBids($auctionId);
+
+        return $bids->ProxyBids;
     }
 
     public function myPurchases($auctionId)
     {
-        return $this->_bidCache["Purchases"];
+        $bids = $this->_fetchBids($auctionId);
+
+        return $bids->Purchases;
     }
 
 }
