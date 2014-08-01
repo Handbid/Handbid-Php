@@ -57,7 +57,7 @@ class Handbid
 
         require __DIR__ . "/Store/Bid.php";
         require __DIR__ . "/Store/Ticket.php";
-        require __DIR__ . "/Store/Bidder.php";
+        require __DIR__ . "/Store/Legacy/Bidder.php";
         require __DIR__ . "/Store/Donor.php";
         require __DIR__ . "/Store/Manager.php";
     }
@@ -72,7 +72,7 @@ class Handbid
         //default support is legacy now
         if (!isset($options['legacy']) || !$options['legacy']) {
             $this->_storePrefix  = 'Handbid\\Store\\Legacy\\';
-            $options['endpoint'] = 'http://handbid.com';
+            $options['endpoint'] = 'https://handbid.com';
             $options['auth']     = false;
 
         }
