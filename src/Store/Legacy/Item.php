@@ -24,12 +24,14 @@ class Item extends StoreAbstract
             ],
             $query
         );
+
         return $this->mapMany(
             $this->_rest->get(
                 $this->_base,
                 $query
             )->{$this->_resultsKeyPlural}
         );
+
     }
 
     public function map($entity)

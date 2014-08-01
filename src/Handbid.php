@@ -27,6 +27,7 @@ class Handbid
         require __DIR__ . "/Rest/Rest.php";
 
         require __DIR__ . "/Auth/AuthInterface.php";
+        require __DIR__ . "/Auth/Legacy.php";
         require __DIR__ . "/Auth/AppAuth.php";
         require __DIR__ . "/Auth/OAuth.php";
         require __DIR__ . "/Auth/UserXAuth.php";
@@ -73,7 +74,6 @@ class Handbid
         if (!isset($options['legacy']) || !$options['legacy']) {
             $this->_storePrefix  = 'Handbid\\Store\\Legacy\\';
             $options['endpoint'] = 'https://handbid.com';
-            $options['auth']     = false;
 
         }
 
@@ -83,7 +83,7 @@ class Handbid
 
         //build our rest supporting classes
         $this->_rest = isset($options['rest']) ? $options['rest'] : new Rest\Rest($endpoint, $path);
-        $auth        = isset($options['auth']) ? $options['auth'] : new Auth\AppAuth($consumerKey, $consumerSecret);
+        $auth        = isset($options['auth']) ? $options['auth'] : new Auth\Legacy();
 
         if ($auth) {
             $this->setAuth($auth);

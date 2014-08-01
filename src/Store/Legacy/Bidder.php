@@ -2,11 +2,12 @@
 
 namespace Handbid\Store;
 
-use Handbid\Store\StoreAbstract;
+use Handbid\Store\Legacy\StoreAbstract;
 
 class Bidder extends StoreAbstract
 {
 
+    public $_profileCache = null;
     public $_bidCache = [
         "Bids"      => [
             [
@@ -284,203 +285,48 @@ class Bidder extends StoreAbstract
 
     public function myProfile()
     {
-        return [
-            "_id"
-                             => "4dddf347ba3a209125000008",
-            "dateInserted"   => 1306391367,
-            "dateUpdated"    => 1406905303,
-            "name"           => "Taylor Romero",
-            "url"            => "\/user\/taylor-romero-2",
-            "key"            => "taylor-romero",
-            "roles"          => ["4dcd88c1ba3a207a0d000019"],
-            "firstName"      => "Taylor",
-            "lastName"       => "Romero",
-            "email"          => "liquidg3@mac.com",
-            "alias"          => "Taylor",
-            "photo"          => "https:\/\/handbidlive-handbid.netdna-ssl.com\/local\/uploads\/user\/taylor-romero-2\/this-is-america.jpg",
-            "address"        => [
-                "street1"    => "",
-                "street2"    => "",
-                "city"       => "",
-                "province"   => "",
-                "postalCode" => "",
-                "country"    => "us"
-            ],
-            "_restMetaData"  => [
-                "isManager" => false,
-                "isBidder"  => false,
-                "bidStats"  => [
-                    "4dd1f9d3ba3a20815800002c" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 0,
-                        "winningIds" => [],
-                        "losingIds"  => []
-                    ],
-                    "4e090bdeba3a20e435000002" => [
-                        "numWinning" => 1,
-                        "numLosing"  => 0,
-                        "winningIds" => ["4e1b9084ba3a205016000002"],
-                        "losingIds"  => [],
-                    ],
-                    "4e4ab853bc89295f6c000008" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 0,
-                        "winningIds" => [],
-                        "losingIds"  => []
-                    ],
-                    "4e6d7536bc8929eb39000003" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 0,
-                        "winningIds" => [],
-                        "losingIds"  => []
-                    ],
-                    "4e8c7d95bc8929287d000002" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 3,
-                        "winningIds" => [],
-                        "losingIds"  => [
-                            "4eb94e27bc8929c80e000033",
-                            "4ebef6a0bc8929d20e00000e",
-                            "4ebee3f6bc8929740c000008"
-                        ]
-                    ],
-                    "4eaddb8fbc89296279000003" => [
-                        "numWinning" => 1,
-                        "numLosing"  => 0,
-                        "winningIds" => ["4eb2179cbc8929f704000044"],
-                        "losingIds"  => []
-                    ],
-                    "4e97be55bc89290e4900007f" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 0,
-                        "winningIds" => [],
-                        "losingIds"  => []
-                    ],
-                    "4eb8b2d7bc8929df12000012" => false
-                ]
-            ],
-            "phone"          => [
-                "value" => "",
-                "type"  => null
-            ],
-            "cellPhone"      => [
-                "value" => "(720) 253-5250",
-                "type"  => ""
-            ],
-            "subscriptionId" => null,
-            "favoriteItems"  => [
-                "4eb8b408bc8929cb0e000043",
-                "4f4aad7ebc8929e964000051",
-                "4f4aad7ebc8929e96400004e",
-                "4f4aad7ebc8929e96400004d",
-                "4eb8b407bc8929cb0e000020",
-                "4f4aad7ebc8929e964000063",
-                "4f4aad7ebc8929e964000061",
-                "4f4aad7ebc8929e964000065",
-                "4f4aad7ebc8929e96400004a",
-                "4f4aad7ebc8929e96400004c",
-                "4f4aad7ebc8929e964000059",
-                "4eb8b407bc8929cb0e00002a",
-                "4f4aad7ebc8929e964000055",
-                "4eb8b407bc8929cb0e000024",
-                "4f4aad7ebc8929e964000056",
-                "4eb8b408bc8929cb0e00003a",
-                "4f4aad7ebc8929e96400005b",
-                "4dd1f9d3ba3a20815800002c",
-                "4f4aad7ebc8929e964000060",
-                "4f4aad7ebc8929e96400004f",
-                "4f66ae44bc8929993e000022",
-                "4f5eb57fbc8929595f000004",
-                "4f66adb5bc8929853e000030",
-                "4f4aac2ebc8929ed64000058",
-                "4eb8b408bc8929cb0e000047",
-                "4eb8b407bc8929cb0e000031",
-                "4eb8b408bc8929cb0e00004b",
-                "4eb8b2d7bc8929df12000012",
-                "4eb8b407bc8929cb0e00001c",
-                "4eb8b407bc8929cb0e00001e",
-                "4eb8b408bc8929cb0e000045",
-                "4eb8b408bc8929cb0e000034",
-                "4eb8b408bc8929cb0e000049",
-                "4e8c7d95bc8929287d000002",
-                "4eb8b408bc8929cb0e000036",
-                "4f96c0f7bc8929131d00000a",
-                "4eb8b407bc8929cb0e000022",
-                "4f970e1ebc89291d2f000026",
-                "4f9614efbc8929696400001c",
-                "4f95cd9bbc8929c044000019",
-                "4eb8b407bc8929cb0e00002d",
-                "4eb8b407bc8929cb0e000028",
-                "4eb8b408bc8929cb0e00003c",
-                "4f9615c7bc89295f65000002",
-                "4f9615eebc8929dc64000010",
-                "4eb8b408bc8929cb0e00003f",
-                "4f9761d0bc89292f64000013",
-                "4f825715bc8929f475000010",
-                "4f96150fbc89296c6400001f",
-                "4eb8b408bc8929cb0e000038",
-                "4f9abfaebc8929632e000010",
-                "4eb8b407bc8929cb0e000026",
-                "4f9abeffbc8929912d000020",
-                "4f9a26e7bc89299906000002",
-                "4f95cd6cbc8929de45000004",
-                "4eb8b407bc8929cb0e00002f",
-                "4f9db5b4bc8929ae0d00001b",
-                "4f97873cbc89293c7e000011",
-                "4fc8f89cbc89290c2600000f",
-                "4fbaaf89bc8929f947000019",
-                "4fd76743bc89296c65000043",
-                "4ff1df03bc8929595d00004b",
-                "4febd925bc89298356000002",
-                "4f96156fbc89292b65000004",
-                "4fc7c6b8bc8929b504000035",
-                "501c16dfbc8929d306000027",
-                "501c0157bc8929023400004b",
-                "501c16dfbc8929d30600001d",
-                "5026dc18bc8929b266000002",
-                "50116c96bc8929a60c000003",
-                "4fe156cbbc8929167f00000a",
-                "501fce0fbc89292515000033",
-                "506a2783bc89297e1c000047",
-                "4eb8b408bc8929cb0e000041",
-                "508935bfbc8929d17e000036",
-                "50d23a97bc89296f2400103d",
-                "50d238e5bc8929d704000b2a",
-                "51686417a14d9963740067f7",
-                "511179eda14d993812001054",
-                "51e43518a14d9939260166e3",
-                "5266f18fa14d99314a001a53",
-                "52f3b999a14d99771a004393",
-                "52bc7aeea14d99d969006b65",
-                "530d0115a14d99ab20000061",
-                "530cffb8a14d99b420000057",
-                "523b6131a14d99517c010ed0",
-                "53232a84a14d99673f005e3d"
-            ],
-            "pin"            => 1,
-            "_auth"          => [
-                "ironframe"           => "liquidg3@mac.com:50aa665c211e68d00b7350757fda501c:48091994cbe274fced5c3e01f7818342",
-                "autoLoginUserPhone"  => "7202535250",
-                "bidderEmailPassword" => "liquidg3@mac.com:bidder:92edf25123fc35a148c72b72351fc341",
-                "bidderEmailPhone"    => "liquidg3@mac.com:bidder:7db7dad4d71161755ae7737daf68b2a1",
-                "bidderPinPassword"   => "1:bidder:5cfbc428ad234278875adbbf5b522182",
-                "bidderPinPhone"      => "1:bidder:ddcb84ede794e810f94f375cbd735174",
-                "bidder"              => "liquidg3@mac.com:bidder:92edf25123fc35a148c72b72351fc341"
-            ]
-        ];
+
+        if (!$this->_profileCache) {
+            $this->_profileCache = $this->_rest->get('profile');
+        }
+
+        return $this->_profileCache;
     }
 
-    public function myBids()
+    /**
+     * Because proxy bids, bids, and purchases come back in 1 request i do not want us making the same request
+     * many times
+     *
+     * @return array
+     */
+    public function _fetchBids($auction)
+    {
+        if (!$this->_bidCache) {
+            $profile         = $this->myProfile();
+
+            $this->_bidCache = $this->_rest->get(
+                'models/Bid',
+                [
+                    'auction' => $auction['_id'],
+                    'pin'     => $profile['pin']
+                ]
+            );
+        }
+
+        return $this->_bidCache;
+    }
+
+    public function myBids($auction)
     {
         return $this->_bidCache["Bids"];
     }
 
-    public function myProxyBids()
+    public function myProxyBids($auction)
     {
         return $this->_bidCache["ProxyBids"];
     }
 
-    public function myPurchases()
+    public function myPurchases($auction)
     {
         return $this->_bidCache["Purchases"];
     }
