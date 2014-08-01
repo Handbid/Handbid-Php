@@ -52,7 +52,7 @@ class Bidder extends StoreAbstract
     {
 
         $this->myProfile();
-        return $this->_profileCache && isset($this->_profileCache['_restMetaData']['stats'][$auctionId]) ? $this->_profileCache['_restMetaData']['stats'][$auctionId] : null;
+        return $this->_profileCache && isset($this->_profileCache->_restMetaData['stats'][$auctionId]) ? $this->_profileCache->_restMetaData['stats'][$auctionId] : null;
 
     }
 
