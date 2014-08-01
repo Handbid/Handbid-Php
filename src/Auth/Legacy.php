@@ -33,15 +33,21 @@ class Legacy implements AuthInterface
      */
     public function fetchToken(\Handbid\Rest\RestInterface $rest)
     {
+
+        if($this->_auth) {
+            return $this->_auth;
+        }
+
         if(isset($_GET['handbid-auth'])) {
-            $_COOKIE['handbid-auth'] = $this->_auth = $_GET['handbid-auth'];
+            $this->_auth = $_GET['handbid-auth'];
+            setcookie('handbid-auth', $this->_auth, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN, false);
         }
 
         if(isset($_COOKIE['handbid-auth'])) {
-            return $_COOKIE['handbid-auth'];
+            $this->_auth = $_COOKIE['handbid-auth'];
         }
 
-        return null;
+        return $this->_auth;
     }
 
     public function refreshToken(\Handbid\Rest\RestInterface $rest)

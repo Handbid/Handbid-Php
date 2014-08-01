@@ -14,11 +14,11 @@ class Bidder extends StoreAbstract
     {
 
         if (!$this->_profileCache) {
-            $this->_profileCache = $this->_rest->get('profile');
+            $this->_profileCache = $this->_rest->get('profile')->Users[0];
         }
 
         $profile = $this->_profileCache;
-        unset($profile['_restMetaData']);
+        unset($profile->_restMetaData, $profile->favoriteItems);
 
         return $profile;
     }
