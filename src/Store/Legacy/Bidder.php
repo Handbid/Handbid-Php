@@ -282,7 +282,7 @@ class Bidder extends StoreAbstract
         ]
     ];
 
-    public function profile()
+    public function myProfile()
     {
         return [
             "_id"
