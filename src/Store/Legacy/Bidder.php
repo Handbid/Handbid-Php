@@ -1,6 +1,6 @@
 <?php
 
-namespace Handbid\Store;
+namespace Handbid\Store\Legacy;
 
 use Handbid\Store\StoreAbstract;
 
@@ -306,57 +306,64 @@ class Bidder extends StoreAbstract
                 "postalCode" => "",
                 "country"    => "us"
             ],
-            "_restMetaData"  => [
-                "isManager" => false,
-                "isBidder"  => false,
-                "bidStats"  => [
-                    "4dd1f9d3ba3a20815800002c" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 0,
-                        "winningIds" => [],
-                        "losingIds"  => []
-                    ],
-                    "4e090bdeba3a20e435000002" => [
-                        "numWinning" => 1,
-                        "numLosing"  => 0,
-                        "winningIds" => ["4e1b9084ba3a205016000002"],
-                        "losingIds"  => [],
-                    ],
-                    "4e4ab853bc89295f6c000008" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 0,
-                        "winningIds" => [],
-                        "losingIds"  => []
-                    ],
-                    "4e6d7536bc8929eb39000003" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 0,
-                        "winningIds" => [],
-                        "losingIds"  => []
-                    ],
-                    "4e8c7d95bc8929287d000002" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 3,
-                        "winningIds" => [],
-                        "losingIds"  => [
-                            "4eb94e27bc8929c80e000033",
-                            "4ebef6a0bc8929d20e00000e",
-                            "4ebee3f6bc8929740c000008"
-                        ]
-                    ],
-                    "4eaddb8fbc89296279000003" => [
-                        "numWinning" => 1,
-                        "numLosing"  => 0,
-                        "winningIds" => ["4eb2179cbc8929f704000044"],
-                        "losingIds"  => []
-                    ],
-                    "4e97be55bc89290e4900007f" => [
-                        "numWinning" => 0,
-                        "numLosing"  => 0,
-                        "winningIds" => [],
-                        "losingIds"  => []
-                    ],
-                    "4eb8b2d7bc8929df12000012" => false
+            "isManager" => false,
+            "isBidder"  => false,
+            "bidStats"  => [
+                "4dd1f9d3ba3a20815800002c" => [
+                    "numWinning" => 0,
+                    "numLosing"  => 0,
+                    "winningIds" => [],
+                    "losingIds"  => []
+                ],
+                "4e090bdeba3a20e435000002" => [
+                    "numWinning" => 1,
+                    "numLosing"  => 0,
+                    "winningIds" => ["4e1b9084ba3a205016000002"],
+                    "losingIds"  => [],
+                ],
+                "4e4ab853bc89295f6c000008" => [
+                    "numWinning" => 0,
+                    "numLosing"  => 0,
+                    "winningIds" => [],
+                    "losingIds"  => []
+                ],
+                "4e6d7536bc8929eb39000003" => [
+                    "numWinning" => 0,
+                    "numLosing"  => 0,
+                    "winningIds" => [],
+                    "losingIds"  => []
+                ],
+                "4e8c7d95bc8929287d000002" => [
+                    "numWinning" => 0,
+                    "numLosing"  => 3,
+                    "winningIds" => [],
+                    "losingIds"  => [
+                        "4eb94e27bc8929c80e000033",
+                        "4ebef6a0bc8929d20e00000e",
+                        "4ebee3f6bc8929740c000008"
+                    ]
+                ],
+                "4eaddb8fbc89296279000003" => [
+                    "numWinning" => 1,
+                    "numLosing"  => 0,
+                    "winningIds" => ["4eb2179cbc8929f704000044"],
+                    "losingIds"  => []
+                ],
+                "4e97be55bc89290e4900007f" => [
+                    "numWinning" => 0,
+                    "numLosing"  => 0,
+                    "winningIds" => [],
+                    "losingIds"  => []
+                ],
+                "4eb8b2d7bc8929df12000012" => [
+                    "numWinning" => 0,
+                    "numLosing"  => 3,
+                    "winningIds" => [],
+                    "losingIds"  => [
+                        "4eb94e27bc8929c80e000033",
+                        "4ebef6a0bc8929d20e00000e",
+                        "4ebee3f6bc8929740c000008"
+                    ]
                 ]
             ],
             "phone"          => [
