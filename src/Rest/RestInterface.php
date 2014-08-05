@@ -21,6 +21,13 @@ interface RestInterface{
     public function setAuth(AuthInterface $auth);
 
     /**
+     * Return the auth object if you have one
+     *
+     * @return mixed
+     */
+    public function auth();
+
+    /**
      * A GET request to your route. Will prepend endpoint and basePath.
      *
      * @param string $route relative path from endpoint+basePath

@@ -78,7 +78,7 @@ class Handbid
         }
 
         //defaults
-        $endpoint = isset($options['endpoint']) ? $options['endpoint'] : 'http://rest.newbeta.handbid.com';
+        $endpoint = isset($options['endpoint']) ? $options['endpoint'] : 'http://beta.handbid.com';
         $path     = isset($options['path']) ? $options['path'] : '/v1/rest/';
 
         //build our rest supporting classes

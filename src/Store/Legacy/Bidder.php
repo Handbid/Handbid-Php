@@ -13,6 +13,10 @@ class Bidder extends StoreAbstract
     public function myProfile()
     {
 
+        if (!$this->_rest->auth()->hasToken()) {
+            return null;
+        }
+
         if (!$this->_profileCache) {
             $this->_profileCache = $this->_rest->get('profile')->Users[0];
         }
@@ -31,7 +35,17 @@ class Bidder extends StoreAbstract
      */
     public function _fetchBids($auctionId)
     {
+
+        if (!$this->myProfile()) {
+            return (object)[
+                'Bids'      => [],
+                'ProxyBids' => [],
+                'Purchases' => []
+            ];
+        }
+
         if (!$this->_bidCache) {
+
             $profile = $this->myProfile();
 
             $this->_bidCache = $this->_rest->get(
@@ -50,8 +64,10 @@ class Bidder extends StoreAbstract
 
     public function myStats($auctionId)
     {
+        if (!$this->myProfile()) {
+            return [];
+        }
 
-        $this->myProfile();
         return $this->_profileCache && isset($this->_profileCache->_restMetaData['stats'][$auctionId]) ? $this->_profileCache->_restMetaData['stats'][$auctionId] : null;
 
     }

@@ -58,6 +58,9 @@ class Rest implements RestInterface
         return $this->_request('DELETE', $route, $query, $headers);
     }
 
+    public function auth() {
+        return $this->_auth;
+    }
     /**
      * Request utility. Actually makes requests.
      *
@@ -108,7 +111,8 @@ class Rest implements RestInterface
             curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
 
         } elseif ($method === 'GET' && $query) {
-            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri . '?' . $query);
+            $uri = $uri . '?' . $query;
+            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
 
         } elseif ($method === 'DELETE') {
             curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);

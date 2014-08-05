@@ -25,12 +25,25 @@ class StoreAbstract implements StoreInterface
 
     public function all($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC')
     {
-        return $this->mapMany($this->_rest->get($this->_base)->{$this->_resultsKeyPlural});
+
+        $results = $this->_rest->get($this->_base);
+
+        if($results) {
+            $results = $this->mapMany($results->{$this->_resultsKeyPlural});
+        }
+
+        return $results;
     }
 
     public function byId($id)
     {
-        return $this->map($this->_rest->get($this->_base . '/' . $id)->{$this->_resultsKey});
+        $results = $this->_rest->get($this->_base . '/' . $id);
+
+        if($results) {
+            $results = $this->map($results->{$this->_resultsKey});
+        }
+
+        return $results;
     }
 
     public function byKey($key, $query = [])
@@ -44,8 +57,8 @@ class StoreAbstract implements StoreInterface
             ],
             $query
         );
-        $results = $this->_rest->get($this->_base, $query)->{
-        $this->_resultsKeyPlural};
+        $results = $this->_rest->get($this->_base, $query);
+        $results = $results ? $results->{$this->_resultsKeyPlural} : [];
 
         if (count($results) == 0) {
             throw new \Handbid\Exception\Network('Could not find entity with key ' . $key);
