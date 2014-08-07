@@ -21,7 +21,7 @@ class Bidder extends StoreAbstract
             $this->_profileCache = $this->_rest->get('profile')->Users[0];
         }
 
-        $profile = $this->_profileCache;
+        $profile = clone $this->_profileCache;
         unset($profile->_restMetaData, $profile->favoriteItems);
 
         return $profile;
@@ -68,7 +68,7 @@ class Bidder extends StoreAbstract
             return [];
         }
 
-        return $this->_profileCache && isset($this->_profileCache->_restMetaData['stats'][$auctionId]) ? $this->_profileCache->_restMetaData['stats'][$auctionId] : null;
+        return $this->_profileCache && isset($this->_profileCache->_restMetaData->bidStats->{$auctionId}) ? $this->_profileCache->_restMetaData->bidStats->${auctionId} : null;
 
     }
 
