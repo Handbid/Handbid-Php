@@ -73,7 +73,7 @@ class Handbid
         //default support is legacy now
         if (!isset($options['legacy']) || !$options['legacy']) {
             $this->_storePrefix  = 'Handbid\\Store\\Legacy\\';
-            $options['endpoint'] = 'https://handbid.com';
+            $options['endpoint'] = 'https://beta.handbid.com';
 
         }
 
