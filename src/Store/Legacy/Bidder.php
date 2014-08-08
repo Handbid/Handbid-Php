@@ -102,7 +102,7 @@ class Bidder extends StoreAbstract
 
         if($bids) {
 
-            $bids = $bids->ProxyBid;
+            $bids = $bids->ProxyBids;
 
             foreach($bids as $bid) {
 
