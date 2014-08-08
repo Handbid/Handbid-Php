@@ -71,10 +71,8 @@ class Handbid
     public function __construct($consumerKey, $consumerSecret, $options = [])
     {
         //default support is legacy now
-        if (!isset($options['legacy']) || !$options['legacy']) {
+        if (!isset($options['legacy']) || $options['legacy']) {
             $this->_storePrefix  = 'Handbid\\Store\\Legacy\\';
-            $options['endpoint'] = 'https://beta.handbid.com';
-
         }
 
         //defaults
