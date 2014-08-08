@@ -8,7 +8,7 @@ class Bidder extends StoreAbstract
 {
 
     public $_profileCache = null;
-    public $_bidCache = null;
+    public $_bidCache = [];
 
     public function myProfile()
     {
@@ -33,23 +33,19 @@ class Bidder extends StoreAbstract
      *
      * @return array
      */
-    public function _fetchBids($auctionId)
+    public function _fetchBids($auctionId, $type = 'Bid')
     {
 
         if (!$this->myProfile()) {
-            return (object)[
-                'Bids'      => [],
-                'ProxyBids' => [],
-                'Purchases' => []
-            ];
+            return null;
         }
 
-        if (!$this->_bidCache) {
+        if (!isset($this->_bidCache[$auctionId])) {
 
             $profile = $this->myProfile();
 
-            $this->_bidCache = $this->_rest->get(
-                'models/Bid',
+            $this->_bidCache[$auctionId] = $this->_rest->get(
+                'models/' . $type,
                 [
                     'query' => [
                         'auction' => $auctionId,
@@ -59,38 +55,68 @@ class Bidder extends StoreAbstract
             );
         }
 
-        return $this->_bidCache;
+        return $this->_bidCache[$auctionId];
     }
 
-    public function myStats($auctionId)
-    {
-        if (!$this->myProfile()) {
-            return [];
-        }
-
-        return $this->_profileCache && isset($this->_profileCache->_restMetaData->bidStats->{$auctionId}) ? $this->_profileCache->_restMetaData->bidStats->${auctionId} : null;
-
-    }
 
     public function myBids($auctionId)
     {
         $bids = $this->_fetchBids($auctionId);
+        $winning = [];
 
-        return $bids->Bids;
+        if($bids) {
+
+            $bids = $bids->Bids;
+
+            foreach($bids as $bid) {
+
+                if($bid->status == 'winning') {
+                    $winning[] = $bid;
+                }
+
+            }
+
+        }
+
+        return $winning;
     }
 
     public function myProxyBids($auctionId)
     {
-        $bids = $this->_fetchBids($auctionId);
+        $bids = $this->_fetchBids($auctionId, 'ProxyBid');
 
-        return $bids->ProxyBids;
+        return $bids ? $bids->ProxyBids : [];
     }
 
     public function myPurchases($auctionId)
     {
-        $bids = $this->_fetchBids($auctionId);
+        $bids = $this->_fetchBids($auctionId, 'Purchase');
 
-        return $bids->Purchases;
+        return $bids ? $bids->Purchases : [];
+    }
+
+    public function myLosing($auctionId) {
+
+        $bids = $this->_fetchBids($auctionId);
+        $losing = [];
+
+        if($bids) {
+
+            $bids = $bids->ProxyBid;
+
+            foreach($bids as $bid) {
+
+                if($bid->status == 'losing') {
+                    $losing[] = $bid;
+                }
+
+            }
+
+        }
+
+        return $losing;
+
+
     }
 
 }
