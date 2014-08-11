@@ -134,7 +134,7 @@ class Rest implements RestInterface
         elseif ($info['http_code'] != 200) {
 
             $response = json_decode($responseText);
-            if ($response) {
+            if ($response && isset($response->Errors)) {
                 throw new NetworkException($response->Errors[0]->description, $info['http_code']);
             } else {
                 throw new NetworkException('Unknown response from server with url of (' . $info['url'] . ') Http Code:' . $info['http_code']);
