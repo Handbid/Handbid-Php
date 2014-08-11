@@ -109,4 +109,6 @@ class OAuth implements AuthInterface
             $headers['Authorization']  = 'OAuth ' . implode(',',$_headers);
         }
     }
+
+    public function clearToken() {}
 }

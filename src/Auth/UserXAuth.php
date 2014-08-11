@@ -77,4 +77,5 @@ class UserXAuth extends OAuth
 
     }
 
+    public function clearToken() {}
 }

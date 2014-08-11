@@ -72,7 +72,7 @@ class Handbid
     {
         //default support is legacy now
         if (!isset($options['legacy']) || $options['legacy']) {
-            $this->_storePrefix  = 'Handbid\\Store\\Legacy\\';
+            $this->_storePrefix = 'Handbid\\Store\\Legacy\\';
         }
 
         //defaults
@@ -128,7 +128,7 @@ class Handbid
     public function testAuth()
     {
 
-        if($this->_auth) {
+        if ($this->_auth) {
             $token = $this->_auth->fetchToken($this->_rest);
         } else {
             throw new \Handbid\Exception\App('No valid auth set.');
@@ -176,6 +176,17 @@ class Handbid
         }
 
         return $this->_storeCache[$type];
+
+    }
+
+    public function logout()
+    {
+
+        if($this->_auth) {
+
+            $this->_auth->clearToken();
+
+        }
 
     }
 

@@ -110,4 +110,7 @@ class AppAuth implements AuthInterface
         }
         return $this;
     }
+
+
+    public function clearToken() {}
 }

@@ -11,5 +11,6 @@ interface AuthInterface
     public function fetchToken(\Handbid\Rest\RestInterface $rest);
     public function refreshToken(\Handbid\Rest\RestInterface $rest);
     public function initRequest(&$method, &$url, &$query, &$postData, &$headers);
+    public function clearToken();
 
 }

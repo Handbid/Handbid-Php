@@ -40,7 +40,6 @@ class Legacy implements AuthInterface
 
         if(isset($_GET['handbid-auth'])) {
             $this->_auth = $_GET['handbid-auth'];
-            setcookie('handbid-auth', $this->_auth, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN, false);
         }
 
         if(isset($_COOKIE['handbid-auth'])) {
@@ -65,4 +64,13 @@ class Legacy implements AuthInterface
         }
     }
 
+
+    public function clearToken() {
+
+        if(isset($_COOKIE['handbid-auth'])) {
+            unset($_COOKIE['handbid-auth']);
+            setcookie('handbid-auth', 11, time()-3600, COOKIEPATH, COOKIE_DOMAIN, false);
+        }
+
+    }
 }
