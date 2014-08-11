@@ -17,12 +17,19 @@ class Bidder extends StoreAbstract
             return null;
         }
 
-        if (!$this->_profileCache) {
-            $this->_profileCache = $this->_rest->get('profile')->Users[0];
-        }
+        try {
 
-        $profile = clone $this->_profileCache;
-        unset($profile->_restMetaData, $profile->favoriteItems);
+
+            if (!$this->_profileCache) {
+                $this->_profileCache = $this->_rest->get('profile')->Users[0];
+            }
+
+            $profile = clone $this->_profileCache;
+            unset($profile->_restMetaData, $profile->favoriteItems);
+
+        } catch (Excetion $e) {
+            $profile = null;
+        }
 
         return $profile;
     }
