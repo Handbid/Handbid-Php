@@ -31,6 +31,9 @@ class Bidder extends StoreAbstract
      * Because proxy bids, bids, and purchases come back in 1 request i do not want us making the same request
      * many times
      *
+     * @param        $auctionId
+     * @param string $type
+     *
      * @return array
      */
     public function _fetchBids($auctionId, $type = 'Bid')
@@ -57,7 +60,6 @@ class Bidder extends StoreAbstract
 
         return $this->_bidCache[$auctionId];
     }
-
 
     public function myBids($auctionId)
     {
