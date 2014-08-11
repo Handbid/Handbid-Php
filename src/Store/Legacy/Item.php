@@ -9,6 +9,7 @@ class Item extends StoreAbstract
 
     public $_base = 'models/Item';
     public $_resultsKey = 'Item';
+    public $_itemCache = [];
 
     public function byAuction($id, $query = [])
     {
@@ -25,12 +26,48 @@ class Item extends StoreAbstract
             $query
         );
 
-        return $this->mapMany(
+        $queryKey = serialize($query);
+
+        $this->_itemCache[$queryKey] = $this->mapMany(
             $this->_rest->get(
                 $this->_base,
                 $query
             )->{$this->_resultsKeyPlural}
         );
+
+        return $this->_itemCache[$queryKey];
+
+    }
+
+    public function biddableByAuction($id, $query = [])
+    {
+
+        $items = $this->byAuction($id, $query);
+        $biddable = [];
+
+        foreach($items as $item) {
+            if(!$item->isDirectPurchaseItem) {
+                $biddable[] = $item;
+            }
+        }
+
+        return $biddable;
+
+    }
+
+    public function purchasableByAuction($id, $query = [])
+    {
+
+        $items = $this->byAuction($id, $query);
+        $purchasable = [];
+
+        foreach($items as $item) {
+            if($item->isDirectPurchaseItem) {
+                $purchasable[] = $item;
+            }
+        }
+
+        return $purchasable;
 
     }
 
