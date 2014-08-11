@@ -118,7 +118,7 @@ class Bidder extends StoreAbstract
         if(!$bids) {
             return null;
         }
-        
+
         if($bids) {
 
             $bids = $bids->Bids;
