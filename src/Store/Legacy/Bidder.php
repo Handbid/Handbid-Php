@@ -19,7 +19,6 @@ class Bidder extends StoreAbstract
 
         try {
 
-
             if (!$this->_profileCache) {
                 $this->_profileCache = $this->_rest->get('profile')->Users[0];
             }
@@ -68,23 +67,49 @@ class Bidder extends StoreAbstract
         return $this->_bidCache[$auctionId];
     }
 
+    public function updateProfile($values)
+    {
+
+        if(!$this->myProfile()) {
+            throw new \Exception('You must be logged in to update your profile.');
+        }
+
+        $profile = $this->myProfile();
+
+        if($values['photo']) {
+
+            $photo = $values['photo'];
+
+            if(!file_exists($photo)) {
+                throw new \Exception('I could not find a photo at ' + $photo);
+            }
+
+            $values['photo'] = '@' . $photo . ';filename=' . basename($photo);
+
+        }
+
+        return $this->_rest->post('models/User/' . $profile->_id, $values);
+
+
+    }
+
     public function myBids($auctionId)
     {
         $bids = $this->_fetchBids($auctionId);
 
-        if(!$bids) {
+        if (!$bids) {
             return null;
         }
 
         $winning = [];
 
-        if($bids) {
+        if ($bids) {
 
             $bids = $bids->Bids;
 
-            foreach($bids as $bid) {
+            foreach ($bids as $bid) {
 
-                if($bid->status == 'winning') {
+                if ($bid->status == 'winning') {
                     $winning[] = $bid;
                 }
 
@@ -109,23 +134,24 @@ class Bidder extends StoreAbstract
         return $bids ? $bids->Purchases : null;
     }
 
-    public function myLosing($auctionId) {
+    public function myLosing($auctionId)
+    {
 
-        $bids = $this->_fetchBids($auctionId);
+        $bids   = $this->_fetchBids($auctionId);
         $losing = [];
 
 
-        if(!$bids) {
+        if (!$bids) {
             return null;
         }
 
-        if($bids) {
+        if ($bids) {
 
             $bids = $bids->Bids;
 
-            foreach($bids as $bid) {
+            foreach ($bids as $bid) {
 
-                if($bid->status == 'losing') {
+                if ($bid->status == 'losing') {
                     $losing[] = $bid;
                 }
 
