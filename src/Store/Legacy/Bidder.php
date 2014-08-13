@@ -82,7 +82,7 @@ class Bidder extends StoreAbstract
             if(is_array($values)) {
 
 
-                $values['photo'] = '@' . $values['tmp_name'] . ';filename=' . $values['name'];
+                $values['photo'] = '@' . $values['photo']['tmp_name'] . ';filename=' . $values['photo']['name'];
 
             } else {
 
