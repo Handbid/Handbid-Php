@@ -76,7 +76,7 @@ class Bidder extends StoreAbstract
 
         $profile = $this->myProfile();
 
-        if($values['photo']) {
+        if(isset($values['photo']) && $values['photo']) {
 
             $photo = $values['photo'];
 
