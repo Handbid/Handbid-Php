@@ -115,7 +115,7 @@ class Bidder extends StoreAbstract
             $post['values[' . $k . ']'] = $v;
         }
 
-        $profie = $this->_rest->post('models/User/' . $profile->_id, $post);
+        $profile = $this->_rest->post('models/User/' . $profile->_id, $post);
 
         echo 'profile dump:';
         print_r($profile);
