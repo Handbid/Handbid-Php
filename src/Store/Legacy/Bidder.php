@@ -88,6 +88,16 @@ class Bidder extends StoreAbstract
 
         }
 
+        if(isset($values['password']) && empty($values['password2'])) {
+
+            unset($values['password']);
+
+            if(isset($values['password2'])) {
+                unset($values['password2']);
+            }
+
+        }
+
         $post = [];
 
         foreach($values as $k => $v) {
