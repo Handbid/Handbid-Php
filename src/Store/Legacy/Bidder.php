@@ -78,13 +78,24 @@ class Bidder extends StoreAbstract
 
         if(isset($values['photo']) && $values['photo']) {
 
-            $photo = $values['photo'];
+            //if this is an array, i'm going to assume it was a straight passthrough from $_FILES
+            if(is_array($values)) {
 
-            if(!file_exists($photo)) {
-                throw new \Exception('I could not find a photo at ' + $photo);
+
+                $values['photo'] = '@' . $values['tmp_name'] . ';filename=' . $values['name'];
+
+            } else {
+
+                $photo = $values['photo'];
+
+                if(!file_exists($photo)) {
+                    throw new \Exception('I could not find a photo at ' + $photo);
+                }
+
+                $values['photo'] = '@' . $photo . ';filename=' . basename($photo);
+
             }
 
-            $values['photo'] = '@' . $photo . ';filename=' . basename($photo);
 
         }
 
@@ -104,8 +115,13 @@ class Bidder extends StoreAbstract
             $post['values[' . $k . ']'] = $v;
         }
 
-        return $this->_rest->post('models/User/' . $profile->_id, $post);
+        $profie = $this->_rest->post('models/User/' . $profile->_id, $post);
 
+        echo 'profile dump:';
+        print_r($profile);
+        exit;
+
+        return $profile;
 
     }
 
