@@ -115,11 +115,10 @@ class Bidder extends StoreAbstract
             $post['values[' . $k . ']'] = $v;
         }
 
-        $profile = $this->_rest->post('models/User/' . $profile->_id, $post);
+        $profile = $this->_rest->post('models/User/' . $profile->_id, $post)->User;
 
-        echo 'profile dump:';
-        print_r($profile);
-        exit;
+        //update auth
+        $this->_rest->auth()->setToken($profile->_auth->ironframe);
 
         return $profile;
 
