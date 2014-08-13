@@ -88,7 +88,7 @@ class Bidder extends StoreAbstract
 
         }
 
-        return $this->_rest->post('models/User/' . $profile->_id, $values);
+        return $this->_rest->post('models/User/' . $profile->_id, ['values' => $values]);
 
 
     }
