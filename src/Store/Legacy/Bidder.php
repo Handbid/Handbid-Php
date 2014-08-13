@@ -92,7 +92,7 @@ class Bidder extends StoreAbstract
         $post = [];
 
         foreach($values as $k => $v) {
-            $post['[' . $k . ']'] = $v;
+            $post['values[' . $k . ']'] = $v;
         }
 
         return $this->_rest->post('models/User/' . $profile->_id, $post);
