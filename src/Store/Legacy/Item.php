@@ -10,6 +10,7 @@ class Item extends StoreAbstract
     public $_base = 'models/Item';
     public $_resultsKey = 'Item';
     public $_itemCache = [];
+    public $_bidCache = [];
 
     public function byAuction($id, $query = [])
     {
@@ -42,11 +43,11 @@ class Item extends StoreAbstract
     public function biddableByAuction($id, $query = [])
     {
 
-        $items = $this->byAuction($id, $query);
+        $items    = $this->byAuction($id, $query);
         $biddable = [];
 
-        foreach($items as $item) {
-            if(!$item->isDirectPurchaseItem) {
+        foreach ($items as $item) {
+            if (!$item->isDirectPurchaseItem) {
                 $biddable[] = $item;
             }
         }
@@ -58,11 +59,11 @@ class Item extends StoreAbstract
     public function purchasableByAuction($id, $query = [])
     {
 
-        $items = $this->byAuction($id, $query);
+        $items       = $this->byAuction($id, $query);
         $purchasable = [];
 
-        foreach($items as $item) {
-            if($item->isDirectPurchaseItem) {
+        foreach ($items as $item) {
+            if ($item->isDirectPurchaseItem) {
                 $purchasable[] = $item;
             }
         }
@@ -112,5 +113,44 @@ class Item extends StoreAbstract
         return $result;
     }
 
+
+    public function _fetchBids($itemId)
+    {
+
+        if (!isset($this->_bidCache[$itemId])) {
+
+            $this->_bidCache[$itemId] = $this->_rest->get(
+                'models/Bid',
+                [
+                    'query' => [
+                        'item' => $itemId
+                    ]
+                ]
+            );
+        }
+
+        return $this->_bidCache[$itemId];
+
+    }
+
+    public function bids($itemId)
+    {
+        $bids = $this->_fetchBids($itemId);
+        return $bids ? $bids->Bids : [];
+    }
+
+    public function proxyBids($itemId)
+    {
+        $bids = $this->_fetchBids($itemId);
+        return $bids ? $bids->ProxyBids : [];
+
+    }
+
+    public function purchases($itemId)
+    {
+        $bids = $this->_fetchBids($itemId);
+        return $bids ? $bids->Purchases : [];
+
+    }
 
 }

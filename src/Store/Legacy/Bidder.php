@@ -42,7 +42,7 @@ class Bidder extends StoreAbstract
      *
      * @return array
      */
-    public function _fetchBids($auctionId, $type = 'Bid')
+    public function _fetchBids($auctionId)
     {
 
         if (!$this->myProfile()) {
@@ -54,7 +54,7 @@ class Bidder extends StoreAbstract
             $profile = $this->myProfile();
 
             $this->_bidCache[$auctionId] = $this->_rest->get(
-                'models/' . $type,
+                'models/Bid',
                 [
                     'query' => [
                         'auction' => $auctionId,
