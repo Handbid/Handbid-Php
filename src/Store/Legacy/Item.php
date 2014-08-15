@@ -75,11 +75,18 @@ class Item extends StoreAbstract
     public function map($entity)
     {
 
-        $entity->terms       = [$entity->_restMetaData->categoryName];
-        $entity->closingTime = $entity->_restMetaData->closingTime;
-        $entity->highestBid  = isset($entity->highestBid->amount) ? $entity->highestBid->amount : null;
-        $entity->winningBidderAlias = $entity->_restMetaData->leadingBidderAlias;
-        $entity->winningBidderId    = $entity->_restMetaData->leadingBidderId;
+        $entity->terms              = [$entity->_restMetaData->categoryName];
+        $entity->closingTime        = $entity->_restMetaData->closingTime;
+        $entity->highestBid         = isset($entity->highestBid->amount) ? $entity->highestBid->amount : null;
+
+        if(isset($entity->_restMetaData->leadingBidderAlias)) {
+
+            $entity->winningBidder = (object) [
+                'alias' => $entity->_restMetaData->leadingBidderAlias,
+                'id'    => $entity->_restMetaData->leadingBidderId,
+            ];
+
+        }
 
         return $entity;
     }

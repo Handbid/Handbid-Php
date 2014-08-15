@@ -81,12 +81,16 @@ class Bidder extends StoreAbstract
             //if this is an array, i'm going to assume it was a straight passthrough from $_FILES
             if(is_array($values)) {
 
-
-                $values['photo'] = '@' . $values['tmp_name'] . ';filename=' . $values['name'];
+                if(empty($values['photo']['name'])) {
+                    unset($values['photo']);
+                } else {
+                    $values['photo'] = new \CURLFile($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
+                }
 
             } else {
 
                 $photo = $values['photo'];
+                    throw new \Exception('Not finished');
 
                 if(!file_exists($photo)) {
                     throw new \Exception('I could not find a photo at ' + $photo);
@@ -112,7 +116,14 @@ class Bidder extends StoreAbstract
         $post = [];
 
         foreach($values as $k => $v) {
-            $post['values[' . $k . ']'] = $v;
+
+            //legacy hack
+            if($k == 'photo') {
+                $post[$k . '[file]'] = $v;
+            } else {
+
+                $post['values[' . $k . ']'] = $v;
+            }
         }
 
         $profile = $this->_rest->post('models/User/' . $profile->_id, $post)->User;

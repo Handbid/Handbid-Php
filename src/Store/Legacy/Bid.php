@@ -154,7 +154,7 @@ class Bid extends StoreAbstract
         $bid->winningBidder = (object) [
             'alias' => $bid->_restMetaData->bidderAlias,
             'name'  => $bid->_restMetaData->bidderName,
-            'pin'  => $bid->_restMetaData->bidderPin,
+            'pin'   => $bid->_restMetaData->bidderPin,
         ];
         unset($bid->_restMetaData);
 

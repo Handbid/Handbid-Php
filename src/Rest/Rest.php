@@ -79,7 +79,7 @@ class Rest implements RestInterface
         $method = strtoupper($method);
 
         //store for posterity
-        $this->_curlHandle = curl_init($this->_endpoint . $this->_basePath);
+        $this->_curlHandle = curl_init();
         curl_setopt($this->_curlHandle, CURLOPT_RETURNTRANSFER, true);
 
         $method  = strtoupper($method);
@@ -106,7 +106,7 @@ class Rest implements RestInterface
         if ($method === 'POST') {
             //setup our request for posting data, yo!
 
-            //curl_setopt($this->_curlHandle, CURLOPT_POST, true );
+            curl_setopt($this->_curlHandle, CURLOPT_POST, true );
             curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
             curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
 
