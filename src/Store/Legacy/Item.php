@@ -78,6 +78,8 @@ class Item extends StoreAbstract
         $entity->terms       = [$entity->_restMetaData->categoryName];
         $entity->closingTime = $entity->_restMetaData->closingTime;
         $entity->highestBid  = isset($entity->highestBid->amount) ? $entity->highestBid->amount : null;
+        $entity->winningBidderAlias = $entity->_restMetaData->leadingBidderAlias;
+        $entity->winningBidderId    = $entity->_restMetaData->leadingBidderId;
 
         return $entity;
     }
@@ -114,43 +116,7 @@ class Item extends StoreAbstract
     }
 
 
-    public function _fetchBids($itemId)
-    {
 
-        if (!isset($this->_bidCache[$itemId])) {
 
-            $this->_bidCache[$itemId] = $this->_rest->get(
-                'models/Bid',
-                [
-                    'query' => [
-                        'item' => $itemId
-                    ]
-                ]
-            );
-        }
-
-        return $this->_bidCache[$itemId];
-
-    }
-
-    public function bids($itemId)
-    {
-        $bids = $this->_fetchBids($itemId);
-        return $bids ? $bids->Bids : [];
-    }
-
-    public function proxyBids($itemId)
-    {
-        $bids = $this->_fetchBids($itemId);
-        return $bids ? $bids->ProxyBids : [];
-
-    }
-
-    public function purchases($itemId)
-    {
-        $bids = $this->_fetchBids($itemId);
-        return $bids ? $bids->Purchases : [];
-
-    }
 
 }
