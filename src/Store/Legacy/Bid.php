@@ -151,7 +151,7 @@ class Bid extends StoreAbstract
     public function map($bid)
     {
 
-        if($bid->_restMetaData) {
+        if(isset($bid->_restMetaData)) {
 
             $bid->winningBidder = (object) [
                 'alias' => $bid->_restMetaData->bidderAlias,
