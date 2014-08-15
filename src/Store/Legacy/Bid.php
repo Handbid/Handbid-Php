@@ -151,12 +151,16 @@ class Bid extends StoreAbstract
     public function map($bid)
     {
 
-        $bid->winningBidder = (object) [
-            'alias' => $bid->_restMetaData->bidderAlias,
-            'name'  => $bid->_restMetaData->bidderName,
-            'pin'   => $bid->_restMetaData->bidderPin,
-        ];
-        unset($bid->_restMetaData);
+        if($bid->_restMetaData) {
+
+            $bid->winningBidder = (object) [
+                'alias' => $bid->_restMetaData->bidderAlias,
+                'name'  => $bid->_restMetaData->bidderName,
+                'pin'   => $bid->_restMetaData->bidderPin,
+            ];
+
+            unset($bid->_restMetaData);
+        }
 
         return $bid;
     }
