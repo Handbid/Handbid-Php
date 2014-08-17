@@ -56,6 +56,7 @@ class Legacy implements AuthInterface
             $host       = $_SERVER['HTTP_HOST'];
 
             header('Location: ' . $protocol . $host . $path . '?' . $query);
+            exit;
 
 
 
