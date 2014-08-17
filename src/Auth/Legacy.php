@@ -47,6 +47,8 @@ class Legacy implements AuthInterface
             unset($query['handbid-auth']);
             if($query) {
                 $query = http_build_query($query);
+            } else {
+                $query = '';
             }
 
             $path       = explode('?', $_SERVER['REQUEST_URI'])[0];
