@@ -43,9 +43,11 @@ class Legacy implements AuthInterface
             setcookie('handbid-auth', $this->_auth, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
 
             //we must redirect to rid ourselves of the auth in the url
-            $query = parse_str($_SERVER['QUERY_STRING']);
-            unset($_GET['handbid-auth']);
-            $query = http_build_query($query);
+            $query = $_GET;
+            unset($query['handbid-auth']);
+            if($query) {
+                $query = http_build_query($query);
+            }
 
             $path       = explode('?', $_SERVER['REQUEST_URI'])[0];
             $protocol   = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
