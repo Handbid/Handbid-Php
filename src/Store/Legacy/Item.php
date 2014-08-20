@@ -84,6 +84,7 @@ class Item extends StoreAbstract
             $entity->winningBidder = (object) [
                 'alias' => $entity->_restMetaData->leadingBidderAlias,
                 'id'    => $entity->_restMetaData->leadingBidderId,
+                'pin'   => $entity->_restMetaData->leadingBidderPin
             ];
 
         }
