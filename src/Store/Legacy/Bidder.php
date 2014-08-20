@@ -33,40 +33,6 @@ class Bidder extends StoreAbstract
         return $profile;
     }
 
-    /**
-     * Because proxy bids, bids, and purchases come back in 1 request i do not want us making the same request
-     * many times
-     *
-     * @param        $auctionId
-     * @param string $type
-     *
-     * @return array
-     */
-    public function _fetchBids($auctionId)
-    {
-
-        if (!$this->myProfile()) {
-            return null;
-        }
-
-        if (!isset($this->_bidCache[$auctionId])) {
-
-            $profile = $this->myProfile();
-
-            $this->_bidCache[$auctionId] = $this->_rest->get(
-                'models/Bid',
-                [
-                    'query' => [
-                        'auction' => $auctionId,
-                        'pin'     => $profile->pin
-                    ]
-                ]
-            );
-        }
-
-        return $this->_bidCache[$auctionId];
-    }
-
     public function updateProfile($values)
     {
 
@@ -143,75 +109,5 @@ class Bidder extends StoreAbstract
 
     }
 
-    public function myBids($auctionId)
-    {
-        $bids = $this->_fetchBids($auctionId);
-
-        if (!$bids) {
-            return null;
-        }
-
-        $winning = [];
-
-        if ($bids) {
-
-            $bids = $bids->Bids;
-
-            foreach ($bids as $bid) {
-
-                if ($bid->status == 'winning') {
-                    $winning[] = $bid;
-                }
-
-            }
-
-        }
-
-        return $winning;
-    }
-
-    public function myProxyBids($auctionId)
-    {
-        $bids = $this->_fetchBids($auctionId, 'ProxyBid');
-
-        return $bids ? $bids->ProxyBids : null;
-    }
-
-    public function myPurchases($auctionId)
-    {
-        $bids = $this->_fetchBids($auctionId, 'Purchase');
-
-        return $bids ? $bids->Purchases : null;
-    }
-
-    public function myLosing($auctionId)
-    {
-
-        $bids   = $this->_fetchBids($auctionId);
-        $losing = [];
-
-
-        if (!$bids) {
-            return null;
-        }
-
-        if ($bids) {
-
-            $bids = $bids->Bids;
-
-            foreach ($bids as $bid) {
-
-                if ($bid->status == 'losing') {
-                    $losing[] = $bid;
-                }
-
-            }
-
-        }
-
-        return $losing;
-
-
-    }
 
 }

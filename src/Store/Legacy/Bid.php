@@ -124,7 +124,6 @@ class Bid extends StoreAbstract
         $bids   = $this->_fetchBidderBids($bidderPin, $auctionId);
         $losing = [];
 
-
         if (!$bids) {
             return null;
         }
@@ -157,6 +156,11 @@ class Bid extends StoreAbstract
                 'alias' => $bid->_restMetaData->bidderAlias,
                 'name'  => $bid->_restMetaData->bidderName,
                 'pin'   => $bid->_restMetaData->bidderPin,
+            ];
+
+            $bid->meta = [
+                'itemName'  => $bid->_restMetaData->itemName,
+                'itemKey'   => $bid->_restMetaData->itemKey
             ];
 
             unset($bid->_restMetaData);
