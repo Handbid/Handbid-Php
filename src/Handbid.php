@@ -41,6 +41,8 @@ class Handbid
         require __DIR__ . "/Store/Organization.php";
         require __DIR__ . "/Store/Legacy/Organization.php";
 
+        //credit card
+        require __DIR__ . "/Store/Legacy/CreditCard.php";
 
         //auction
         require __DIR__ . "/Store/Auction.php";
