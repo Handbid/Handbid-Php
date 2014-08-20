@@ -7,22 +7,27 @@ use Handbid\Store\Legacy\StoreAbstract;
 class CreditCard extends StoreAbstract
 {
 
-    public function getCardForBidder($profile)
+    public function getCardByOwnerId($id)
     {
-        if (!$this->_rest->auth()->hasToken()) {
-            return null;
-        }
-
         $creditCard = $this->_rest->get(
             'models/CreditCard',
             [
                 'query' => [
-                    'owner' => $profile->_id
+                    'owner' => $id
                 ]
             ]
         );
 
         return $creditCard;
     }
+
+    public function saveCardByOwnerId($id, $options)
+    {
+
+        $creditCard = $this->_rest->post('models/CreditCard', $options);
+
+        return $creditCard;
+    }
+
 
 }
