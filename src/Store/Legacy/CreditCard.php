@@ -7,9 +7,9 @@ use Handbid\Store\Legacy\StoreAbstract;
 class CreditCard extends StoreAbstract
 {
 
-    public function getCardByOwnerId($id)
+    public function byOwner($id)
     {
-        $creditCard = $this->_rest->get(
+        $creditCards = $this->_rest->get(
             'models/CreditCard',
             [
                 'query' => [
@@ -18,7 +18,7 @@ class CreditCard extends StoreAbstract
             ]
         );
 
-        return $creditCard;
+        return $this->mapMany($creditCards->CreditCards);
     }
 
     public function saveCardByOwnerId($id, $options)
