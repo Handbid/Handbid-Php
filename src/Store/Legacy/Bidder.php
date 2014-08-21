@@ -50,7 +50,7 @@ class Bidder extends StoreAbstract
                 if(empty($values['photo']['name'])) {
                     unset($values['photo']);
                 } else {
-                    $values['photo'] = new \CURLFile($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
+                    $values['photo][file'] = new \CURLFile($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
                 }
 
             } else {
@@ -62,7 +62,7 @@ class Bidder extends StoreAbstract
                     throw new \Exception('I could not find a photo at ' + $photo);
                 }
 
-                $values['photo'] = '@' . $photo . ';filename=' . basename($photo);
+                $values['photo][file'] = '@' . $photo . ';filename=' . basename($photo);
 
             }
 
@@ -87,20 +87,7 @@ class Bidder extends StoreAbstract
 
         }
 
-        $post = [];
-
-        foreach($values as $k => $v) {
-
-            //legacy hack
-            if($k == 'photo') {
-                $post[$k . '[file]'] = $v;
-            } else {
-
-                $post['values[' . $k . ']'] = $v;
-            }
-        }
-
-        $profile = $this->_rest->post('models/User/' . $profile->_id, $post)->User;
+        $profile = $this->_rest->post('models/User/' . $profile->_id, $this->preparePostVars($post))->User;
 
         //update auth
         $this->_rest->auth()->setToken($profile->_auth->ironframe);
@@ -108,6 +95,8 @@ class Bidder extends StoreAbstract
         return $profile;
 
     }
+
+
 
 
 }

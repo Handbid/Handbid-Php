@@ -21,10 +21,12 @@ class CreditCard extends StoreAbstract
         return $this->mapMany($creditCards->CreditCards);
     }
 
-    public function saveCardByOwnerId($id, $options)
+    public function add($profileId, $values)
     {
 
-        $creditCard = $this->_rest->post('models/CreditCard', $options);
+        $values['owner'] = $profileId;
+
+        $creditCard = $this->_rest->post('models/CreditCard', $this->preparePostVars($values));
 
         return $creditCard;
     }

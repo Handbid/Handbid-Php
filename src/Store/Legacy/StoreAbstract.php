@@ -67,6 +67,19 @@ class StoreAbstract implements StoreInterface
         return $this->map($results[0]);
     }
 
+    public function preparePostVars($values) {
+
+        $post = [];
+
+        foreach($values as $k => $v) {
+            $post['values[' . $k . ']'] = $v;
+        }
+
+
+        return $post;
+
+    }
+
     public function byField($name, $value)
     {
         return $this->_rest->get($this->_base . '/by/' . $name . '.json', ['q' => $value]);
