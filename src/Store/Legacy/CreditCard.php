@@ -24,7 +24,8 @@ class CreditCard extends StoreAbstract
     public function add($profileId, $values)
     {
 
-        $values['owner'] = $profileId;
+        $values['owner']        = $profileId;
+        $values['isActiveCard'] = true;
 
         $creditCard = $this->_rest->post('models/CreditCard', $this->preparePostVars($values));
 
