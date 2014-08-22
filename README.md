@@ -4,7 +4,7 @@ Handbid-Php
 PHP adapters for `Handbid`. This entire library was built to have the fewest dependencies possible and to make interfacing
 with `Handbid` as simple and clean as can be.
 
-## Instantiating Handbid
+## instantiating Handbid
 Getting `Handbid` ready to go is as simple as constructing a new one. You can instantiate as many as you want (they are not singletons, but you can should probably use it as one).
 ```php
 
@@ -12,7 +12,7 @@ $hb = new Handbid();
 
 ```
 
-## Fetching Data
+## fetching data
 All data io is Handbid through the `Store` architecture. We decided to abstract away the actual HTTP request and go with the idea
  of a generic `Store` so we can be ready to pull data from different services (memcache, filesystem, remote endpoint, mongodb, etc.).
 
@@ -22,7 +22,7 @@ see described in this doc.
 
 Every document that is returned from a `Store` will be of type `stdClass.` We are trying to keep things as light as possible.
 
-### Fetching organizations
+### fetching organizations
 ```php
 
 $store      = $hb->store('Organization');
@@ -32,7 +32,7 @@ $org        = $store->byId('234230582340723402342');
 $org        = $store->byKey('my-favorite-org');
 ```
 
-### Fetching auctions
+### fetching auctions
 ```php
 
 $store      = $hb->store('Auction');
@@ -47,7 +47,7 @@ $auction    = $store->byId('2342342342342342343242');
 echo $auction->name;
 ```
 
-### Auction Schema
+### auction properties
 - `_id`: id of the auction assigned by mongo.
 - `name`: auction's name
 - `key`: auction's key (better for passing through urls)
@@ -65,7 +65,7 @@ echo $auction->name;
 - `spendingThreshold`: the amount of $$$ in dollars.cents (1.50) that we will let someone bid to until we require them to enter their cc
 - `meta`: object in this form: `{ totalItems: 71, organization: { key: 'my-org', name: 'My Organization` }  }`
 
-### Fetching Items
+### fetching items
 ```php
 
 //customize query to pass options for resizing images
@@ -85,7 +85,7 @@ echo $item->itemCode . ': ' . $item->name . '<br />';
 
 ```
 
-### Item Schema
+### item properties
 - `_id`: id assigned by mongo
 - `name`: name of item given by auction manager
 - `key`: better for passing through url's
