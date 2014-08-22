@@ -13,15 +13,14 @@ $hb = new Handbid();
 ```
 
 ## Fetching Data
-All data io is handled through the `Store` architecture. We decided to abstract away the actual HTTP request to the idea
+All data io is Handbid through the `Store` architecture. We decided to abstract away the actual HTTP request and go with the idea
  of a generic `Store` so we can be ready to pull data from different services (memcache, filesystem, remote endpoint, mongodb, etc.).
 
 The base `Store` API is very simple, but currently tied to our Legacy system (through the legacy `Store` layer). In order
 to conform with our new API, some methods were added to the `Stores` that do not work. Point is, only call methods you
 see described in this doc.
 
-Every document that is returned from the stores will be of type `stdClass.` We are trying to keep things as light as possible.
-
+Every document that is returned from a `Store` will be of type `stdClass.` We are trying to keep things as light as possible.
 
 ### Fetching organizations
 ```php
@@ -31,8 +30,6 @@ $store      = $hb->store('Organization');
 $orgs       = $store->all();
 $org        = $store->byId('234230582340723402342');
 $org        = $store->byKey('my-favorite-org');
-
-
 ```
 
 ### Fetching auctions
@@ -48,8 +45,6 @@ $auction    = $store->byKey('handbid-demo-auction');
 $auction    = $store->byId('2342342342342342343242');
 
 echo $auction->name;
-
-
 ```
 
 ### Auction Schema
@@ -111,5 +106,3 @@ echo $item->itemCode . ': ' . $item->name . '<br />';
 - `showValue`: sometimes the auction manager does not want people to know the value of the item being bid on
 - `terms`: array of tags for this item (currently mapped to our category system)
 - `winningBidder`: object in form of: `{ alias: 'Tay Tay', id: 'asotneuhanosteuh', pin: 1}`
-
-
