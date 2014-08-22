@@ -20,6 +20,8 @@ The base `Store` API is very simple, but currently tied to our Legacy system (th
 to conform with our new API, some methods were added to the `Stores` that do not work. Point is, only call methods you
 see described in this doc.
 
+Every document that is returned from the stores will be of type `stdClass.` We are trying to keep things as light as possible.
+
 
 ### Fetching organizations
 ```php
@@ -45,6 +47,9 @@ $auctions   = $store->past($org->_id);
 $auction    = $store->byKey('handbid-demo-auction');
 $auction    = $store->byId('2342342342342342343242');
 
+echo $auction->name;
+
+
 ```
 
 ### Auction Schema
@@ -56,18 +61,55 @@ $auction    = $store->byId('2342342342342342343242');
 - `location`: object in this form: `{ city: 'Denver', country: 'us', postalCode: '80202', province: 'CO', street1: '123 Main Street', street2: 'Unit B', street3: 'Never seen it used }`
 - `logo`: object in this form: `{ large: 'https://handbid.com/path/to/large.jpg', medium: 'https://handbid.com/path/to/medium.jpg', small: 'https://handbid.com/path/to/small.jpg' }`
 - `startTime`: timestamp for start time
-- `endTime`: timestamp for end time
+- `endTime`: timestamp for end of auction (do not rely on this, it is an estimate of closing time. good to show to the bidders, but not to use for calculations)
+- `closingTime`: set when the auction manager starts the countdown timer.
 - `status`: use this to check if an auction is open, valid statii are: `setup`, `presale`, `preview`, `open`, `ending`, `extended`, `closed`
+- `localOnly`: bidders will need to checkin to bid (usually done by auction manager at the event)
+- `enableTicketSales`: we can sell tickets, but it's pretty basic right now.
+- `requireCreditCard`: the auction requires a credit card on file to bid
+- `spendingThreshold`: the amount of $$$ in dollars.cents (1.50) that we will let someone bid to until we require them to enter their cc
+- `meta`: object in this form: `{ totalItems: 71, organization: { key: 'my-org', name: 'My Organization` }  }`
 
-
-
-
-
-# Logging in a user
+### Fetching Items
 ```php
 
-$hb         = new Handbid();
-$auth       = new
+//customize query to pass options for resizing images
+$query['options']['images']['w'] = 500;
+$query['options']['images']['h'] = 0; //image will scale proportionally
 
+$store      = $hb->store('Item');
+
+$items      = $store->byAuction($auction->_id, $query);
+$items      = $store->biddableByAuction($auction->_id);
+$items      = $store->purchasableByAuction($auction->_id);
+
+$item       = $store->byKey('item-key', $query);
+$item       = $store->byId('234234234', $query);
+
+echo $item->itemCode . ': ' . $item->name . '<br />';
 
 ```
+
+### Item Schema
+- `_id`: id assigned by mongo
+- `name`: name of item given by auction manager
+- `key`: better for passing through url's
+- `auction`: id of auction
+- `bidIncrement`: the bid increment
+- `buyNowPrice`: if one is set, the bidder can purchase right away
+- `category`: the id of the category
+- `closingTime`: countdown timer passed through from auction (prepping us for per-item countdowns)
+- `description`: entered by auction manager
+- `disableMobileBidding`: will keep people from bidding from their phones
+- `donor`: who donated the item (string)
+- `images`: array in form of: `[ "http://handbid.com/my/item/image.png", "http://handbid.com/another/item/image.png"]`
+- `itemCode`: entered by the auction manager
+- `minimumBidAmount`: the lowest someone can bid to be on top
+- `notables`: think of this as 'fine print' with a nice name
+- `status`: can be one of the following: `pending`, `open`, `extended`, `sold`, `paid`, `delivered`, `shipped`
+- `value`: the MSRP (street value) of an item
+- `showValue`: sometimes the auction manager does not want people to know the value of the item being bid on
+- `terms`: array of tags for this item (currently mapped to our category system)
+- `winningBidder`: object in form of: `{ alias: 'Tay Tay', id: 'asotneuhanosteuh', pin: 1}`
+
+

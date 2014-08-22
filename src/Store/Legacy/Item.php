@@ -109,18 +109,8 @@ class Item extends StoreAbstract
             ],
             $query
         );
-        $results = $this->_rest->get(
-            $this->_base,
-            $query
-        )->{$this->_resultsKeyPlural};
 
-        if (count($results) == 0) {
-            throw new \Handbid\Exception\Network('Could not find entity with key ' . $key);
-        }
-
-        $result = $this->map($results[0]);
-
-        return $result;
+        return parent::byKey($key, $query);
     }
 
 
