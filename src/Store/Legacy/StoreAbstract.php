@@ -23,12 +23,24 @@ class StoreAbstract implements StoreInterface
         }
     }
 
-    public function all($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC')
+    public function all($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC', $query = [])
     {
 
-        $results = $this->_rest->get($this->_base);
+        $skip = $page * $perPage;
 
-        if($results) {
+        $results = $this->_rest->get(
+            $this->_base,
+            [
+                'query'  => $query ? $query : false,
+                'config' => [
+                    'skip'  => $skip,
+                    'limit' => $perPage,
+                    'sort'  => [$sortField => $sortDirection]
+                ]
+            ]
+        );
+
+        if ($results) {
             $results = $this->mapMany($results->{$this->_resultsKeyPlural});
         }
 
@@ -39,7 +51,7 @@ class StoreAbstract implements StoreInterface
     {
         $results = $this->_rest->get($this->_base . '/' . $id);
 
-        if($results) {
+        if ($results) {
             $results = $this->map($results->{$this->_resultsKey});
         }
 
@@ -67,11 +79,12 @@ class StoreAbstract implements StoreInterface
         return $this->map($results[0]);
     }
 
-    public function preparePostVars($values) {
+    public function preparePostVars($values)
+    {
 
         $post = [];
 
-        foreach($values as $k => $v) {
+        foreach ($values as $k => $v) {
             $post['values[' . $k . ']'] = $v;
         }
 

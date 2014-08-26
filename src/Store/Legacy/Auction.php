@@ -10,12 +10,15 @@ class Auction extends StoreAbstract
     public $_base = 'models/Auction';
     public $_resultsKey = 'Auction';
 
-    public function byOrg($id)
+    public function byOrg($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC', $id)
     {
-        return $this->mapMany($this->_rest->get($this->_base, ['query' => ['organization' => $id]])->{$this->_resultsKey . 's'});
+
+        $query = ['organization' => $id];
+        return $this->all($page, $perPage, $sortField, $sortDirection, $query);
+
     }
 
-    public function upcoming($orgId = '')
+    public function upcoming($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC', $orgId = '')
     {
 
         $query = ['startTime' => ['$gt' => time() - 3600]];
@@ -24,10 +27,10 @@ class Auction extends StoreAbstract
             $query['organization'] = $orgId;
         }
 
-        return $this->mapMany($this->_rest->get($this->_base, ['query' => $query])->{$this->_resultsKeyPlural});
+        return $this->all($page, $perPage, $sortField, $sortDirection, $query);
     }
 
-    public function past($orgId = '')
+    public function past($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC', $orgId = '')
     {
         $query = ['startTime' => ['$lt' => time() - 3600]];
 
@@ -35,19 +38,19 @@ class Auction extends StoreAbstract
             $query['organization'] = $orgId;
         }
 
-        return $this->mapMany($this->_rest->get($this->_base, ['query' => $query])->{$this->_resultsKeyPlural});
+        return $this->all($page, $perPage, $sortField, $sortDirection, $query);
     }
 
     public function map($entity)
     {
 
         $entity->location->coords = null;
-        $entity->meta = (object)[
-            'totalItems' => $entity->_restMetaData->numItems,
+        $entity->meta             = (object)[
+            'totalItems'   => $entity->_restMetaData->numItems,
             'organization' => (object)[
-                'key'  => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->key : null,
-                'name' => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->name : null,
-            ]
+                    'key'  => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->key : null,
+                    'name' => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->name : null,
+                ]
         ];
 
         return $entity;
