@@ -17,13 +17,13 @@ class StoreAbstract implements StoreInterface
         $this->_rest = $rest;
     }
 
-    public function all($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC')
+    public function all($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC')
     {
         return $this->_rest->get(
             $this->_base . '.json',
             [
-                'skip'          => $page * $perPage,
-                'limit'         => $perPage,
+                'skip'          => $page * $pageSize,
+                'limit'         => $pageSize,
                 'sortField'     => $sortField,
                 'sortDirection' => $sortDirection
             ]

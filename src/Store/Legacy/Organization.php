@@ -11,4 +11,7 @@ class Organization extends StoreAbstract
     public $_resultsKey = 'Organization';
 
 
+    public function count($query = []) {
+        return $this->_rest->get('organizations/count', $query)->count;
+    }
 }

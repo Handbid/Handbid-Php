@@ -10,15 +10,15 @@ class Auction extends StoreAbstract
     public $_base = 'models/Auction';
     public $_resultsKey = 'Auction';
 
-    public function byOrg($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC', $id)
+    public function byOrg($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $id)
     {
 
         $query = ['organization' => $id];
-        return $this->all($page, $perPage, $sortField, $sortDirection, $query);
+        return $this->all($page, $pageSize, $sortField, $sortDirection, $query);
 
     }
 
-    public function upcoming($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC', $orgId = '')
+    public function upcoming($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $orgId = '')
     {
 
         $query = ['startTime' => ['$gt' => time() - 3600]];
@@ -27,10 +27,10 @@ class Auction extends StoreAbstract
             $query['organization'] = $orgId;
         }
 
-        return $this->all($page, $perPage, $sortField, $sortDirection, $query);
+        return $this->all($page, $pageSize, $sortField, $sortDirection, $query);
     }
 
-    public function past($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC', $orgId = '')
+    public function past($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $orgId = '')
     {
         $query = ['startTime' => ['$lt' => time() - 3600]];
 
@@ -38,7 +38,7 @@ class Auction extends StoreAbstract
             $query['organization'] = $orgId;
         }
 
-        return $this->all($page, $perPage, $sortField, $sortDirection, $query);
+        return $this->all($page, $pageSize, $sortField, $sortDirection, $query);
     }
 
     public function map($entity)
@@ -55,6 +55,10 @@ class Auction extends StoreAbstract
 
         return $entity;
 
+    }
+
+    public function count($query = []) {
+        return $this->_rest->get('auctions/count', $query)->count;
     }
 
 }
