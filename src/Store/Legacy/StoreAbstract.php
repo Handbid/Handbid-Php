@@ -23,7 +23,7 @@ class StoreAbstract implements StoreInterface
         }
     }
 
-    public function all($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC', $query = [])
+    public function all($page = 0, $perPage = 25, $sortField = 'name', $sortDirection = 'ASC', $query = false, $options = false)
     {
 
         $skip = $page * $perPage;
@@ -32,6 +32,7 @@ class StoreAbstract implements StoreInterface
             $this->_base,
             [
                 'query'  => $query ? $query : false,
+                'options' => $options ? $options : false,
                 'config' => [
                     'skip'  => $skip,
                     'limit' => $perPage,
