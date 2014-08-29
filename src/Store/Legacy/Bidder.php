@@ -41,6 +41,7 @@ class Bidder extends StoreAbstract
         }
 
         $profile = $this->myProfile();
+        $file = null;
 
         if(isset($values['photo']) && $values['photo']) {
 
@@ -48,10 +49,11 @@ class Bidder extends StoreAbstract
             if(is_array($values)) {
 
                 if(empty($values['photo']['name'])) {
-                    unset($values['photo']);
                 } else {
-                    $values['photo][file'] = new \CURLFile($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
+                    $file = new \CURLFile($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
                 }
+
+                unset($values['photo']);
 
             } else {
 
@@ -62,7 +64,8 @@ class Bidder extends StoreAbstract
                     throw new \Exception('I could not find a photo at ' + $photo);
                 }
 
-                $values['photo][file'] = '@' . $photo . ';filename=' . basename($photo);
+                $file = '@' . $photo . ';filename=' . basename($photo);
+                unset($values['photo']);
 
             }
 
@@ -79,15 +82,20 @@ class Bidder extends StoreAbstract
 
         }
 
+
         if(isset($values['password']) && isset($values['password2'])) {
 
             $values['password][new'] = $values['password'];
             $values['password][confirm'] = $values['password'];
             unset($values['password']);
-
         }
 
-        $profile = $this->_rest->post('models/User/' . $profile->_id, $this->preparePostVars($values))->User;
+        $post = $this->preparePostVars($values);
+        if($file) {
+            $post['photo[file]'] = $file;
+        }
+
+        $profile = $this->_rest->post('models/User/' . $profile->_id, $post)->User;
 
         //update auth
         $this->_rest->auth()->setToken($profile->_auth->ironframe);
