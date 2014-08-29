@@ -87,7 +87,7 @@ class Bidder extends StoreAbstract
 
         }
 
-        $profile = $this->_rest->post('models/User/' . $profile->_id, $this->preparePostVars($post))->User;
+        $profile = $this->_rest->post('models/User/' . $profile->_id, $this->preparePostVars($values))->User;
 
         //update auth
         $this->_rest->auth()->setToken($profile->_auth->ironframe);
