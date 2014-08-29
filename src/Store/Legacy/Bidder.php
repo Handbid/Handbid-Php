@@ -41,7 +41,7 @@ class Bidder extends StoreAbstract
         }
 
         $profile = $this->myProfile();
-        $file = null;
+        $photo = null;
 
         if(isset($values['photo']) && $values['photo']) {
 
@@ -50,7 +50,7 @@ class Bidder extends StoreAbstract
 
                 if(empty($values['photo']['name'])) {
                 } else {
-                    $file = new \CURLFile($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
+                    $photo = new \CURLFile($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
                 }
 
                 unset($values['photo']);
@@ -64,7 +64,7 @@ class Bidder extends StoreAbstract
                     throw new \Exception('I could not find a photo at ' + $photo);
                 }
 
-                $file = '@' . $photo . ';filename=' . basename($photo);
+                $photo = '@' . $photo . ';filename=' . basename($photo);
                 unset($values['photo']);
 
             }
@@ -91,8 +91,8 @@ class Bidder extends StoreAbstract
         }
 
         $post = $this->preparePostVars($values);
-        if($file) {
-            $post['photo[file]'] = $file;
+        if($photo) {
+            $post['photo[file]'] = $photo;
         }
 
         $profile = $this->_rest->post('models/User/' . $profile->_id, $post)->User;
