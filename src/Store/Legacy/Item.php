@@ -89,6 +89,7 @@ class Item extends StoreAbstract
 
         }
 
+
         $entity->meta = $entity->_restMetaData;
 
         return $entity;
