@@ -4,7 +4,8 @@ namespace Handbid\Rest;
 
 use Handbid\Auth\AuthInterface;
 
-interface RestInterface{
+interface RestInterface
+{
 
     /**
      * @param $endpoint

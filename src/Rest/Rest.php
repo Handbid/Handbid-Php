@@ -12,6 +12,7 @@ class Rest implements RestInterface
         $_endpoint,
         $_basePath,
         $_auth,
+        $_cache = [],
         $_error = [],
         $_headers = [];
 
@@ -58,17 +59,19 @@ class Rest implements RestInterface
         return $this->_request('DELETE', $route, $query, $headers);
     }
 
-    public function auth() {
+    public function auth()
+    {
         return $this->_auth;
     }
+
     /**
      * Request utility. Actually makes requests.
      *
      * @param string $method [get, post, put, delete]
      * @param        $route  the path (not including endpoint and base path)
-     * @param array  $query  added to the query string of the route, e.g. ?foo=bar&hello=world
-     * @param array  $data   data for any post or put
-     * @param array  $headers
+     * @param array $query added to the query string of the route, e.g. ?foo=bar&hello=world
+     * @param array $data data for any post or put
+     * @param array $headers
      *
      * @return mixed
      * @throws \Handbid\Exception\Network
@@ -82,72 +85,84 @@ class Rest implements RestInterface
         $this->_curlHandle = curl_init();
         curl_setopt($this->_curlHandle, CURLOPT_RETURNTRANSFER, true);
 
-        $method  = strtoupper($method);
+        $method = strtoupper($method);
         $headers = ($headers) ? $headers : $this->_headers;
-        $uri     = $this->resolveRoute($route);
+        $uri = $this->resolveRoute($route);
 
-        if($this->_auth) {
+        if ($this->_auth) {
             $this->_auth->initRequest($method, $uri, $query, $data, $headers);
         }
 
         //build query string
-        $query  = ($query) ? http_build_query($query) : '';
+        $query = ($query) ? http_build_query($query) : '';
 
-        if ($headers) {
+        $cacheKey = $uri . '-' . $query . '-' . $method;
+        if(!isset($this->_cache[$cacheKey])) {
 
-            $_headers = [];
-            foreach ($headers as $k => $v) {
-                $_headers[] = $k . ': ' . $v;
+
+            if ($headers) {
+
+                $_headers = [];
+                foreach ($headers as $k => $v) {
+                    $_headers[] = $k . ': ' . $v;
+                }
+
+                curl_setopt($this->_curlHandle, CURLOPT_HTTPHEADER, $_headers);
             }
 
-            curl_setopt($this->_curlHandle, CURLOPT_HTTPHEADER, $_headers);
-        }
+            if ($method === 'POST') {
+                //setup our request for posting data, yo!
 
-        if ($method === 'POST') {
-            //setup our request for posting data, yo!
+                curl_setopt($this->_curlHandle, CURLOPT_POST, true);
+                curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
+                curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
 
-            curl_setopt($this->_curlHandle, CURLOPT_POST, true );
-            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
-            curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
+            } elseif ($method === 'GET' && $query) {
+                $uri = $uri . '?' . $query;
+                curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
 
-        } elseif ($method === 'GET' && $query) {
-            $uri = $uri . '?' . $query;
-            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
+            } elseif ($method === 'DELETE') {
+                curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
+                curl_setopt($this->_curlHandle, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query);
 
-        } elseif ($method === 'DELETE') {
-            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
-            curl_setopt($this->_curlHandle, CURLOPT_CUSTOMREQUEST, 'DELETE');
-            curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query);
+            } else {
+                curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
+
+            }
+
+            $responseText = curl_exec($this->_curlHandle);
+            $info = curl_getinfo($this->_curlHandle);
+
+            //no content, should we care?
+            if ($info['http_code'] == 204) {
+                throw new NetworkException('No response from server', 70000);
+            } //oops
+            elseif ($info['http_code'] != 200) {
+
+                $response = json_decode($responseText);
+                if ($response && isset($response->Errors)) {
+                    throw new NetworkException($response->Errors[0]->description, $info['http_code']);
+                } else {
+                    throw new NetworkException('Unknown response from server with url of (' . $info['url'] . ') Http Code:' . $info['http_code']);
+                }
+
+            } //this is a strange one and should really never happen
+            elseif (!$responseText) {
+
+                throw new NetworkException('Response was empty.', Network::ERROR_REQUEST_FAILED);
+
+            } //all is well
+            else {
+                $response = json_decode($responseText);
+            }
+
+            $this->_cache[$cacheKey] = $response;
 
         } else {
-            curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
 
-        }
+            $response = $this->_cache[$cacheKey];
 
-        $responseText = curl_exec($this->_curlHandle);
-        $info         = curl_getinfo($this->_curlHandle);
-
-        //no content, should we care?
-        if ($info['http_code'] == 204) {
-            throw new NetworkException('No response from server', 70000);
-        } //oops
-        elseif ($info['http_code'] != 200) {
-
-            $response = json_decode($responseText);
-            if ($response && isset($response->Errors)) {
-                throw new NetworkException($response->Errors[0]->description, $info['http_code']);
-            } else {
-                throw new NetworkException('Unknown response from server with url of (' . $info['url'] . ') Http Code:' . $info['http_code']);
-            }
-
-        } //this is a strange one and should really never happen
-        elseif (!$responseText) {
-
-            throw new NetworkException('Response was empty.', Network::ERROR_REQUEST_FAILED);
-
-        } //all is well
-        else {
-            $response = json_decode($responseText);
         }
 
         return $response;
