@@ -73,6 +73,9 @@ class StoreAbstract implements StoreInterface
         $results = $this->_rest->get($this->_base, $query);
         $results = $results ? $results->{$this->_resultsKeyPlural} : [];
 
+        if(!$results) {
+            return $results;
+        }
         return $this->map($results[0]);
     }
 
