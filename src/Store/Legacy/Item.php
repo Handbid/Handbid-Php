@@ -20,7 +20,7 @@ class Item extends StoreAbstract
                 'config' => [
                     'limit' => 9999
                 ],
-                'query'  => [
+                'query' => [
                     'auction' => $id
                 ]
             ],
@@ -43,7 +43,7 @@ class Item extends StoreAbstract
     public function biddableByAuction($id, $query = [])
     {
 
-        $items    = $this->byAuction($id, $query);
+        $items = $this->byAuction($id, $query);
         $biddable = [];
 
         foreach ($items as $item) {
@@ -59,7 +59,7 @@ class Item extends StoreAbstract
     public function purchasableByAuction($id, $query = [])
     {
 
-        $items       = $this->byAuction($id, $query);
+        $items = $this->byAuction($id, $query);
         $purchasable = [];
 
         foreach ($items as $item) {
@@ -75,16 +75,16 @@ class Item extends StoreAbstract
     public function map($entity)
     {
 
-        $entity->terms              = [$entity->_restMetaData->categoryName];
-        $entity->closingTime        = $entity->_restMetaData->closingTime;
-        $entity->highestBid         = isset($entity->highestBid->amount) ? $entity->highestBid->amount : null;
+        $entity->terms = [$entity->_restMetaData->categoryName];
+        $entity->closingTime = $entity->_restMetaData->closingTime;
+        $entity->highestBid = isset($entity->highestBid->amount) ? $entity->highestBid->amount : null;
 
-        if(isset($entity->_restMetaData->leadingBidderAlias)) {
+        if (isset($entity->_restMetaData->leadingBidderAlias)) {
 
-            $entity->winningBidder = (object) [
+            $entity->winningBidder = (object)[
                 'alias' => $entity->_restMetaData->leadingBidderAlias,
-                'id'    => $entity->_restMetaData->leadingBidderId,
-                'pin'   => $entity->_restMetaData->leadingBidderPin
+                'id' => $entity->_restMetaData->leadingBidderId,
+                'pin' => $entity->_restMetaData->leadingBidderPin
             ];
 
         }
@@ -98,9 +98,9 @@ class Item extends StoreAbstract
     public function byKey($key, $query = [])
     {
 
-        $query   = array_merge(
+        $query = array_merge(
             [
-                'query'   => [
+                'query' => [
                     'key' => $key
                 ],
                 'options' => [
@@ -117,7 +117,37 @@ class Item extends StoreAbstract
     }
 
 
+    public function related($id, $options = [])
+    {
 
+        $query = array_merge(
+            [
+                'query' => [
+                    'itemId'     => $id
+                ],
+                'config' => [
+                    'skip'  => 0,
+                    'limit' => 5
+                ],
+                'options' => [
+                    'images' => [
+                        'w' => 400,
+                        'h' => false
+                    ]
+                ]
+            ],
+            $options
+        );
+
+        $results = $this->mapMany($this->_rest->get(
+            'items/related',
+            $query
+        ));
+
+
+        return $results;
+
+    }
 
 
 }
