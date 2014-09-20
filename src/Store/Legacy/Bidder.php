@@ -106,5 +106,4 @@ class Bidder extends StoreAbstract
 
 
 
-
 }

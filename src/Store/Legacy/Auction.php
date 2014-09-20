@@ -45,20 +45,30 @@ class Auction extends StoreAbstract
     {
 
         $entity->location->coords = null;
-        $entity->meta             = (object)[
-            'totalItems'   => $entity->_restMetaData->numItems,
+        $entity->meta = (object)[
+            'totalItems' => $entity->_restMetaData->numItems,
             'organization' => (object)[
-                    'key'  => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->key : null,
-                    'name' => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->name : null,
-                ]
+                'key' => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->key : null,
+                'name' => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->name : null,
+            ]
         ];
 
         return $entity;
 
     }
 
-    public function count($query = []) {
+    public function count($query = [])
+    {
         return $this->_rest->get('auctions/count', $query)->count;
     }
 
+
+    public function myRecentAuctions($query = [])
+    {
+
+        return $this->_rest->get('my-auctions', [
+            'query' => $query
+        ]);
+
+    }
 }
