@@ -62,13 +62,12 @@ class Auction extends StoreAbstract
         return $this->_rest->get('auctions/count', $query)->count;
     }
 
-
-    public function myRecentAuctions($query = [])
+    public function myRecent($query = [])
     {
 
-        return $this->_rest->get('my-auctions', [
+        return $this->mapMany($this->_rest->get('my-auctions', [
             'query' => $query
-        ]);
+        ])->auctions);
 
     }
 }
