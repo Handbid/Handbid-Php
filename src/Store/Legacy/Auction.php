@@ -10,6 +10,10 @@ class Auction extends StoreAbstract
     public $_base = 'models/Auction';
     public $_resultsKey = 'Auction';
 
+    public function _queryAll() {
+        return [];
+    }
+
     public function _queryUpcoming()
     {
         return ['startTime' => ['$gt' => time() - 3600]];
