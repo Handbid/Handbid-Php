@@ -49,7 +49,7 @@ class Auction extends StoreAbstract
         return ['status' => 'presale'];
     }
 
-    public function byOrg($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $id)
+    public function byOrg($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $id = '')
     {
         $query = ['organization' => $id];
         return $this->all($page, $pageSize, $sortField, $sortDirection, $query);
