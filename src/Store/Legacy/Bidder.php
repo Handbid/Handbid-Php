@@ -20,11 +20,15 @@ class Bidder extends StoreAbstract
         try {
 
             if (!$this->_profileCache) {
+
                 $response = $this->_rest->get('profile');
+
                 if(!$response) {
                     return null;
                 }
+
                 $this->_profileCache = $response->Users[0];
+
             }
 
             $profile = clone $this->_profileCache;
