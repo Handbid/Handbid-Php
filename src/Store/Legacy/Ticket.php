@@ -10,7 +10,7 @@ class Ticket extends StoreAbstract
     public $_base = 'tickets';
     public $_ticketCache = [];
 
-    public function byAuction($key, $query = [])
+    public function byAuction($id, $query = [])
     {
 
         $query = array_merge(
@@ -19,7 +19,7 @@ class Ticket extends StoreAbstract
                     'limit' => 9999
                 ],
                 'query' => [
-                    'auctionKey' => $key
+                    'auctionKey' => $id
                 ]
             ],
             $query
