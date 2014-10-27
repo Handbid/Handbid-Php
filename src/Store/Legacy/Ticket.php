@@ -10,12 +10,12 @@ class Ticket extends StoreAbstract
     public $_base = 'tickets';
     public $_ticketCache = [];
 
-    public function byAuction($id, $query = [])
+    public function byAuction($key, $query = [])
     {
 
         $query = array_merge(
             [
-                'auctionKey' => $id
+                'auctionKey' => $key
             ],
             $query
         );
