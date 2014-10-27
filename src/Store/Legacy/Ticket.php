@@ -10,29 +10,26 @@ class Ticket extends StoreAbstract
     public $_base = 'tickets';
     public $_ticketCache = [];
 
-    public function byAuction($id, $query = [])
+    public function byAuction($key, $query = [])
     {
 
         $query = array_merge(
             [
-                'config' => [
-                    'limit' => 9999
-                ],
-                'query' => [
-                    'auctionKey' => $id
-                ]
+                'auctionKey' => $key
             ],
             $query
         );
 
         $queryKey = serialize($query);
 
-        $this->_ticketCache[$queryKey] = $this->mapMany(
-            $this->_rest->get(
-                $this->_base,
-                $query
-            )->{$this->_resultsKeyPlural}
+        //$this->_ticketCache[$queryKey] = $this->mapMany(
+        $tickets = $this->_rest->get(
+            $this->_base,
+            $query
         );
+        //);
+
+        return $tickets;
 
         return $this->_ticketCache[$queryKey];
 
