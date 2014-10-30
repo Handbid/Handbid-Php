@@ -68,6 +68,7 @@ class Handbid
         require __DIR__ . "/Store/Ticket.php";
 
         require __DIR__ . "/Store/Legacy/Bidder.php";
+        require __DIR__ . "/Store/Legacy/Notification.php";
         require __DIR__ . "/Store/Donor.php";
         require __DIR__ . "/Store/Manager.php";
     }
