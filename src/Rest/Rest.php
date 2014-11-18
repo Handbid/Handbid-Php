@@ -4,6 +4,8 @@ namespace Handbid\Rest;
 
 use Handbid\Auth\AuthInterface;
 use Handbid\Exception\Network as NetworkException;
+use Handbid\Rest\Cache\CacheInterface;
+use Handbid\Rest\Cache\Noop;
 use Handbid\Rest\RestInterface;
 
 class Rest implements RestInterface
@@ -12,15 +14,20 @@ class Rest implements RestInterface
         $_endpoint,
         $_basePath,
         $_auth,
-        $_cache = [],
+        $_cacheAdapter = null,
         $_error = [],
         $_headers = [];
 
-    public function __construct($endpoint, $basePath)
+    public function __construct($endpoint, $basePath, $cacheAdapter = null)
     {
 
-        $this->_endpoint = $endpoint;
-        $this->_basePath = $basePath;
+        if (!$cacheAdapter) {
+            $cacheAdapter = new Noop();
+        }
+
+        $this->_endpoint     = $endpoint;
+        $this->_basePath     = $basePath;
+        $this->_cacheAdapter = $cacheAdapter;
 
 //        $this->_serverAddress = !is_null($serverAddress) ? $serverAddress : $this->_error[] = 'Rest Error: server address must be defined';
 //        $this->_basePath = !is_null($basePath) ? $basePath : $this->_error[] = 'Rest Error: base path must be defined';
@@ -69,9 +76,9 @@ class Rest implements RestInterface
      *
      * @param string $method [get, post, put, delete]
      * @param        $route  the path (not including endpoint and base path)
-     * @param array $query added to the query string of the route, e.g. ?foo=bar&hello=world
-     * @param array $data data for any post or put
-     * @param array $headers
+     * @param array  $query  added to the query string of the route, e.g. ?foo=bar&hello=world
+     * @param array  $data   data for any post or put
+     * @param array  $headers
      *
      * @return mixed
      * @throws \Handbid\Exception\Network
@@ -85,9 +92,9 @@ class Rest implements RestInterface
         $this->_curlHandle = curl_init();
         curl_setopt($this->_curlHandle, CURLOPT_RETURNTRANSFER, true);
 
-        $method = strtoupper($method);
+        $method  = strtoupper($method);
         $headers = ($headers) ? $headers : $this->_headers;
-        $uri = $this->resolveRoute($route);
+        $uri     = $this->resolveRoute($route);
 
         if ($this->_auth) {
             $this->_auth->initRequest($method, $uri, $query, $data, $headers);
@@ -97,7 +104,7 @@ class Rest implements RestInterface
         $query = ($query) ? http_build_query($query) : '';
 
         $cacheKey = $uri . '-' . $query . '-' . $method;
-        if(!isset($this->_cache[$cacheKey])) {
+        if ($method != 'GET' || !$this->_cacheAdapter->hasCache($route, $query, $headers)) {
 
 
             if ($headers) {
@@ -132,7 +139,7 @@ class Rest implements RestInterface
             }
 
             $responseText = curl_exec($this->_curlHandle);
-            $info = curl_getinfo($this->_curlHandle);
+            $info         = curl_getinfo($this->_curlHandle);
 
             //no content, should we care?
             if ($info['http_code'] == 204) {
@@ -144,7 +151,9 @@ class Rest implements RestInterface
                 if ($response && isset($response->Errors)) {
                     throw new NetworkException($response->Errors[0]->description, $info['http_code']);
                 } else {
-                    throw new NetworkException('Unknown response from server with url of (' . $info['url'] . ') Http Code:' . $info['http_code']);
+                    throw new NetworkException(
+                        'Unknown response from server with url of (' . $info['url'] . ') Http Code:' . $info['http_code']
+                    );
                 }
 
             } //this is a strange one and should really never happen
@@ -154,14 +163,14 @@ class Rest implements RestInterface
 
             } //all is well
             else {
+                $this->_cacheAdapter->setCache($route, $query, $headers, $responseText);
                 $response = json_decode($responseText);
             }
 
-            $this->_cache[$cacheKey] = $response;
 
         } else {
 
-            $response = $this->_cache[$cacheKey];
+            $response = json_decode($this->_cacheAdapter->getCache($route, $query, $headers));
 
         }
 
@@ -172,6 +181,5 @@ class Rest implements RestInterface
     {
         return $this->_endpoint . $this->_basePath . $partial;
     }
-
 
 }

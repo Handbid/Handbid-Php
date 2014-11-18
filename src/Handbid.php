@@ -2,6 +2,7 @@
 
 namespace Handbid;
 
+use Handbid\Rest\Cache\Legacy;
 use Handbid\Store\StoreInterface;
 
 class Handbid
@@ -23,6 +24,9 @@ class Handbid
         require __DIR__ . "/Exception/Bid.php";
         require __DIR__ . "/Exception/Network.php";
 
+        require __DIR__ . "/Rest/Cache/CacheInterface.php";
+        require __DIR__ . "/Rest/Cache/Legacy.php";
+        require __DIR__ . "/Rest/Cache/Noop.php";
         require __DIR__ . "/Rest/RestInterface.php";
         require __DIR__ . "/Rest/Rest.php";
 
@@ -89,8 +93,14 @@ class Handbid
         $endpoint = isset($options['endpoint']) ? $options['endpoint'] : 'http://beta.handbid.com';
         $path     = isset($options['path']) ? $options['path'] : '/v1/rest/';
 
+        $cacheAdapter = null;
+
+        if (isset($options['cache'])) {
+            $cacheAdapter = new Legacy($options['cache']);
+        }
+
         //build our rest supporting classes
-        $this->_rest = isset($options['rest']) ? $options['rest'] : new Rest\Rest($endpoint, $path);
+        $this->_rest = isset($options['rest']) ? $options['rest'] : new Rest\Rest($endpoint, $path, $cacheAdapter);
         $auth        = isset($options['auth']) ? $options['auth'] : new Auth\Legacy();
 
         if ($auth) {
