@@ -41,9 +41,9 @@ class Rest implements RestInterface
 
     }
 
-    public function get($route, $query = [], $headers = [])
+    public function get($route, $query = [], $headers = [], $useCache = true)
     {
-        return $this->_request('get', $route, $query, [], $headers);
+        return $this->_request('get', $route, $query, [], $headers, $useCache);
     }
 
     public function post($route, $data = [], $query = [], $headers = [])
@@ -80,10 +80,12 @@ class Rest implements RestInterface
      * @param array  $data   data for any post or put
      * @param array  $headers
      *
+     * @param bool   $useCache
+     *
+     * @throws NetworkException
      * @return mixed
-     * @throws \Handbid\Exception\Network
      */
-    public function _request($method, $route, $query = [], $data = [], $headers = [])
+    public function _request($method, $route, $query = [], $data = [], $headers = [], $useCache = true)
     {
 
         $method = strtoupper($method);
@@ -104,8 +106,7 @@ class Rest implements RestInterface
         $query = ($query) ? http_build_query($query) : '';
 
         $cacheKey = $uri . '-' . $query . '-' . $method;
-        if ($method != 'GET' || !$this->_cacheAdapter->hasCache($route, $query, $headers)) {
-
+        if ($method != 'GET' || !($this->_cacheAdapter->hasCache($route, $query, $headers) && $useCache)) {
 
             if ($headers) {
 
@@ -163,7 +164,10 @@ class Rest implements RestInterface
 
             } //all is well
             else {
-                $this->_cacheAdapter->setCache($route, $query, $headers, $responseText);
+                if ($useCache) {
+                    $this->_cacheAdapter->setCache($route, $query, $headers, $responseText);
+                }
+
                 $response = json_decode($responseText);
             }
 

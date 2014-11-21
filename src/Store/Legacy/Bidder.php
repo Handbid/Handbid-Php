@@ -21,7 +21,11 @@ class Bidder extends StoreAbstract
 
             if (!$this->_profileCache) {
 
-                $response = $this->_rest->get('profile');
+                $response = $this->_rest->get(
+                    'profile',
+                    [],
+                    [],
+                    false);
 
                 if(!$response) {
                     return null;

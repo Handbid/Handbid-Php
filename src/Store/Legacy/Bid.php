@@ -14,8 +14,10 @@ class Bid extends StoreAbstract
      * Because proxy bids, bids, and purchases come back in 1 request i do not want us making the same request
      * many times
      *
-     * @param        $auctionId
-     * @param string $type
+     * @param $bidderPin
+     * @param $auctionId
+     *
+     * @internal param string $type
      *
      * @return array
      */
@@ -32,7 +34,9 @@ class Bid extends StoreAbstract
                         'auction' => $auctionId,
                         'pin'     => $bidderPin
                     ]
-                ]
+                ],
+                [],
+                false
             );
         }
 
@@ -51,7 +55,9 @@ class Bid extends StoreAbstract
                     'query' => [
                         'item' => $itemId
                     ]
-                ]
+                ],
+                [],
+                false
             );
         }
 
