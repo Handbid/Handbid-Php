@@ -50,7 +50,7 @@ class StoreAbstract implements StoreInterface
 
     public function byId($id)
     {
-        $results = $this->_rest->get($this->_base . '/' . $id);
+        $results = $this->_rest->get($this->_base . '/' . $id, [], [], false);
 
         if ($results) {
             $results = $this->map($results->{$this->_resultsKey});
@@ -70,7 +70,7 @@ class StoreAbstract implements StoreInterface
             ],
             $query
         );
-        $results = $this->_rest->get($this->_base, $query);
+        $results = $this->_rest->get($this->_base, $query, [], false);
         $results = $results ? $results->{$this->_resultsKeyPlural} : [];
 
         if(!$results) {

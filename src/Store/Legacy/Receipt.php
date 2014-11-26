@@ -21,7 +21,9 @@ class Receipt extends StoreAbstract
                     'query' => [
                         'auction' => $auctionId
                     ]
-                ]
+                ],
+                [],
+                false
             );
         }
 

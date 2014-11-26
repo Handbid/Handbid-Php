@@ -10,7 +10,8 @@ class Auction extends StoreAbstract
     public $_base = 'models/Auction';
     public $_resultsKey = 'Auction';
 
-    public function _queryAll() {
+    public function _queryAll()
+    {
         return [];
     }
 
@@ -78,8 +79,14 @@ class Auction extends StoreAbstract
         return $this->all($page, $pageSize, $sortField, $sortDirection, $query);
     }
 
-    public function byStatus($status, $page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $orgId = '')
-    {
+    public function byStatus(
+        $status,
+        $page = 0,
+        $pageSize = 25,
+        $sortField = 'name',
+        $sortDirection = 'ASC',
+        $orgId = ''
+    ) {
 
         $query = $this->{'_query' . ucfirst($status)}();
 
@@ -126,10 +133,10 @@ class Auction extends StoreAbstract
     {
 
         $entity->location->coords = null;
-        $entity->meta = (object)[
-            'totalItems' => $entity->_restMetaData->numItems,
+        $entity->meta             = (object)[
+            'totalItems'   => $entity->_restMetaData->numItems,
             'organization' => (object)[
-                'key' => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->key : null,
+                'key'  => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->key : null,
                 'name' => isset($entity->_restMetaData->organization) ? $entity->_restMetaData->organization->name : null,
             ]
         ];
@@ -149,9 +156,16 @@ class Auction extends StoreAbstract
     public function myRecent($query = [])
     {
 
-        return $this->mapMany($this->_rest->get('my-auctions', [
-            'query' => $query
-        ])->auctions);
+        return $this->mapMany(
+            $this->_rest->get(
+                'my-auctions',
+                [
+                    'query' => $query,
+                ],
+                [],
+                false
+            )->auctions
+        );
 
     }
 }

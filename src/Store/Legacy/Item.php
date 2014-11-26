@@ -32,7 +32,9 @@ class Item extends StoreAbstract
         $this->_itemCache[$queryKey] = $this->mapMany(
             $this->_rest->get(
                 $this->_base,
-                $query
+                $query,
+                [],
+                false
             )->{$this->_resultsKeyPlural}
         );
 
@@ -116,7 +118,6 @@ class Item extends StoreAbstract
         return parent::byKey($key, $query);
     }
 
-
     public function related($id, $options = [])
     {
 
@@ -143,7 +144,6 @@ class Item extends StoreAbstract
             'items/related',
             $query
         ));
-
 
         return $results;
 
