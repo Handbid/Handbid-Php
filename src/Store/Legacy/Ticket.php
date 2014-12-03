@@ -25,7 +25,9 @@ class Ticket extends StoreAbstract
         //$this->_ticketCache[$queryKey] = $this->mapMany(
         $tickets = $this->_rest->get(
             $this->_base,
-            $query
+            $query,
+            [],
+            false
         );
         //);
 
