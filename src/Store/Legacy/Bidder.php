@@ -62,7 +62,22 @@ class Bidder extends StoreAbstract
 
                 if(empty($values['photo']['name'])) {
                 } else {
-                    $photo = new \CURLFile($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
+                    if(class_exists('CURLFiles', false)) {
+                        $photo = new \CURLFile($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
+                    } else {
+
+
+                        if (!function_exists('curl_file_create')) {
+                            function curl_file_create($filename, $mimetype = '', $postname = '') {
+                                return "@$filename;filename="
+                                . ($postname ?: basename($filename))
+                                . ($mimetype ? ";type=$mimetype" : '');
+                            }
+                        }
+
+                        $photo = curl_file_create($values['photo']['tmp_name'], $values['photo']['type'], $values['photo']['name']);
+
+                    }
                 }
 
                 unset($values['photo']);
@@ -70,7 +85,7 @@ class Bidder extends StoreAbstract
             } else {
 
                 $photo = $values['photo'];
-                    throw new \Exception('Not finished');
+                throw new \Exception('Not finished');
 
                 if(!file_exists($photo)) {
                     throw new \Exception('I could not find a photo at ' + $photo);
