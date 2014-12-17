@@ -23,7 +23,7 @@ class StoreAbstract implements StoreInterface
         }
     }
 
-    public function all($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $query = false, $options = false)
+    public function all($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $query = false, $options = false, $cache = true)
     {
 
         $skip = $page * $pageSize;
@@ -38,7 +38,10 @@ class StoreAbstract implements StoreInterface
                     'limit' => $pageSize,
                     'sort'  => [$sortField => $sortDirection]
                 ]
-            ]
+            ],
+            [],
+            [],
+            $cache
         );
 
         if ($results) {
@@ -48,9 +51,9 @@ class StoreAbstract implements StoreInterface
         return $results;
     }
 
-    public function byId($id)
+    public function byId($id, $cache = true)
     {
-        $results = $this->_rest->get($this->_base . '/' . $id, [], [], false);
+        $results = $this->_rest->get($this->_base . '/' . $id, [], [], $cache);
 
         if ($results) {
             $results = $this->map($results->{$this->_resultsKey});
@@ -59,7 +62,7 @@ class StoreAbstract implements StoreInterface
         return $results;
     }
 
-    public function byKey($key, $query = [])
+    public function byKey($key, $query = [], $cache = true)
     {
 
         $query   = array_merge(
@@ -70,7 +73,7 @@ class StoreAbstract implements StoreInterface
             ],
             $query
         );
-        $results = $this->_rest->get($this->_base, $query, [], false);
+        $results = $this->_rest->get($this->_base, $query, [], $cache);
         $results = $results ? $results->{$this->_resultsKeyPlural} : [];
 
         if(!$results) {

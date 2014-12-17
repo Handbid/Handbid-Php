@@ -17,7 +17,7 @@ class Auction extends StoreAbstract
      */
     public function byOrg($id)
     {
-        return $this->_rest->get('orgs/' . $id . '/auctions.json');
+        return $this->_rest->get('orgs/' . $id . '/auctions.json', [], [], false);
     }
 
 
@@ -28,17 +28,17 @@ class Auction extends StoreAbstract
             return $this->_rest->get('orgs/' . $orgId . '/auctions/upcoming.json');
         } else {
 
-            return $this->_rest->get('auctions/upcoming.json');
+            return $this->_rest->get('auctions/upcoming.json', [], [], false);
         }
     }
 
     public function past($orgId = '')
     {
         if ($orgId) {
-            return $this->_rest->get('orgs/' . $orgId . '/auctions/past.json');
+            return $this->_rest->get('orgs/' . $orgId . '/auctions/past.json', [], [], false);
         } else {
 
-            return $this->_rest->get('auctions/past.json');
+            return $this->_rest->get('auctions/past.json', [], [], false);
         }
     }
 

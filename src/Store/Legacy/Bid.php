@@ -47,9 +47,9 @@ class Bid extends StoreAbstract
     public function _fetchItemBids($itemId)
     {
 
-        if (!isset($this->_bidCache[$itemId])) {
+//        if (!isset($this->_bidCache[$itemId])) {
 
-            $this->_bidCache[$itemId] = $this->_rest->get(
+         return $this->_rest->get(
                 'models/Bid',
                 [
                     'query' => [
@@ -59,9 +59,9 @@ class Bid extends StoreAbstract
                 [],
                 false
             );
-        }
+//        }
 
-        return $this->_bidCache[$itemId];
+//        return $this->_bidCache[$itemId];
 
     }
 

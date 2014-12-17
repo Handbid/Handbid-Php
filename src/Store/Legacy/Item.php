@@ -115,7 +115,7 @@ class Item extends StoreAbstract
             $query
         );
 
-        return parent::byKey($key, $query);
+        return parent::byKey($key, $query, false);
     }
 
     public function related($id, $options = [])
@@ -142,7 +142,10 @@ class Item extends StoreAbstract
 
         $results = $this->mapMany($this->_rest->get(
             'items/related',
-            $query
+            $query,
+            [],
+            [],
+            false
         ));
 
         return $results;
