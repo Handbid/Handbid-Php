@@ -13,20 +13,15 @@ class Receipt extends StoreAbstract
     public function byAuction($auctionId)
     {
 
-        if (!isset($this->_receiptCache[$auctionId])) {
-
-            $this->_receiptCache[$auctionId] = $this->_rest->get(
-                'receipt',
-                [
-                    'query' => [
-                        'auction' => $auctionId
-                    ]
-                ],
-                [],
-                false
-            );
-        }
-
-        return $this->_receiptCache[$auctionId];
+        return $this->_rest->get(
+            'receipt',
+            [
+                'query' => [
+                    'auction' => $auctionId
+                ]
+            ],
+            [],
+            false
+        );
     }
 }

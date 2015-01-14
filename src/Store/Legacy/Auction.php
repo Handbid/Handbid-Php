@@ -150,7 +150,7 @@ class Auction extends StoreAbstract
 
         $query = $this->{'_query' . ucfirst($type)}();
 
-        return $this->_rest->get('auctions/count', ['query' => $query])->count;
+        return $this->_rest->get('auctions/count', ['query' => $query], false)->count;
     }
 
     public function myRecent($query = [])
