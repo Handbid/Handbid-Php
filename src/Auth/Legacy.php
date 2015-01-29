@@ -25,7 +25,10 @@ class Legacy implements AuthInterface
     {
         $this->_auth = $token;
         if($token) {
-            setcookie('handbid-auth', $this->_auth, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
+
+            setcookie('handbid-auth', 'Authorization: Bearer 4e1730e5ba3a20145c000011', time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
+
+//            setcookie('handbid-auth', $this->_auth, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
         }
         return $this;
     }
@@ -61,8 +64,6 @@ class Legacy implements AuthInterface
             header('Location: ' . $protocol . $host . $path . '?' . $query);
             exit;
 
-
-
         }
 
         if(isset($_COOKIE['handbid-auth'])) {
@@ -83,7 +84,7 @@ class Legacy implements AuthInterface
     public function initRequest(&$method, &$url, &$query, &$postData, &$headers)
     {
         if($this->hasToken()) {
-            $headers['Authorization'] = 'IronFrame ' . $this->_auth;
+            $headers['Authorization'] = $this->_auth;
         }
     }
 

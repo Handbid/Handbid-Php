@@ -7,7 +7,7 @@ use Handbid\Store\Legacy\StoreAbstract;
 class ItemCategory extends StoreAbstract
 {
 
-    public $_base = 'models/ItemCategory';
+    public $_base = 'category';
     public $_resultsKey = 'ItemCategory';
     public $_resultsKeyPlural = 'ItemCategories';
 

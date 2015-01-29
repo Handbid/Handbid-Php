@@ -7,7 +7,7 @@ use Handbid\Store\Legacy\StoreAbstract;
 class Organization extends StoreAbstract
 {
 
-    public $_base = 'models/Organization';
+    public $_base = 'organization';
     public $_resultsKey = 'Organization';
 
 

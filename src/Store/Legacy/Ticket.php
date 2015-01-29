@@ -7,7 +7,7 @@ use Handbid\Store\Legacy\StoreAbstract;
 class Ticket extends StoreAbstract
 {
 
-    public $_base = 'tickets';
+    public $_base = 'ticket';
     public $_ticketCache = [];
 
     public function byAuction($key, $query = [])

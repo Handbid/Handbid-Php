@@ -6,7 +6,7 @@ use Handbid\Store\Legacy\StoreAbstract;
 
 class Receipt extends StoreAbstract
 {
-    public $_base = 'models/Receipt';
+    public $_base = 'bidder/receipts';
     public $_resultKey = 'Receipt';
     public $_receiptCache = [];
 

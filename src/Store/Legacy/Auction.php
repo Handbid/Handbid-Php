@@ -7,7 +7,7 @@ use Handbid\Store\Legacy\StoreAbstract;
 class Auction extends StoreAbstract
 {
 
-    public $_base = 'models/Auction';
+    public $_base = 'auction';
     public $_resultsKey = 'Auction';
 
     public function _queryAll()

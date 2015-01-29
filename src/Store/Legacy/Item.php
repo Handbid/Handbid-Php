@@ -7,7 +7,7 @@ use Handbid\Store\Legacy\StoreAbstract;
 class Item extends StoreAbstract
 {
 
-    public $_base = 'models/Item';
+    public $_base = 'item';
     public $_resultsKey = 'Item';
     public $_itemCache = [];
     public $_bidCache = [];

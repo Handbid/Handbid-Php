@@ -112,7 +112,7 @@ class Rest implements RestInterface
 
                 $_headers = [];
                 foreach ($headers as $k => $v) {
-                    $_headers[] = $k . ': ' . $v;
+                    $_headers[] = $v;
                 }
 
                 curl_setopt($this->_curlHandle, CURLOPT_HTTPHEADER, $_headers);

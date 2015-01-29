@@ -8,7 +8,7 @@ class Bid extends StoreAbstract
 {
 
     public $_bidCache = [];
-
+    public $_base = 'bid';
 
     /**
      * Because proxy bids, bids, and purchases come back in 1 request i do not want us making the same request

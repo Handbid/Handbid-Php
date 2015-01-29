@@ -90,8 +90,8 @@ class Handbid
         }
 
         //defaults
-        $endpoint = isset($options['endpoint']) ? $options['endpoint'] : 'http://beta.handbid.com';
-        $path     = isset($options['path']) ? $options['path'] : '/v1/rest/';
+        $endpoint = isset($options['endpoint']) ? $options['endpoint'] : 'https://beta-rest.hand.bid';
+        $path     = isset($options['path']) ? $options['path'] : '';
 
         $cacheAdapter = null;
 

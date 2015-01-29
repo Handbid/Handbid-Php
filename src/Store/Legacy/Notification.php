@@ -9,5 +9,4 @@ class Notification extends StoreAbstract
     public $_base = 'bidder/notifications';
     public $_resultsKey = 'Message';
 
-
 }

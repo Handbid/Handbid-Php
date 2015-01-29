@@ -7,6 +7,7 @@ use Handbid\Store\Legacy\StoreAbstract;
 class Bidder extends StoreAbstract
 {
 
+    public $_base = 'bidder';
     public $_profileCache = null;
     public $_bidCache = [];
 
@@ -22,7 +23,7 @@ class Bidder extends StoreAbstract
             if (!$this->_profileCache) {
 
                 $response = $this->_rest->get(
-                    'profile',
+                    'bidder/index',
                     [],
                     [],
                     false);
@@ -31,7 +32,7 @@ class Bidder extends StoreAbstract
                     return null;
                 }
 
-                $this->_profileCache = $response->Users[0];
+                $this->_profileCache = $response;
 
             }
 

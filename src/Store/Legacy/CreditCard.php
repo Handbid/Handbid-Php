@@ -6,6 +6,7 @@ use Handbid\Store\Legacy\StoreAbstract;
 
 class CreditCard extends StoreAbstract
 {
+    public $_base = 'creditcard';
 
     public function byOwner($id)
     {
