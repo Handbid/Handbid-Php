@@ -44,9 +44,9 @@ class StoreAbstract implements StoreInterface
             $cache
         );
 
-        if ($results) {
-            $results = $this->mapMany($results->{$this->_resultsKeyPlural});
-        }
+//        if ($results) {
+//            $results = $this->mapMany($results->{$this->_resultsKeyPlural});
+//        }
 
         return $results;
     }
