@@ -126,7 +126,7 @@ class Rest implements RestInterface
                 curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
 
             } elseif ($method === 'GET' && $query) {
-                $uri = $uri . '?' . $query;
+//                $uri = $uri . '?' . $query;
                 curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
 
             } elseif ($method === 'DELETE') {
