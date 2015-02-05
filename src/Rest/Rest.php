@@ -93,6 +93,8 @@ class Rest implements RestInterface
         //store for posterity
         $this->_curlHandle = curl_init();
         curl_setopt($this->_curlHandle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->_curlHandle, CURLOPT_SSL_VERIFYHOST, '2');
+        curl_setopt($this->_curlHandle, CURLOPT_SSL_VERIFYPEER, FALSE);
 
         $method  = strtoupper($method);
         $headers = ($headers) ? $headers : $this->_headers;
@@ -125,8 +127,7 @@ class Rest implements RestInterface
                 curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
                 curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
 
-            } elseif ($method === 'GET' && $query) {
-//                $uri = $uri . '?' . $query;
+            } elseif ($method === 'GET') {
                 curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
 
             } elseif ($method === 'DELETE') {

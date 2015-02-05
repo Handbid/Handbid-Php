@@ -65,21 +65,8 @@ class StoreAbstract implements StoreInterface
     public function byKey($key, $query = [], $cache = true)
     {
 
-        $query   = array_merge(
-            [
-                'query' => [
-                    'key' => $key
-                ]
-            ],
-            $query
-        );
-        $results = $this->_rest->get($this->_base, $query, [], $cache);
-        $results = $results ? $results->{$this->_resultsKeyPlural} : [];
+        return $this->_rest->get($this->_base . '/key/' . $key);
 
-        if(!$results) {
-            return $results;
-        }
-        return $this->map($results[0]);
     }
 
     public function preparePostVars($values)
