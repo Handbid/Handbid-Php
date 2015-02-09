@@ -21,16 +21,12 @@ class Bid extends StoreAbstract
      *
      * @return array
      */
-    public function _fetchBidderBids($bidderPin, $auctionId)
+    public function _fetchBidderBids($auctionId)
     {
 
             return  $this->_rest->get(
-                'auction/mybids/',
+                'auction/mybids/' . $auctionId,
                 [
-                    'query' => [
-                        'auction' => $auctionId,
-                        'pin'     => $bidderPin
-                    ]
                 ],
                 [],
                 false
@@ -52,25 +48,23 @@ class Bid extends StoreAbstract
 
     public function itemBids($itemId)
     {
-        $bids = $this->_fetchItemBids($itemId);
-        return $bids ? $this->mapMany($bids->Bids) : [];
+        return $this->_fetchItemBids($itemId);
     }
 
     public function itemProxyBids($itemId)
     {
-        $bids = $this->_fetchItemBids($itemId);
-        return $bids ? $this->mapMany($bids->ProxyBids) : [];
+        return $this->_fetchItemBids($itemId);
+
     }
 
     public function itemPurchases($itemId)
     {
-        $bids = $this->_fetchItemBids($itemId);
-        return $bids ? $this->mapMany($bids->Purchases) : [];
+        return $this->_fetchItemBids($itemId);
     }
 
-    public function myBids($bidderPin, $auctionId)
+    public function myBids($auctionId)
     {
-        $bids = $this->_fetchBidderBids($bidderPin, $auctionId);
+        $bids = $this->_fetchBidderBids($auctionId);
 
         if (!$bids) {
             return null;
@@ -79,8 +73,6 @@ class Bid extends StoreAbstract
         $winning = [];
 
         if ($bids) {
-
-            $bids = $bids->Bids;
 
             foreach ($bids as $bid) {
 
@@ -92,27 +84,23 @@ class Bid extends StoreAbstract
 
         }
 
-        return $this->mapMany($winning);
+        return $winning;
     }
 
-    public function myProxyBids($bidderPin, $auctionId)
+    public function myProxyBids($auctionId)
     {
-        $bids = $this->_fetchBidderBids($bidderPin, $auctionId);
-
-        return $bids ? $this->mapMany($bids->ProxyBids) : null;
+        return $this->_fetchBidderBids($auctionId);
     }
 
-    public function myPurchases($bidderPin, $auctionId)
+    public function myPurchases($auctionId)
     {
-        $bids = $this->_fetchBidderBids($bidderPin, $auctionId);
-
-        return $bids ? $this->mapMany($bids->Purchases) : null;
+        return $this->_fetchBidderBids($auctionId);
     }
 
-    public function myLosing($bidderPin, $auctionId)
+    public function myLosing($auctionId)
     {
 
-        $bids   = $this->_fetchBidderBids($bidderPin, $auctionId);
+        $bids   = $this->_fetchBidderBids($auctionId);
         $losing = [];
 
         if (!$bids) {
@@ -120,8 +108,6 @@ class Bid extends StoreAbstract
         }
 
         if ($bids) {
-
-            $bids = $bids->Bids;
 
             foreach ($bids as $bid) {
 
@@ -133,7 +119,7 @@ class Bid extends StoreAbstract
 
         }
 
-        return $this->mapMany($losing);
+        return $losing;
 
 
     }
