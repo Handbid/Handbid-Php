@@ -24,11 +24,8 @@ class Bid extends StoreAbstract
     public function _fetchBidderBids($bidderPin, $auctionId)
     {
 
-
-        if (!isset($this->_bidCache[$auctionId])) {
-
-            $this->_bidCache[$auctionId] = $this->_rest->get(
-                'models/Bid',
+            return  $this->_rest->get(
+                'auction/mybids/',
                 [
                     'query' => [
                         'auction' => $auctionId,
@@ -38,30 +35,18 @@ class Bid extends StoreAbstract
                 [],
                 false
             );
-        }
-
-        return $this->_bidCache[$auctionId];
     }
 
 
     public function _fetchItemBids($itemId)
     {
 
-//        if (!isset($this->_bidCache[$itemId])) {
-
          return $this->_rest->get(
-                'models/Bid',
-                [
-                    'query' => [
-                        'item' => $itemId
-                    ]
-                ],
+                'item/bids/' . $itemId,
+                [],
                 [],
                 false
             );
-//        }
-
-//        return $this->_bidCache[$itemId];
 
     }
 

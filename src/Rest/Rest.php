@@ -41,7 +41,7 @@ class Rest implements RestInterface
 
     }
 
-    public function get($route, $query = [], $headers = [], $useCache = true)
+    public function get($route, $query = [], $headers = [], $useCache = false)
     {
         return $this->_request('get', $route, $query, [], $headers, $useCache);
     }
@@ -85,7 +85,7 @@ class Rest implements RestInterface
      * @throws NetworkException
      * @return mixed
      */
-    public function _request($method, $route, $query = [], $data = [], $headers = [], $useCache = true)
+    public function _request($method, $route, $query = [], $data = [], $headers = [], $useCache = false)
     {
 
         $method = strtoupper($method);

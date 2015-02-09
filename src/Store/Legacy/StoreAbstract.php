@@ -62,7 +62,7 @@ class StoreAbstract implements StoreInterface
         return $results;
     }
 
-    public function byKey($key, $query = [], $cache = true)
+    public function byKey($key, $query = [], $cache = false)
     {
 
         return $this->_rest->get($this->_base . '/key/' . $key);
