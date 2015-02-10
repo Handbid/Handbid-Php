@@ -128,6 +128,9 @@ class Rest implements RestInterface
                 curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
 
             } elseif ($method === 'GET') {
+                if($query) {
+                    $uri = $uri . '?' . $query;
+                }
                 curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
 
             } elseif ($method === 'DELETE') {
@@ -135,9 +138,13 @@ class Rest implements RestInterface
                 curl_setopt($this->_curlHandle, CURLOPT_CUSTOMREQUEST, 'DELETE');
                 curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query);
 
-            } else {
+            } elseif ($method === 'PUT') {
                 curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
-
+                curl_setopt($this->_curlHandle, CURLOPT_CUSTOMREQUEST, 'PUT');
+                curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query);
+            }
+            else {
+                curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
             }
 
             $responseText = curl_exec($this->_curlHandle);

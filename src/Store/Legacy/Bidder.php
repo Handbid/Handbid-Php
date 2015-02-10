@@ -123,10 +123,10 @@ class Bidder extends StoreAbstract
             $post['photo[file]'] = $photo;
         }
 
-        $profile = $this->_rest->post('models/User/' . $profile->_id, $post)->User;
+        $profile = $this->_rest->put('bidder/update', $post);
 
         //update auth
-        $this->_rest->auth()->setToken($profile->_auth->ironframe);
+//        $this->_rest->auth()->setToken($profile->_auth->ironframe);
 
         return $profile;
 

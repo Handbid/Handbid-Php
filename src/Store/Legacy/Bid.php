@@ -24,7 +24,7 @@ class Bid extends StoreAbstract
     public function _fetchBidderBids($auctionId)
     {
 
-            return  $this->_rest->get(
+            return $this->_rest->get(
                 'auction/mybids/' . $auctionId,
                 [
                 ],
@@ -66,11 +66,11 @@ class Bid extends StoreAbstract
     {
         $bids = $this->_fetchBidderBids($auctionId);
 
-        if (!$bids) {
-            return null;
-        }
-
         $winning = [];
+
+        if (!$bids) {
+            return $winning;
+        }
 
         if ($bids) {
 
@@ -104,7 +104,7 @@ class Bid extends StoreAbstract
         $losing = [];
 
         if (!$bids) {
-            return null;
+            return $losing;
         }
 
         if ($bids) {
@@ -123,28 +123,4 @@ class Bid extends StoreAbstract
 
 
     }
-
-    public function map($bid)
-    {
-
-        if (isset($bid->_restMetaData)) {
-
-            $bid->winningBidder = (object)[
-                'alias' => $bid->_restMetaData->bidderAlias,
-                'name'  => $bid->_restMetaData->bidderName,
-                'pin'   => isset($bid->_restMetaData->bidderPin) ? $bid->_restMetaData->bidderPin : null,
-                'id'    => isset($bid->_restMetaData->bidderId) ? $bid->_restMetaData->bidderId : null
-            ];
-
-            $bid->meta = [
-                'itemName' => isset($bid->_restMetaData->itemName) ? $bid->_restMetaData->itemName : null,
-                'itemKey'  => isset($bid->_restMetaData->itemKey) ? $bid->_restMetaData->itemKey : null
-            ];
-
-            unset($bid->_restMetaData);
-        }
-
-        return $bid;
-    }
-
 }

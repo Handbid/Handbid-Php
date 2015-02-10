@@ -11,26 +11,19 @@ class CreditCard extends StoreAbstract
     public function byOwner($id)
     {
         $creditCards = $this->_rest->get(
-            'models/CreditCard',
+            'creditcard',
             [
-                'query' => [
-                    'owner' => $id
-                ]
             ],
             [],
             false
         );
 
-        return $this->mapMany($creditCards->CreditCards);
+        return $creditCards;
     }
 
-    public function add($profileId, $values)
+    public function add($values)
     {
-
-        $values['owner']        = $profileId;
-        $values['isActiveCard'] = true;
-
-        $creditCard = $this->_rest->post('models/CreditCard', $this->preparePostVars($values));
+        $creditCard = $this->_rest->post('creditcard/create', $this->preparePostVars($values));
 
         return $creditCard;
     }
