@@ -65,7 +65,8 @@ class StoreAbstract implements StoreInterface
     public function byKey($key, $query = [], $cache = false)
     {
 
-        return $this->_rest->get($this->_base . '/key/' . $key);
+        // Lookup auction by key, Yii uses /slug endpoint
+        return $this->_rest->get($this->_base . '/slug/' . $key);
 
     }
 
