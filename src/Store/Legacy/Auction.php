@@ -7,7 +7,7 @@ use Handbid\Store\Legacy\StoreAbstract;
 class Auction extends StoreAbstract
 {
 
-    public $_base = 'auction';
+    public $_base = 'publicauction';
     public $_resultsKey = 'Auction';
 
     public function _queryAll()
@@ -151,6 +151,18 @@ class Auction extends StoreAbstract
         $query = $this->{'_query' . ucfirst($type)}();
 
         return $this->_rest->get('auction/count', ['query' => $query], [], false)->count;
+    }
+
+    public function publicAuctionCount()
+    {
+
+        return count($this->publicAuctions());
+    }
+
+    public function publicAuctions()
+    {
+
+        return $this->_rest->get('publicauction', [], [], false);
     }
 
     public function myRecent($query = [])

@@ -62,15 +62,12 @@ class Bid extends StoreAbstract
         return $this->_fetchItemBids($itemId);
     }
 
-    public function myBids($auctionId)
+    public function myWinning($auctionId)
     {
+
         $bids = $this->_fetchBidderBids($auctionId);
 
         $winning = [];
-
-        if (!$bids) {
-            return $winning;
-        }
 
         if ($bids) {
 
@@ -85,6 +82,13 @@ class Bid extends StoreAbstract
         }
 
         return $winning;
+
+    }
+
+    public function myBids($auctionId)
+    {
+
+        return $this->_fetchBidderBids($auctionId);
     }
 
     public function myProxyBids($auctionId)
@@ -94,18 +98,23 @@ class Bid extends StoreAbstract
 
     public function myPurchases($auctionId)
     {
-        return $this->_fetchBidderBids($auctionId);
+        $purchases = $this->_rest->get(
+            'auction/purchases/' . $auctionId,
+            [
+            ],
+            [],
+            false
+        );
+
+        return $purchases;
     }
 
     public function myLosing($auctionId)
     {
 
         $bids   = $this->_fetchBidderBids($auctionId);
-        $losing = [];
 
-        if (!$bids) {
-            return $losing;
-        }
+        $losing = [];
 
         if ($bids) {
 

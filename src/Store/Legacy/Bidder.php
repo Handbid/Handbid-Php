@@ -22,6 +22,7 @@ class Bidder extends StoreAbstract
 
             if (!$this->_profileCache) {
 
+
                 $response = $this->_rest->get(
                     'bidder/index',
                     [],
@@ -53,7 +54,6 @@ class Bidder extends StoreAbstract
             throw new \Exception('You must be logged in to update your profile.');
         }
 
-        $profile = $this->myProfile();
         $photo = null;
 
         if(isset($values['photo']) && $values['photo']) {
@@ -123,7 +123,7 @@ class Bidder extends StoreAbstract
             $post['photo[file]'] = $photo;
         }
 
-        $profile = $this->_rest->put('bidder/update', $post);
+        $profile = $this->_rest->put('bidder/update', json_encode($post));
 
         //update auth
 //        $this->_rest->auth()->setToken($profile->_auth->ironframe);

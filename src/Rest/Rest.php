@@ -139,9 +139,10 @@ class Rest implements RestInterface
                 curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query);
 
             } elseif ($method === 'PUT') {
+
                 curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
-                curl_setopt($this->_curlHandle, CURLOPT_CUSTOMREQUEST, 'PUT');
-                curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $query);
+                curl_setopt($this->_curlHandle, CURLOPT_PUT, true);
+                curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
             }
             else {
                 curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);

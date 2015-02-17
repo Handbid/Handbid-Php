@@ -76,7 +76,7 @@ class StoreAbstract implements StoreInterface
         $post = [];
 
         foreach ($values as $k => $v) {
-            $post['values[' . $k . ']'] = $v;
+            $post[$k] = $v;
         }
 
 

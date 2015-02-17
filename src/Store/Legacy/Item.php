@@ -97,26 +97,36 @@ class Item extends StoreAbstract
         return $entity;
     }
 
-    public function byKey($key, $query = [])
+
+    public function byKey($key, $query = [], $cache = false)
     {
 
-        $query = array_merge(
-            [
-                'query' => [
-                    'key' => $key
-                ],
-                'options' => [
-                    'images' => [
-                        'w' => 400,
-                        'h' => false
-                    ]
-                ]
-            ],
-            $query
-        );
+        // Lookup auction by key, Yii uses /slug endpoint
+        return $this->_rest->get('publicitem' . '/slug/' . $key);
 
-        return parent::byKey($key, $query, false);
     }
+
+
+//    public function byKey($key, $query = [])
+//    {
+//
+//        $query = array_merge(
+//            [
+//                'query' => [
+//                    'key' => $key
+//                ],
+//                'options' => [
+//                    'images' => [
+//                        'w' => 400,
+//                        'h' => false
+//                    ]
+//                ]
+//            ],
+//            $query
+//        );
+//
+//        return parent::byKey($key, $query, false);
+//    }
 
     public function related($id, $options = [])
     {
