@@ -105,7 +105,7 @@ class Rest implements RestInterface
         }
 
         //build query string
-        $query = ($query) ? http_build_query($query) : '';
+        $query = ($query) ? $this->buildFilter($query) : '';
 
         $cacheKey = $uri . '-' . $query . '-' . $method;
         if ($method != 'GET' || !($this->_cacheAdapter->hasCache($route, $query, $headers) && $useCache)) {
@@ -203,6 +203,14 @@ class Rest implements RestInterface
     public function resolveRoute($partial)
     {
         return $this->_endpoint . $this->_basePath . $partial;
+    }
+
+    public function buildFilter($filters) {
+
+        $filter = (isset($filters[0]) && $filters[0]) ? 'filter=' . implode(',', $filters) : '';
+
+        return $filter;
+
     }
 
 }

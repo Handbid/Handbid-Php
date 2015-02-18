@@ -21,25 +21,26 @@ class Bid extends StoreAbstract
      *
      * @return array
      */
-    public function _fetchBidderBids($auctionId)
+    public function _fetchBidderBids($auctionId, $query = [])
     {
 
             return $this->_rest->get(
                 'auction/mybids/' . $auctionId,
-                [
-                ],
+                $query,
                 [],
                 false
             );
     }
 
 
-    public function _fetchItemBids($itemId)
+    public function _fetchItemBids($itemId, $query = [])
     {
 
          return $this->_rest->get(
                 'publicitem/bids/' . $itemId,
-                [],
+                [
+                    $query
+                ],
                 [],
                 false
             );
@@ -62,38 +63,25 @@ class Bid extends StoreAbstract
         return $this->_fetchItemBids($itemId);
     }
 
-    public function myWinning($auctionId)
-    {
-
-        $bids = $this->_fetchBidderBids($auctionId);
-
-        $winning = [];
-
-        if ($bids) {
-
-            foreach ($bids as $bid) {
-
-                if ($bid->status == 'winning') {
-                    $winning[] = $bid;
-                }
-
-            }
-
-        }
-
-        return $winning;
-
-    }
-
     public function myBids($auctionId)
     {
 
-        return $this->_fetchBidderBids($auctionId);
+        return $this->_fetchBidderBids($auctionId, ['all_bids']);
+    }
+
+    public function myWinning($auctionId)
+    {
+        return $this->_fetchBidderBids($auctionId, ['winning']);
+    }
+
+    public function myLosing($auctionId)
+    {
+        return $this->_fetchBidderBids($auctionId, ['losing']);
     }
 
     public function myProxyBids($auctionId)
     {
-        return $this->_fetchBidderBids($auctionId);
+        return $this->_fetchBidderBids($auctionId, ['max_bids']);
     }
 
     public function myPurchases($auctionId)
@@ -109,27 +97,4 @@ class Bid extends StoreAbstract
         return $purchases;
     }
 
-    public function myLosing($auctionId)
-    {
-
-        $bids   = $this->_fetchBidderBids($auctionId);
-
-        $losing = [];
-
-        if ($bids) {
-
-            foreach ($bids as $bid) {
-
-                if ($bid->status == 'losing') {
-                    $losing[] = $bid;
-                }
-
-            }
-
-        }
-
-        return $losing;
-
-
-    }
 }

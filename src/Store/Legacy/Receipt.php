@@ -14,11 +14,8 @@ class Receipt extends StoreAbstract
     {
 
         return $this->_rest->get(
-            'receipt',
+            'auction/myreceipt' . $auctionId,
             [
-                'query' => [
-                    'auction' => $auctionId
-                ]
             ],
             [],
             false
