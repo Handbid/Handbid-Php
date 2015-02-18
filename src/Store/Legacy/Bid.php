@@ -38,7 +38,7 @@ class Bid extends StoreAbstract
     {
 
          return $this->_rest->get(
-                'item/bids/' . $itemId,
+                'publicitem/bids/' . $itemId,
                 [],
                 [],
                 false

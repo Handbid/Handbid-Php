@@ -141,7 +141,17 @@ class Rest implements RestInterface
             } elseif ($method === 'PUT') {
 
                 curl_setopt($this->_curlHandle, CURLOPT_URL, $uri);
-                curl_setopt($this->_curlHandle, CURLOPT_PUT, true);
+                curl_setopt($this->_curlHandle, CURLOPT_CUSTOMREQUEST, 'PUT');
+
+                // Lets add the proper headers
+                forEach($_headers as $k => $v) {
+                    $h[] = $v;
+                }
+                $_mixedHeaders = array_merge(array(
+                    'Content-Type: application/json',
+                ), $h);
+
+                curl_setopt($this->_curlHandle, CURLOPT_HTTPHEADER, $_mixedHeaders);
                 curl_setopt($this->_curlHandle, CURLOPT_POSTFIELDS, $data);
             }
             else {
