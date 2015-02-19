@@ -27,6 +27,12 @@ class CreditCard extends StoreAbstract
 
         return $creditCard;
     }
+    public function delete($id)
+    {
+        $creditCard = $this->_rest->delete('creditcard/delete/' . $id);
+
+        return $creditCard;
+    }
 
 
 }
