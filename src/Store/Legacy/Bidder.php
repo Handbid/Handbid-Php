@@ -2,8 +2,6 @@
 
 namespace Handbid\Store\Legacy;
 
-use Handbid\Store\Legacy\StoreAbstract;
-
 class Bidder extends StoreAbstract
 {
 
@@ -126,12 +124,49 @@ class Bidder extends StoreAbstract
         $profile = $this->_rest->put('bidder/update', json_encode($post));
 
         //update auth
-//        $this->_rest->auth()->setToken($profile->_auth->ironframe);
+//        $this->_rest->auth()->setToken($profile->data->token);
 
         return $profile;
 
     }
 
+    public function login($values) {
+        try {
+
+            $profile = $this->_rest->post('auth/login', json_encode($values));
+
+            if($profile) {
+                $this->setCookie($profile);
+            }
+
+            return $profile;
+
+        } catch (\Exception $e) {
+
+        }
+    }
+
+    public function register($values) {
+        try {
+
+            $profile = $this->_rest->post('auth/register', json_encode($values));
+
+            if($profile->success) {
+                $this->setCookie($profile);
+            }
+
+            return $profile->data;
+
+
+        } catch (\Exception $e) {
+
+        }
+    }
+
+    public function setCookie($profile) {
+        $token = $profile->data->token;
+        setcookie('handbid-auth', 'Authorization: Bearer ' . $token, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
+    }
 
 
 }

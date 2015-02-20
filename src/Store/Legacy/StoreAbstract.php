@@ -73,14 +73,13 @@ class StoreAbstract implements StoreInterface
     public function preparePostVars($values)
     {
 
-        $post = [];
+        return json_encode($values);
 
-        foreach ($values as $k => $v) {
-            $post[$k] = $v;
-        }
-
-
-        return $post;
+//        $post = [];
+//        foreach ($values as $k => $v) {
+//            $post[$k] = $v;
+//        }
+//        return $post;
 
     }
 
