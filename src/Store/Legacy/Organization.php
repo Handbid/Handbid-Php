@@ -7,11 +7,10 @@ use Handbid\Store\Legacy\StoreAbstract;
 class Organization extends StoreAbstract
 {
 
-    public $_base = 'organization';
+    public $_base = 'publicorganization';
     public $_resultsKey = 'Organization';
 
-
     public function count($query = []) {
-        return $this->_rest->get('organization/count', $query)->count;
+        return $this->_rest->get('publicorganization/count', $query)->count;
     }
 }

@@ -121,7 +121,7 @@ class Bidder extends StoreAbstract
             $post['photo[file]'] = $photo;
         }
 
-        $profile = $this->_rest->put('bidder/update', json_encode($post));
+        $profile = $this->_rest->put('bidder/update', $post);
 
         //update auth
 //        $this->_rest->auth()->setToken($profile->data->token);
@@ -133,9 +133,10 @@ class Bidder extends StoreAbstract
     public function login($values) {
         try {
 
-            $profile = $this->_rest->post('auth/login', json_encode($values));
+            $post = $this->preparePostVars($values);
+            $profile = $this->_rest->post('auth/login', $post);
 
-            if($profile) {
+            if($profile->success) {
                 $this->setCookie($profile);
             }
 
@@ -149,13 +150,21 @@ class Bidder extends StoreAbstract
     public function register($values) {
         try {
 
-            $profile = $this->_rest->post('auth/register', json_encode($values));
+            $post = $this->preparePostVars($values);
 
-            if($profile->success) {
-                $this->setCookie($profile);
+            $profile = $this->_rest->post('auth/register', $post);
+
+            if($profile->success == true) {
+
+                $newValues = [
+                    'username' => $profile->data->username,
+                    'password' => $profile->data->pin
+                ];
+
+                $profile = $this->login($newValues);
             }
 
-            return $profile->data;
+            return $profile;
 
 
         } catch (\Exception $e) {
