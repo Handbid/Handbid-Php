@@ -71,7 +71,14 @@ class Bid extends StoreAbstract
 
     public function myWinning($auctionId)
     {
-        return $this->_fetchBidderBids($auctionId, ['winning']);
+
+        return $this->_rest->get(
+            'auction/bids/' . $auctionId,
+            [],
+            [],
+            false
+        );
+
     }
 
     public function myLosing($auctionId)
