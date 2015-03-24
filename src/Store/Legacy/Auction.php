@@ -53,7 +53,15 @@ class Auction extends StoreAbstract
     public function byOrg($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $id = '')
     {
         $query = ['organization' => $id];
-        return $this->all($page, $pageSize, $sortField, $sortDirection, $query, false, false);
+        $result = [];
+        $auctions = $this->all($page, $pageSize, $sortField, $sortDirection, $query, false, false);
+        //$result = $auctions;
+        if($id and count($auctions) == 0) return $result;
+        foreach($auctions as $auction){
+            if($auction->organizationId == $id)
+                $result[] = $auction;
+        }
+        return $result;
     }
 
     public function upcoming($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $orgId = '')
