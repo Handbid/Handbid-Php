@@ -164,13 +164,19 @@ class Auction extends StoreAbstract
     public function publicAuctionCount()
     {
 
-        return count($this->publicAuctions());
+        return $this->_rest->get('publicauction/count', ['query' => $query], [], false)->count;
     }
 
     public function publicAuctions()
     {
 
         return $this->_rest->get('publicauction', [], [], false);
+    }
+
+    public function allAuctions()
+    {
+
+        return $this->_rest->get('auction', [], [], false);
     }
 
     public function myRecent($query = [])

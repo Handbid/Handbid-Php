@@ -105,7 +105,8 @@ class Rest implements RestInterface
         }
 
         //build query string
-        $query = ($query) ? $this->buildFilter($query) : '';
+        //$query = ($query) ? $this->buildFilter($query) : '';
+        $query = ($query) ? $this->buildParamQuery($query) : '';
 
         $cacheKey = $uri . '-' . $query . '-' . $method;
         if ($method != 'GET' || !($this->_cacheAdapter->hasCache($route, $query, $headers) && $useCache)) {
@@ -223,6 +224,21 @@ class Rest implements RestInterface
         $filter = (isset($filters[0]) && $filters[0]) ? 'filter=' . implode(',', $filters) : '';
 
         return $filter;
+
+    }
+
+    public function buildParamQuery($filters) {
+
+        $params = [];
+
+        if(isset($filters["config"]) and is_array($filters["config"]) and count($filters["config"])){
+            foreach($filters["config"] as $param => $value){
+                if(!is_array($value) and !is_object($value) and trim($value))
+                    $params[] = $param . "=" . urlencode($value);
+            }
+        }
+
+        return (count($params)) ? implode("&", $params) : "" ;
 
     }
 

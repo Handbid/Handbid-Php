@@ -34,8 +34,10 @@ class StoreAbstract implements StoreInterface
                 'query'  => $query ? $query : false,
                 'options' => $options ? $options : false,
                 'config' => [
+                    'page'  => $page,
                     'skip'  => $skip,
                     'limit' => $pageSize,
+                    'per-page' => $pageSize,
                     'sort'  => [$sortField => $sortDirection]
                 ]
             ],
