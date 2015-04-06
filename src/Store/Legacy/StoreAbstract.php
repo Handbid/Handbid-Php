@@ -55,7 +55,7 @@ class StoreAbstract implements StoreInterface
 
     public function byId($id, $cache = true)
     {
-        $results = $this->_rest->get($this->_base . '/' . $id, [], [], $cache);
+        $results = $this->_rest->get($this->_base . '/view/' . $id, [], [], $cache);
 
         if ($results) {
             $results = $this->map($results->{$this->_resultsKey});
