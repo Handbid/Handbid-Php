@@ -231,6 +231,18 @@ class Rest implements RestInterface
 
         $params = [];
 
+        if(isset($filters["query"]) and is_array($filters["query"]) and count($filters["query"])){
+            foreach($filters["query"] as $param => $value){
+                if(!is_array($value) and !is_object($value) and trim($value))
+                    $params[] = $param . "=" . urlencode($value);
+                if(is_array($value)){
+                    if(is_array($value['$in']) and count($value['$in'])){
+                        $params[] = $param . "=" . implode(",", $value['$in']);
+                    }
+                }
+            }
+        }
+
         if(isset($filters["config"]) and is_array($filters["config"]) and count($filters["config"])){
             foreach($filters["config"] as $param => $value){
                 if(!is_array($value) and !is_object($value) and trim($value))

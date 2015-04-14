@@ -2,11 +2,15 @@
 
 namespace Handbid\Store\Legacy;
 
+use Handbid\Handbid;
 use Handbid\Store\Legacy\StoreAbstract;
+use Handbid\Store\StoreInterface;
+use Handbid\Rest\RestInterface;
 
 class Auction extends StoreAbstract
 {
 
+    public $_initBase = 'auction';
     public $_base = 'publicauction';
     public $_resultsKey = 'Auction';
 
@@ -42,7 +46,7 @@ class Auction extends StoreAbstract
 
     public function _queryPreview()
     {
-        return ['status' => 'presale'];
+        return ['status' => 'preview'];
     }
 
     public function _queryPresale()
@@ -158,13 +162,7 @@ class Auction extends StoreAbstract
 
         $query = $this->{'_query' . ucfirst($type)}();
 
-        return $this->_rest->get('auction/count', ['query' => $query], [], false)->count;
-    }
-
-    public function publicAuctionCount()
-    {
-
-        return $this->_rest->get('publicauction/count', ['query' => $query], [], false)->count;
+        return $this->_rest->get($this->_base.'/count', ['query' => $query], [], false)->count;
     }
 
     public function publicAuctions()
@@ -191,5 +189,10 @@ class Auction extends StoreAbstract
                 false
             );
 
+    }
+
+    public function setBasePublicity($public = true)
+    {
+        $this->_base = $public ? "public" . $this->_initBase : $this->_initBase ;
     }
 }

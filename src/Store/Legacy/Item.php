@@ -7,7 +7,8 @@ use Handbid\Store\Legacy\StoreAbstract;
 class Item extends StoreAbstract
 {
 
-    public $_base = 'item';
+    public $_initBase = 'item';
+    public $_base = 'publicitem';
     public $_resultsKey = 'Item';
     public $_itemCache = [];
     public $_bidCache = [];
@@ -160,6 +161,13 @@ class Item extends StoreAbstract
 
         return $results;
 
+    }
+
+
+
+    public function setBasePublicity($public = true)
+    {
+        $this->_base = $public ? "public" . $this->_initBase : $this->_initBase ;
     }
 
 

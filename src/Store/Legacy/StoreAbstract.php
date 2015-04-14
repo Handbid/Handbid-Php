@@ -57,7 +57,7 @@ class StoreAbstract implements StoreInterface
     {
         $results = $this->_rest->get($this->_base . '/view/' . $id, [], [], $cache);
 
-        if ($results) {
+        if ($results and isset($results->{$this->_resultsKey})) {
             $results = $this->map($results->{$this->_resultsKey});
         }
 
