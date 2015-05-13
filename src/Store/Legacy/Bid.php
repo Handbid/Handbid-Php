@@ -104,4 +104,40 @@ class Bid extends StoreAbstract
         return $purchases;
     }
 
+    public function auctionMyInventory($auctionId)
+    {
+        $purchases = $this->_rest->get(
+            'auction/myinventory/' . $auctionId,
+            [
+            ],
+            [],
+            false
+        );
+
+        return $purchases;
+    }
+
+    public function createBid($values) {
+        try {
+
+            $post = $this->preparePostVars($values);
+
+            return $this->_rest->post('bid/create', $post);
+
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
+
+    public function removeBid($bidID) {
+        try {
+
+            return $this->_rest->post('bid/remove/'. ((int) $bidID), array());
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
+
 }

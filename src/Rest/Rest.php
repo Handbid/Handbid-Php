@@ -179,7 +179,7 @@ class Rest implements RestInterface
             if ($info['http_code'] == 204) {
                 throw new NetworkException('No response from server', 70000);
             } //oops
-            elseif ($info['http_code'] != 200) {
+            elseif ($info['http_code'] != 200 and $info['http_code'] != 201) {
 
                 $response = json_decode($responseText);
                 if ($response && isset($response->Errors)) {
