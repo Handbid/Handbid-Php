@@ -1,4 +1,12 @@
 <?php
+/**
+ * @copyright Copyright (c) 2014-2015 Handbid Inc.
+ * @category handbid
+ * @package Handbid2-WordPress
+ * @license Proprietary
+ * @link http://www.handbid.com/
+ * @author Master of Code (worldclass@masterofcode.com)
+ */
 
 /**
  * This is the Legacy way of handling authentication. It is very bad and will be replaced on the next release.
