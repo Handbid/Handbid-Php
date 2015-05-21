@@ -151,7 +151,19 @@ class Bidder extends StoreAbstract
             return $profile;
 
         } catch (\Exception $e) {
+            return $e;
+        }
+    }
 
+    public function resetPass($identifier) {
+        try {
+
+            $resp = $this->_rest->get('auth/reset?identifier='.$identifier);
+
+            return $resp;
+
+        } catch (\Exception $e) {
+            return $e;
         }
     }
 
