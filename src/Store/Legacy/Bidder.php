@@ -138,6 +138,16 @@ class Bidder extends StoreAbstract
 
     }
 
+    public function updateProfileData($values){
+
+        if(!$this->myProfile()) {
+            throw new \Exception('You must be logged in to update your profile.');
+        }
+        $post = $this->preparePostVars($values);
+        $profile = $this->_rest->put('bidder/update', $post);
+        return $profile;
+    }
+
     public function login($values) {
         try {
 
@@ -195,6 +205,39 @@ class Bidder extends StoreAbstract
     public function setCookie($profile) {
         $token = $profile->data->token;
         setcookie('handbid-auth', 'Authorization: Bearer ' . $token, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
+    }
+
+    public function getProvinces() {
+        try {
+
+            $provinces = $this->_rest->get('province/index', []);
+            return $provinces;
+
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    public function getCountries() {
+        try {
+
+            $provinces = $this->_rest->get('country/index', []);
+            return $provinces;
+
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    public function getMyAuctions() {
+        try {
+
+            $myAuctions = $this->_rest->get('bidder/auctions', []);
+            return $myAuctions;
+
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
 
