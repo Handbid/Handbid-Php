@@ -203,4 +203,19 @@ class Auction extends StoreAbstract
     {
         $this->_base = $public ? "public" . $this->_initBase : $this->_initBase ;
     }
+
+
+
+    public function auctionMyInventory($auctionId)
+    {
+        $purchases = $this->_rest->get(
+            'auction/myinventory/' . $auctionId,
+            [
+            ],
+            [],
+            false
+        );
+
+        return $purchases;
+    }
 }

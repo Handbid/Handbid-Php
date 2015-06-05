@@ -17,4 +17,16 @@ class Notification extends StoreAbstract
     public $_base = 'bidder/notifications';
     public $_resultsKey = 'Message';
 
+
+
+    public function allMessages($start = 0, $limit = 15)
+    {
+        return $this->_rest->get(
+            'message/index',
+            [
+            ],
+            [],
+            false
+        );
+    }
 }

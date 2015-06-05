@@ -112,19 +112,6 @@ class Bid extends StoreAbstract
         return $purchases;
     }
 
-    public function auctionMyInventory($auctionId)
-    {
-        $purchases = $this->_rest->get(
-            'auction/myinventory/' . $auctionId,
-            [
-            ],
-            [],
-            false
-        );
-
-        return $purchases;
-    }
-
     public function createBid($values) {
         try {
 

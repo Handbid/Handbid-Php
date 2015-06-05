@@ -29,4 +29,24 @@ class Receipt extends StoreAbstract
             false
         );
     }
+
+    public function allReceipts()
+    {
+
+        return $this->_rest->get(
+            'receipt/index',
+            [
+            ],
+            [],
+            false
+        );
+    }
+
+    public function makePayment($values)
+    {
+        $post = $this->preparePostVars($values);
+        return $this->_rest->post(
+            'transaction/create', $post
+        );
+    }
 }
