@@ -204,6 +204,7 @@ class Bidder extends StoreAbstract
 
     public function setCookie($profile) {
         $token = $profile->data->token;
+        $token = preg_replace("/Authorization: Bearer /", "", $token);
         setcookie('handbid-auth', 'Authorization: Bearer ' . $token, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
     }
 
@@ -234,6 +235,17 @@ class Bidder extends StoreAbstract
 
             $myAuctions = $this->_rest->get('bidder/auctions', []);
             return $myAuctions;
+
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    public function addActiveAuction($auctionID) {
+        try {
+
+            $addedAuction = $this->_rest->post('auction/add/'.$auctionID, []);
+            return $addedAuction;
 
         } catch (\Exception $e) {
             return [];

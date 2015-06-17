@@ -33,10 +33,8 @@ class Legacy implements AuthInterface
     {
         $this->_auth = $token;
         if($token) {
-
-            setcookie('handbid-auth', 'Authorization: Bearer 4e1730e5ba3a20145c000011', time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
-
-//            setcookie('handbid-auth', $this->_auth, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
+            $token = preg_replace("/Authorization: Bearer /", "", $token);
+            setcookie('handbid-auth', 'Authorization: Bearer '.$token, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
         }
         return $this;
     }
