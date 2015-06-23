@@ -143,6 +143,7 @@ class Rest implements RestInterface
 
                 $_mixedHeaders = array_merge(array(
                     'Content-Type: application/json',
+                    'Expect:',
                 ), $h);
             }
 
