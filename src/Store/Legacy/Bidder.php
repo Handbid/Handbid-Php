@@ -206,6 +206,7 @@ class Bidder extends StoreAbstract
         $token = $profile->data->token;
         $token = preg_replace("/Authorization: Bearer /", "", $token);
         setcookie('handbid-auth', 'Authorization: Bearer ' . $token, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
+        setcookie('PHPSESSID', $token, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
     }
 
     public function getProvinces() {
