@@ -253,5 +253,16 @@ class Bidder extends StoreAbstract
         }
     }
 
+    public function createLead($values) {
+        try {
+            $post = $this->preparePostVars($values);
+            $addedLead = $this->_rest->post('lead/create', $post);
+            return $addedLead;
+
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
 
 }
