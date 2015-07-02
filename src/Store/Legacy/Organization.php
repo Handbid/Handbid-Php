@@ -25,6 +25,7 @@ class Organization extends StoreAbstract
 
     public function setBasePublicity($public = true)
     {
-        $this->_base = $public ? "public" . $this->_initBase : $this->_initBase ;
+        //$this->_base = $public ? "public" . $this->_initBase : $this->_initBase ;
+        $this->_base = "public" . $this->_initBase;
     }
 }
