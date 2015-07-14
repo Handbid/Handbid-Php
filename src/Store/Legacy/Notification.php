@@ -22,7 +22,8 @@ class Notification extends StoreAbstract
     public function allMessages($start = 0, $limit = 15)
     {
         return $this->_rest->get(
-            'message/index',
+            //'message/index',
+            'bidder/messages',
             [
             ],
             [],
