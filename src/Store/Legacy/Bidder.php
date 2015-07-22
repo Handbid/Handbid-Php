@@ -203,7 +203,7 @@ class Bidder extends StoreAbstract
     }
 
     public function setCookie($profile) {
-        $token = $profile->data->token;
+        $token = (is_object($profile)) ? $profile->data->token : $profile ;
         $token = preg_replace("/Authorization: Bearer /", "", $token);
         setcookie('handbid-auth', 'Authorization: Bearer ' . $token, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
 //        setcookie('PHPSESSID', $token, time()+3600*24*100, COOKIEPATH, COOKIE_DOMAIN);
