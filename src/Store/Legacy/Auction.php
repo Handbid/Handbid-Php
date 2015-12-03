@@ -49,7 +49,7 @@ class Auction extends StoreAbstract
 
     public function _queryClosed()
     {
-        return ['status' => ['$in' => ['closed', 'reconcile']]];
+        return ['status' => ['$in' => ['closed', 'reconciled']]];
     }
 
     public function _queryPreview()
