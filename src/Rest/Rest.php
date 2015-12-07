@@ -262,6 +262,10 @@ class Rest implements RestInterface
             }
         }
 
+        if(!empty($filters["options"]["search"])){
+            $params[] = "search=" . urlencode($filters["options"]["search"]);
+        }
+
         return (count($params)) ? implode("&", $params) : "" ;
 
     }
