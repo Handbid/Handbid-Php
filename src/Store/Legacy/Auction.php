@@ -218,4 +218,10 @@ class Auction extends StoreAbstract
 
         return $purchases;
     }
+
+
+    public function byGuid($guid)
+    {
+        return $this->_rest->get('publicauction/show', ['query' => ['guid' => $guid]], [], false);
+    }
 }
