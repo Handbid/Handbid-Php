@@ -49,4 +49,12 @@ class Receipt extends StoreAbstract
             'transaction/create', $post
         );
     }
+
+    public function sendInvoice($invoice_id, $values)
+    {
+        $post = $this->preparePostVars($values);
+        return $this->_rest->post(
+            'receipt/send/' . $invoice_id, $post
+        );
+    }
 }
