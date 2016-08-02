@@ -64,7 +64,7 @@ class Auction extends StoreAbstract
 
     public function byOrg($page = 0, $pageSize = 25, $sortField = 'name', $sortDirection = 'ASC', $id = '')
     {
-        $query = ['organization' => $id];
+        $query = ['organization' => $id, 'excluded_fields' => 'organization,sponsor,categories,locations,images,description'];
         $result = [];
         $auctions = $this->all($page, $pageSize, $sortField, $sortDirection, $query, false, false);
         //$result = $auctions;
@@ -113,6 +113,8 @@ class Auction extends StoreAbstract
         if ($orgId) {
             $query['organization'] = $orgId;
         }
+
+        $query['excluded_fields'] = 'organization,sponsor,categories,locations,images,description';
 
         return $this->all($page, $pageSize, $sortField, $sortDirection, $query, false, false);
 
@@ -222,6 +224,6 @@ class Auction extends StoreAbstract
 
     public function byGuid($guid)
     {
-        return $this->_rest->get('publicauction/show', ['query' => ['guid' => $guid]], [], false);
+        return $this->_rest->get('publicauction/show', ['query' => ['guid' => $guid, 'excluded_fields' => 'organization,sponsor,categories,locations,images,description']], [], false);
     }
 }
