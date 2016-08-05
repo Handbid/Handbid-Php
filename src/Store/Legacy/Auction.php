@@ -226,4 +226,14 @@ class Auction extends StoreAbstract
     {
         return $this->_rest->get('publicauction/show', ['query' => ['guid' => $guid, 'excluded_fields' => 'organization,sponsor,categories,locations,images,description']], [], false);
     }
+
+    public function onSite($data) {
+        try {
+            $data = $this->preparePostVars($data);
+            return $this->_rest->post('auction/isonsite', $data);
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
 }
