@@ -236,4 +236,17 @@ class Auction extends StoreAbstract
             return $e;
         }
     }
+
+    public function sendTextLink($auctionId) {
+        try {
+
+            $post = $this->preparePostVars(['auctionId' => $auctionId]);
+            $resp = $this->_rest->post('auction/sendlink', $post);
+
+            return $resp;
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
 }

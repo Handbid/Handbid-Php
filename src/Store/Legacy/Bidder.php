@@ -190,6 +190,9 @@ class Bidder extends StoreAbstract
                     'username' => $profile->data->username,
                     'password' => $profile->data->pin
                 ];
+                if($values['auctionGuid']){
+                    $newValues['auctionGuid'] = $values['auctionGuid'];
+                }
 
                 $profile = $this->login($newValues);
             }
