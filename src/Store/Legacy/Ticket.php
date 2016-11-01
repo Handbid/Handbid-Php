@@ -45,4 +45,25 @@ class Ticket extends StoreAbstract
 
     }
 
+    public function checkDiscountCode($ticketIds, $code) {
+        try {
+
+            $post = $this->preparePostVars(
+                [
+                    'ticketIds' => implode(',',$ticketIds),
+                    'discountCode' => $code,
+                ]
+            );
+            $resp = $this->_rest->post('ticket/checkdiscount', $post);
+
+            return $resp;
+
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'reason' => $e->getMessage(),
+            ];
+        }
+    }
+
 }
