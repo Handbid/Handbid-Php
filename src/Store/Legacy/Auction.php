@@ -249,4 +249,17 @@ class Auction extends StoreAbstract
             return $e;
         }
     }
+
+    public function getTicketing($auctionGuid) {
+        try {
+
+            $post = $this->preparePostVars(['auctionId' => $auctionGuid]);
+            $resp = $this->_rest->post('auction/ticketing', $post);
+
+            return $resp;
+
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
 }
