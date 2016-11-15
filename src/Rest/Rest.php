@@ -183,7 +183,7 @@ class Rest implements RestInterface
 
             $responseText = curl_exec($this->_curlHandle);
             $info         = curl_getinfo($this->_curlHandle);
-
+//echo "<pre>" . print_r($uri, true) . "</pre>";
             //no content, should we care?
             if ($info['http_code'] == 204) {
                 throw new NetworkException('No response from server', 70000);

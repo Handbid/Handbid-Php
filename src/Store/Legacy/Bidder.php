@@ -180,6 +180,10 @@ class Bidder extends StoreAbstract
     public function register($values) {
         try {
 
+            $auctionGuid = !empty($values['auctionGuid']) ? $values['auctionGuid'] : '';
+
+            unset($values['auctionGuid']);
+
             $post = $this->preparePostVars($values);
 
             $profile = $this->_rest->post('auth/register', $post);
@@ -190,8 +194,9 @@ class Bidder extends StoreAbstract
                     'username' => $profile->data->username,
                     'password' => $profile->data->pin
                 ];
-                if($values['auctionGuid']){
-                    $newValues['auctionGuid'] = $values['auctionGuid'];
+
+                if(!empty($auctionGuid)){
+                    $newValues['auctionGuid'] = $auctionGuid;
                 }
 
                 $profile = $this->login($newValues);
