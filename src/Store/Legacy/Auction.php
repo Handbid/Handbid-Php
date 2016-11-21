@@ -250,11 +250,12 @@ class Auction extends StoreAbstract
         }
     }
 
-    public function getTicketing($auctionGuid) {
+    public function getTicketing($auctionGuid, $public) {
         try {
 
             $post = $this->preparePostVars(['auctionId' => $auctionGuid]);
-            $resp = $this->_rest->post('auction/ticketing', $post);
+
+            $resp = $this->_rest->post(($public ? 'public' : '') . 'auction/ticketing', $post);
 
             return $resp;
 
