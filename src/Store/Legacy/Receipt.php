@@ -30,13 +30,13 @@ class Receipt extends StoreAbstract
         );
     }
 
-    public function allReceipts()
+    public function allReceipts($invoice_id = false)
     {
+        $query = ($invoice_id) ? ['query' => ['receiptGuid' => $invoice_id]] : [];
 
         return $this->_rest->get(
             'receipt/index',
-            [
-            ],
+            $query,
             [],
             false
         );
