@@ -95,7 +95,6 @@ class Rest implements RestInterface
      */
     public function _request($method, $route, $query = [], $data = [], $headers = [], $useCache = false)
     {
-
         $method = strtoupper($method);
 
         //store for posterity
@@ -265,6 +264,8 @@ class Rest implements RestInterface
         if(!empty($filters["options"]["search"])){
             $params[] = "search=" . urlencode($filters["options"]["search"]);
         }
+
+        $params[] = 'web_app=true';
 
         return (count($params)) ? implode("&", $params) : "" ;
 
